@@ -20,6 +20,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { postData } from "@/lib/utils";
+import { API_PATH_CONSTANT } from "@/constants/api_constant";
 
 const data = {
   user: {
@@ -115,6 +117,18 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // const getUserAuth = async () => {
+  //   try {
+  //     const response = await postData(API_PATH_CONSTANT.AUTH.LOGIN, {});
+  //   } catch (error) {
+
+  //   }
+  // }
+
+  // React.useEffect(() => {
+  //   getUserAuth();
+  // }, []);
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>

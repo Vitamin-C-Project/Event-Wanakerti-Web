@@ -1,3 +1,5 @@
+import { ComponentPropsWithoutRef } from "react";
+
 export interface IMeta {
   current_page: number;
   from: number;
@@ -24,4 +26,10 @@ export type CommonColumn = {
 export interface BreadcrumbInterface {
   title: string;
   href: string;
+}
+
+export interface FormInterface extends ComponentPropsWithoutRef<"form"> {
+  form: any;
+  state?: any;
+  handler?: any;
 }

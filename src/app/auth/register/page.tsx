@@ -1,7 +1,11 @@
-import { RegisterForm } from "@/components/register-form";
+import { RegisterForm } from "@/app/auth/register/form";
 import { GalleryVerticalEnd } from "lucide-react";
+import FlyerJpeg from "@/assets/img/flyer.jpeg";
+import Hook from "./hook";
 
 export default function RegisterPage() {
+  const { state, handler } = Hook();
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -15,13 +19,17 @@ export default function RegisterPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <RegisterForm />
+            <RegisterForm
+              form={state.form}
+              state={state}
+              onSubmit={state.form.handleSubmit(handler.handleSubmit)}
+            />
           </div>
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
         <img
-          src="/placeholder.svg"
+          src={FlyerJpeg}
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />

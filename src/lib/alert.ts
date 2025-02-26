@@ -1,3 +1,4 @@
+import { API_CODE_CONSTANT } from "@/constants/api_constant";
 import Swal from "sweetalert2";
 
 export const alert = (
@@ -24,8 +25,23 @@ export const alert = (
   });
 };
 
+export const alertRender = (code: number, message: string) => {
+  if (code >= 400 && code < 500) {
+    alertWarning(message);
+    return;
+  }
+
+  if (code >= 500) {
+    alertError(message);
+    return;
+  }
+
+  alertSuccess(message);
+  return;
+};
+
 export const alertSuccess = (message: string) => {
-  alert("Berhasil", message, "success");
+  alert("Success", message, "success");
 };
 
 export const alertError = (message: string) => {
@@ -33,9 +49,45 @@ export const alertError = (message: string) => {
 };
 
 export const alertWarning = (message: string) => {
-  alert("Maaf", message, "warning");
+  alert("Ooops", message, "warning");
 };
 
 export const alertInfo = (message: string) => {
   alert("Info", message, "info");
+};
+
+export const toastRender = (code: number, message: string) => {
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+  });
+
+  if (code >= 400 && code < 500) {
+    Toast.fire({
+      icon: "warning",
+      title: message,
+    });
+    return;
+  }
+
+  if (code >= 500) {
+    Toast.fire({
+      icon: "error",
+      title: message,
+    });
+    return;
+  }
+
+  Toast.fire({
+    icon: "success",
+    title: message,
+  });
+  return;
 };

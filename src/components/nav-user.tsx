@@ -19,6 +19,23 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router-dom";
+import jsCookie from "js-cookie";
+
+function Hook() {
+  const navigate = useNavigate();
+
+  const { isMobile } = useSidebar();
+
+  const handleLogout = async () => {
+    jsCookie.remove("LJJKPW");
+    navigate("/auth/login");
+  };
+
+  return {
+    state: { isMobile },
+    handler: { handleLogout },
+  };
+}
 
 export function NavUser({
   user,
@@ -29,9 +46,7 @@ export function NavUser({
     avatar: string;
   };
 }) {
-  const { isMobile } = useSidebar();
-
-  const navigate = useNavigate();
+  const { state, handler } = Hook();
 
   return (
     <SidebarMenu>
@@ -43,7 +58,10 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage
+                  src={`https://ui-avatars.com/api/?background=random&size=25&rounded=true&length=2&name=${user?.name}`}
+                  alt={user.name}
+                />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -55,7 +73,7 @@ export function NavUser({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={state.isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
@@ -79,7 +97,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/auth/login")}>
+            <DropdownMenuItem onClick={() => handler.handleLogout()}>
               <LogOut />
               Keluar
             </DropdownMenuItem>
