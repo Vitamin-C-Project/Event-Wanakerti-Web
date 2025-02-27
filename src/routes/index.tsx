@@ -14,6 +14,7 @@ import MemberTeamPage from "@/app/member/team/team";
 import MemberParticipantPage from "@/app/member/participant/participant";
 import EditSchoolPage from "@/app/member/school/edit";
 import DetailTeamPage from "@/app/admin/member/team/detail/page";
+import AppLayout from "@/app/layout/app-layout";
 
 export default function Routes() {
   return (
@@ -21,13 +22,13 @@ export default function Routes() {
       <ReactRoutes>
         <Route path="/" element={<App />} />
 
-        <Route path="/auth">
+        <Route path="/auth" element={<AppLayout />}>
           <Route index element={<LoginPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
         </Route>
 
-        <Route path="/dashboard">
+        <Route path="/dashboard" element={<AppLayout />}>
           <Route index element={<DashboardAdminPage />} />
 
           <Route path="divisions" element={<DivisionPage />} />
@@ -46,7 +47,7 @@ export default function Routes() {
           </Route>
         </Route>
 
-        <Route path="/member">
+        <Route path="/member" element={<AppLayout />}>
           <Route index element={<DashboardMemberPage />} />
           <Route path="edit-school" element={<EditSchoolPage />} />
           <Route path="teams" element={<MemberTeamPage />} />

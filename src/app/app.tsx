@@ -1,11 +1,42 @@
-import "@/App.css";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Nav from "./(components)/nav";
+import Hero from "./(components)/hero";
+import LineUp from "./(components)/line-up";
+import Video from "./(components)/video";
+import Ticket from "./(components)/ticket";
+import Sponsor from "./(components)/sponsor";
+import Footer from "./(components)/footer";
+
+import "./App.css";
+import ContactUs from "./(components)/contact-us";
 
 function App() {
   return (
-    <h1>
-      <Link to={"/auth/login"}>App</Link>
-    </h1>
+    <div className="font-manrope">
+      {/* Fixed Navigation */}
+      <Nav />
+
+      {/* Hero Section */}
+      <Hero />
+
+      {/* Lineup Section */}
+      <LineUp />
+
+      {/* Video Section */}
+      <Video />
+
+      {/* Tickets Section */}
+      <Ticket />
+
+      {/* Sponsors Section */}
+      <Sponsor />
+
+      {/* Contact Section */}
+      <ContactUs />
+
+      {/* Footer */}
+      <Footer />
+    </div>
   );
 }
 
