@@ -15,6 +15,12 @@ import MemberParticipantPage from "@/app/member/participant/participant";
 import EditSchoolPage from "@/app/member/school/edit";
 import DetailTeamPage from "@/app/admin/member/team/detail/page";
 import AppLayout from "@/app/layout/app-layout";
+import MascotLogoPage from "@/app/admin/cms/mascot-logo/mascot-logo";
+import AgendaPage from "@/app/admin/cms/agenda/agenda";
+import CategoriesPage from "@/app/admin/cms/categories/categories";
+import VideoPage from "@/app/admin/cms/video/video";
+import BrandPage from "@/app/admin/cms/brand/brand";
+import ContactPage from "@/app/admin/cms/contact/brand";
 
 export default function Routes() {
   return (
@@ -37,6 +43,16 @@ export default function Routes() {
             <Route index element={<UserParticipantPage />} />
             <Route path="admin" element={<UserAdminPage />} />
             <Route path="participant" element={<UserParticipantPage />} />
+          </Route>
+
+          <Route path="cms">
+            <Route index element={<MascotLogoPage />} />
+            <Route path="mascot-logo" element={<MascotLogoPage />} />
+            <Route path="agenda" element={<AgendaPage />} />
+            <Route path="categories" element={<CategoriesPage />} />
+            <Route path="video" element={<VideoPage />} />
+            <Route path="brand-sponsorship" element={<BrandPage />} />
+            <Route path="contact" element={<ContactPage />} />
           </Route>
 
           <Route path="member">

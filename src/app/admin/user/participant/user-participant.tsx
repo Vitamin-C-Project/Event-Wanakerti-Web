@@ -31,17 +31,17 @@ export default function UserAdminPage() {
       breadcrumbs={[
         { title: "Dasbor", href: "/dashboard" },
         { title: "Pengguna", href: "/dashboard/users" },
-        { title: "Admin", href: "/dashboard/users/admin" },
+        { title: "Peserta", href: "/dashboard/users/participant" },
       ]}
     >
       <Flex align={"center"} justify={"between"}>
-        <Heading>Daftar Pengguna Admin</Heading>
+        <Heading>Daftar Pengguna Peserta</Heading>
         <Button
           onClick={() =>
             handler.setVisible({
               show: true,
               type: 1,
-              title: "Tambah Admin Baru",
+              title: "Tambah Peserta Baru",
             })
           }
         >

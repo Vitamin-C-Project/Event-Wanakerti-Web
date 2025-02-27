@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router-dom";
 import jsCookie from "js-cookie";
+import { UserInterface } from "@/interfaces/user_interface";
 
 function Hook() {
   const navigate = useNavigate();
@@ -37,15 +38,7 @@ function Hook() {
   };
 }
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function NavUser({ user }: { user: UserInterface }) {
   const { state, handler } = Hook();
 
   return (
@@ -80,7 +73,10 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage
+                    src={`https://ui-avatars.com/api/?background=random&size=25&rounded=true&length=2&name=${user?.name}`}
+                    alt={user.name}
+                  />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
