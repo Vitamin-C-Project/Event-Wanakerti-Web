@@ -1,7 +1,11 @@
+import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
+import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
+import { IMeta } from "@/interfaces/common";
 import { UserInterface } from "@/interfaces/user_interface";
-import { alertSuccess } from "@/lib/alert";
+import { alertRender, alertSuccess, toastRender } from "@/lib/alert";
+import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { z } from "zod";
@@ -9,7 +13,7 @@ import { z } from "zod";
 const schemaForm = z.object({
   name: z.string().min(3).max(100),
   email: z.string().email().min(3).max(150),
-  username: z.string().min(3).max(100),
+  password: z.string().nullable(),
 });
 
 export default function Hook() {
@@ -19,50 +23,82 @@ export default function Hook() {
     type: 1,
   });
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [metadata, setMetadata] = useState<IMeta>();
+  const [users, setUsers] = useState<UserInterface[]>([]);
+  const [user, setUser] = useState<UserInterface>();
+  const [pagination, setPagination] = useState({
+    page: 1,
+    per_page: 10,
+  });
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
     defaultValues: {
-      name: "Hakim Asrori",
-      email: "hakim.asrori@mailinator.com",
-      username: "LJJKPW61234",
+      name: "",
+      email: "",
+      password: "LJJKPW" + Math.round(Math.random() * 10000),
     },
   });
 
-  const users = [
-    {
-      name: "Hakim Asrori",
-      username: "hakim24",
-      email: "hakim@mailinator.com",
-    },
-    {
-      name: "Hakim Asrori",
-      username: "hakim24",
-      email: "hakim@mailinator.com",
-    },
-    {
-      name: "Hakim Asrori",
-      username: "hakim24",
-      email: "hakim@mailinator.com",
-    },
-    {
-      name: "Hakim Asrori",
-      username: "hakim24",
-      email: "hakim@mailinator.com",
-    },
-  ] as UserInterface[];
+  const getUsers = async () => {
+    setIsLoadingData(true);
+
+    try {
+      const response = await postData(API_PATH_CONSTANT.USER.LIST, {
+        ...pagination,
+        role_id: USER_TYPE_CONSTANT.ADMIN,
+      });
+
+      setUsers(response.data.data);
+      setMetadata(response.data.pagination);
+    } catch (error) {
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
 
   const handleSubmit = async (data: z.infer<typeof schemaForm>) => {
-    console.log(data);
-    setVisible({ show: false, title: "", type: 1 });
+    setIsLoadingForm(true);
+    try {
+      const response = await postData(API_PATH_CONSTANT.USER.CREATE, {
+        ...data,
+        role_id: USER_TYPE_CONSTANT.ADMIN,
+      });
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      resetState();
+      getUsers();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingForm(false);
+    }
   };
 
   const handleEdit = (data: UserInterface) => {
-    form.reset(data);
-    setVisible({ show: true, title: `Edit Akun ${data.name}`, type: 1 });
+    form.reset({ email: data.email, name: data.name, password: "" });
+    setUser(data);
+    setVisible({ show: true, title: `Edit Akun ${data.name}`, type: 2 });
   };
 
-  const handleDelete = (data: UserInterface) => {
+  const handleUpdate = async (data: z.infer<typeof schemaForm>) => {
+    setIsLoadingForm(true);
+    try {
+      const response = await postData(API_PATH_CONSTANT.USER.UPDATE, {
+        ...data,
+        uid: user?.id,
+      });
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      resetState();
+      getUsers();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingForm(false);
+    }
+  };
+
+  const handleDelete = async (data: UserInterface) => {
     Swal.fire({
       title: "Apa kamu yakin?",
       text: "Anda tidak akan dapat mengembalikannya!",
@@ -71,15 +107,50 @@ export default function Hook() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Ya, dihapus!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        alertSuccess("Hapus data berhasil!");
+        const response = await postData(API_PATH_CONSTANT.USER.DELETE, {
+          uid: data?.id,
+        });
+
+        toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+
+        getUsers();
       }
     });
   };
 
+  const resetState = () => {
+    setVisible({ show: false, title: "", type: 1 });
+    form.reset({
+      name: "",
+      email: "",
+      password: "LJJKPW" + Math.round(Math.random() * 10000),
+    });
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, [pagination]);
+
   return {
-    state: { visible, users, form, isLoadingForm },
-    handler: { setVisible, handleSubmit, handleEdit, handleDelete },
+    state: {
+      visible,
+      users,
+      form,
+      isLoadingForm,
+      pagination,
+      metadata,
+      isLoadingData,
+    },
+    handler: {
+      setVisible,
+      handleSubmit,
+      handleEdit,
+      handleDelete,
+      handleUpdate,
+      setPagination,
+      resetState,
+    },
   };
 }

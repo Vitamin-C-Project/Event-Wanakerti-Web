@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { DataTablePagination } from "@/components/pagination-datatable";
 
 export default function UserAdminPage() {
   const { state, handler } = Hook();
@@ -55,12 +56,16 @@ export default function UserAdminPage() {
         })}
         data={state.users}
       />
+      <DataTablePagination
+        metadata={state.metadata!}
+        onPageChange={(e) =>
+          handler.setPagination({ ...state.pagination, page: e })
+        }
+      />
 
       <Dialog
         open={state.visible.show}
-        onOpenChange={() =>
-          handler.setVisible({ show: false, title: "", type: 1 })
-        }
+        onOpenChange={() => handler.resetState()}
       >
         <DialogContent>
           <DialogHeader>
@@ -68,7 +73,11 @@ export default function UserAdminPage() {
           </DialogHeader>
           <Form {...state.form}>
             <form
-              onSubmit={state.form.handleSubmit(handler.handleSubmit)}
+              onSubmit={
+                state.visible.type == 1
+                  ? state.form.handleSubmit(handler.handleSubmit)
+                  : state.form.handleSubmit(handler.handleUpdate)
+              }
               className="space-y-4"
             >
               <FormField
@@ -109,31 +118,32 @@ export default function UserAdminPage() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={state.form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="username">Username</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="username"
-                        type="text"
-                        placeholder=""
-                        {...field}
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {state.visible.type == 1 && (
+                <FormField
+                  control={state.form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="password">Kata Sandi</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="password"
+                          type="text"
+                          placeholder=""
+                          {...field}
+                          value={field.value || ""}
+                          disabled
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
               <DialogFooter className="justify-content-between">
                 <Button
                   variant="secondary"
-                  onClick={() =>
-                    handler.setVisible({ show: false, title: "", type: 1 })
-                  }
+                  onClick={() => handler.resetState()}
                   size="sm"
                 >
                   Batal

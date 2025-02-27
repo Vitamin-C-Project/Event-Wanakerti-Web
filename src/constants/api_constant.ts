@@ -5,6 +5,14 @@ export const API_PATH_CONSTANT = {
     REGISTER: "auth/register",
     CHECK_AUTHENTICATED: "auth/check-authenticated",
   },
+  USER: {
+    LIST: "user/list",
+    CREATE: "user/create",
+    SHOW: "user/show",
+    UPDATE: "user/update",
+    DELETE: "user/delete",
+    UPDATE_PASSWORD: "user/update-password",
+  },
 };
 
 export const API_CODE_CONSTANT = {

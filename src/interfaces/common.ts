@@ -4,9 +4,6 @@ export interface IMeta {
   current_page: number;
   from: number;
   last_page: number;
-  links: ILinkMeta;
-  path: string;
-  per_page: number;
   to: number;
   total: number;
 }
@@ -30,6 +27,6 @@ export interface BreadcrumbInterface {
 
 export interface FormInterface extends ComponentPropsWithoutRef<"form"> {
   form: any;
-  state?: any;
-  handler?: any;
+  state: any;
+  handler: any;
 }
