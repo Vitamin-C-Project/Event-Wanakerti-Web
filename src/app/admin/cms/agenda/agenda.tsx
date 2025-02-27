@@ -25,6 +25,14 @@ export default function AgendaPage() {
               Jadwal Technical Meeting 2
             </Label>
             <Input className="w-full col-span-8" type="date" />
+            <Label className="col-span-4 w-full">
+              Jadwal Pembuka Pendaftaran
+            </Label>
+            <Input className="w-full col-span-8" type="date" />
+            <Label className="col-span-4 w-full">
+              Jadwal Penutupan Pendaftaran
+            </Label>
+            <Input className="w-full col-span-8" type="date" />
           </Grid>
         </CardContent>
         <CardFooter className="justify-end">
