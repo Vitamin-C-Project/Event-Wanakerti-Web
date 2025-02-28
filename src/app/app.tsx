@@ -8,7 +8,7 @@ import Sponsor from "./(components)/sponsor";
 import Footer from "./(components)/footer";
 
 import "./App.css";
-import ContactUs from "./(components)/contact-us";
+import ContactUs from "./(components)/contact/contact-us";
 
 function App() {
   return (
