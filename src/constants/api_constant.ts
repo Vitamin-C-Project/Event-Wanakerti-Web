@@ -13,6 +13,9 @@ export const API_PATH_CONSTANT = {
     DELETE: "user/delete",
     UPDATE_PASSWORD: "user/update-password",
   },
+  CMS: {
+    CONTACT_US: {},
+  },
 };
 
 export const API_CODE_CONSTANT = {

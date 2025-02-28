@@ -26,7 +26,7 @@ export default function Hook() {
   const handleSubmit = async (data: z.infer<typeof schemaForm>) => {
     setIsLoadingForm(true);
     try {
-      const response = await postData(API_PATH_CONSTANT.)
+      // const response = await postData(API_PATH_CONSTANT.)
     } catch (error: any) {
     } finally {
       setIsLoadingForm(false);
