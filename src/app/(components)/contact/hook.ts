@@ -1,4 +1,5 @@
-import { API_PATH_CONSTANT } from "@/constants/api_constant";
+import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
+import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -26,8 +27,20 @@ export default function Hook() {
   const handleSubmit = async (data: z.infer<typeof schemaForm>) => {
     setIsLoadingForm(true);
     try {
-      // const response = await postData(API_PATH_CONSTANT.)
+      await postData(API_PATH_CONSTANT.CMS.CONTACT_US.CREATE, {
+        ...data,
+        full_name: data.name,
+        phone: "8912345678",
+        subject: "Pertanyaan Anonymous",
+      });
+
+      toastRender(
+        API_CODE_CONSTANT.HTTP_OK,
+        "Pesan berhasil terkirim, Terima Kasih 😊"
+      );
+      form.reset();
     } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
     } finally {
       setIsLoadingForm(false);
     }

@@ -25,6 +25,13 @@ export interface BreadcrumbInterface {
   href: string;
 }
 
+export interface ResponseApiInterface {
+  code: number;
+  messages: string;
+  data?: Object | Array<Object> | null;
+  pagination?: Object;
+}
+
 export interface FormInterface extends ComponentPropsWithoutRef<"form"> {
   form: any;
   state: any;

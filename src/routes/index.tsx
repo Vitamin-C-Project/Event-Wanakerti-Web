@@ -20,7 +20,7 @@ import AgendaPage from "@/app/admin/cms/agenda/agenda";
 import CategoriesPage from "@/app/admin/cms/categories/categories";
 import VideoPage from "@/app/admin/cms/video/video";
 import BrandPage from "@/app/admin/cms/brand/brand";
-import ContactPage from "@/app/admin/cms/contact/brand";
+import ContactPage from "@/app/admin/cms/contact/contact";
 
 export default function Routes() {
   return (

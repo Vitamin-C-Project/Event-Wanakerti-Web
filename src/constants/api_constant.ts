@@ -14,7 +14,12 @@ export const API_PATH_CONSTANT = {
     UPDATE_PASSWORD: "user/update-password",
   },
   CMS: {
-    CONTACT_US: {},
+    CONTACT_US: {
+      LIST: "cms/contact-us/list",
+      CREATE: "cms/contact-us/create",
+      SHOW: "cms/contact-us/show",
+      DELETE: "cms/contact-us/delete",
+    },
     VIDEO: {
       SHOW: "cms/video/show",
       UPDATE: "cms/video/update",

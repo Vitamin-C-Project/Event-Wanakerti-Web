@@ -13,7 +13,7 @@ export interface BrandInterface extends CommonColumn {
 }
 
 export interface ContactInterface extends CommonColumn {
-  name: string;
+  full_name: string;
   email: string;
   message: string;
 }

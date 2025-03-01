@@ -22,8 +22,8 @@ export const columns = (props: childProps): ColumnDef<ContactInterface>[] => {
 
   return [
     {
-      accessorKey: "name",
-      header: "Nama",
+      accessorKey: "full_name",
+      header: "Nama Lengkap",
     },
     {
       accessorKey: "email",
@@ -43,7 +43,7 @@ export const columns = (props: childProps): ColumnDef<ContactInterface>[] => {
             <Button
               variant="destructive"
               size="sm"
-              onClick={() => navigate(`/member/teams/${original.id}`)}
+              onClick={() => props.delete(original)}
             >
               Hapus
             </Button>
