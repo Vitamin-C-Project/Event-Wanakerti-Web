@@ -15,6 +15,16 @@ export const API_PATH_CONSTANT = {
   },
   CMS: {
     CONTACT_US: {},
+    VIDEO: {
+      SHOW: "cms/video/show",
+      UPDATE: "cms/video/update",
+    },
+    BRAND: {
+      LIST: "cms/brand-and-sponsorship/list",
+      CREATE: "cms/brand-and-sponsorship/create",
+      SHOW: "cms/brand-and-sponsorship/show",
+      DELETE: "cms/brand-and-sponsorship/delete",
+    },
   },
 };
 

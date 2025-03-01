@@ -16,31 +16,18 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
+import Hook from "./hook";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export default function BrandPage() {
-  const brands = [
-    {
-      id: 1,
-      title: "Brand 1",
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      id: 2,
-      title: "Brand 2",
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      id: 3,
-      title: "Brand 3",
-      image: "https://via.placeholder.com/150",
-    },
-  ] as BrandInterface[];
-
-  const [visible, setVisible] = useState({
-    show: false,
-    type: 1,
-    title: "",
-  });
+  const { state, handler } = Hook();
 
   return (
     <DashboardLayout breadcrumbs={[{ title: "Dashboard", href: "/dashboard" }]}>
@@ -48,10 +35,10 @@ export default function BrandPage() {
         <Heading>Brand & Sponsor</Heading>
         <Button
           onClick={() =>
-            setVisible({
+            handler.setVisible({
               show: true,
               type: 1,
-              title: "Tambah Brand Baru",
+              title: "Tambah Brand / Sponsor Baru",
             })
           }
         >
@@ -61,37 +48,79 @@ export default function BrandPage() {
 
       <DataTable
         columns={columns({
-          delete: () => {},
+          delete: handler.handleDelete,
           edit: () => {},
         })}
-        data={brands}
+        data={state.brands}
       />
 
       <Dialog
-        open={visible.show}
-        onOpenChange={() => setVisible({ show: false, title: "", type: 1 })}
+        open={state.visible.show}
+        onOpenChange={() =>
+          handler.setVisible({ show: false, title: "", type: 1 })
+        }
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{visible.title}</DialogTitle>
+            <DialogTitle>{state.visible.title}</DialogTitle>
           </DialogHeader>
-          <div>
-            <Label className="font-semibold">Nama Brand</Label>
-            <Input type="text" />
-          </div>
-          <div>
-            <Label className="font-semibold">Upload Gambar</Label>
-            <Input type="file" />
-          </div>
+          <Form {...state.form}>
+            <form
+              onSubmit={state.form.handleSubmit(handler.handleSubmit)}
+              className="space-y-4"
+            >
+              <FormField
+                control={state.form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="name">Nama Brand / Sponsor</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="name"
+                        type="text"
+                        placeholder=""
+                        {...field}
+                        disabled={state.isLoadingForm}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={state.form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="image">Unggah Gambar</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="image"
+                        type="file"
+                        disabled={state.isLoadingForm}
+                        onChange={(event: any) => {
+                          state.form.setValue("image", event.target.files[0]);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Tutup
-              </Button>
-            </DialogClose>
-            <Button variant="default">Simpan</Button>
-          </DialogFooter>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Tutup
+                  </Button>
+                </DialogClose>
+                <Button variant="default" type="submit">
+                  Simpan
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </DashboardLayout>

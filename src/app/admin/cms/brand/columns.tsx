@@ -1,15 +1,8 @@
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink, buttonVariants } from "@/components/ui/button";
 import { BrandInterface } from "@/interfaces/cms_interface";
+import { cn } from "@/lib/utils";
 import { Flex, Text } from "@radix-ui/themes";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  Check,
-  CheckCheck,
-  CheckCircle,
-  CircleX,
-  Cross,
-  MarsStroke,
-} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 type childProps = {
@@ -22,8 +15,8 @@ export const columns = (props: childProps): ColumnDef<BrandInterface>[] => {
 
   return [
     {
-      accessorKey: "title",
-      header: "Nama Sponsor atau Brand",
+      accessorKey: "name",
+      header: "Nama Brand atau Sponsor",
     },
     {
       id: "actions",
@@ -32,13 +25,19 @@ export const columns = (props: childProps): ColumnDef<BrandInterface>[] => {
 
         return (
           <Flex align="center" gap={"2"}>
-            <Button
-              variant="default"
-              size="sm"
-              className="me-2"
-              onClick={() => navigate(`/member/teams/${original.image}`)}
+            <a
+              href={original.image}
+              target="_blank"
+              className={cn(buttonVariants("default", "default", ""))}
             >
               Lihat Gambar
+            </a>
+            <Button
+              className="ml-3"
+              variant={"destructive"}
+              onClick={() => props.delete(original)}
+            >
+              Hapus
             </Button>
           </Flex>
         );

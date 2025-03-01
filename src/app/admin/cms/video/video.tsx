@@ -11,14 +11,10 @@ import {
 import { Input } from "@/components/ui/input";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { Flex, Heading } from "@radix-ui/themes";
-import { useState } from "react";
+import Hook from "./hook";
 
 export default function VideoPage() {
-  const [visible, setVisible] = useState({
-    show: false,
-    title: "",
-    type: 1,
-  });
+  const { state, handler } = Hook();
 
   return (
     <DashboardLayout breadcrumbs={[{ title: "Dashboard", href: "/dashboard" }]}>
@@ -27,7 +23,7 @@ export default function VideoPage() {
         <Button
           variant="default"
           onClick={() =>
-            setVisible({
+            handler.setVisible({
               show: true,
               title: "Ubah Video",
               type: 1,
@@ -53,12 +49,14 @@ export default function VideoPage() {
       </Card>
 
       <Dialog
-        open={visible.show}
-        onOpenChange={() => setVisible({ show: false, title: "", type: 1 })}
+        open={state.visible.show}
+        onOpenChange={() =>
+          handler.setVisible({ show: false, title: "", type: 1 })
+        }
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{visible.title}</DialogTitle>
+            <DialogTitle>{state.visible.title}</DialogTitle>
           </DialogHeader>
           <Input type="file" />
           <DialogFooter>

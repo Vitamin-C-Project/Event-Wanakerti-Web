@@ -12,7 +12,8 @@ export function cn(...inputs: ClassValue[]) {
 export const generateSignature = async ({ _uri }: { _uri: string }) => {
   const httpMethod = "POST";
   const _time = moment().unix();
-  const pattern = (httpMethod + ":" + _uri + ":" + _time).toUpperCase();
+  let pattern = (httpMethod + ":" + _uri + ":" + _time).toUpperCase();
+  pattern = btoa(pattern);
   const secretKey = import.meta.env.VITE_SECRET_KEY;
 
   const hmacDigest = hmacSHA256(pattern, secretKey).toString();
@@ -34,8 +35,8 @@ export async function postData(
     baseURL: import.meta.env.VITE_API_HOST,
     headers: {
       Authorization: "Bearer " + jsCookie.get("LJJKPW"),
-      signature: signature.signature,
-      timestamp: signature.timestamp,
+      "x-signature": signature.signature,
+      "x-timestamp": signature.timestamp,
       ...header_request,
     },
   });

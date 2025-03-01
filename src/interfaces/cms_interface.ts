@@ -9,7 +9,7 @@ export interface CategoryInterface extends CommonColumn {
 
 export interface BrandInterface extends CommonColumn {
   image: string;
-  title: string;
+  name: string;
 }
 
 export interface ContactInterface extends CommonColumn {
