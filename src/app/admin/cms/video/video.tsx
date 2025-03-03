@@ -12,6 +12,14 @@ import { Input } from "@/components/ui/input";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { Flex, Heading } from "@radix-ui/themes";
 import Hook from "./hook";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export default function VideoPage() {
   const { state, handler } = Hook();
@@ -39,7 +47,7 @@ export default function VideoPage() {
           <iframe
             width="100%"
             height="500"
-            src="https://www.youtube.com/embed/tgbNymZ7vqY"
+            src={state.video?.url}
             title="YouTube video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -58,15 +66,47 @@ export default function VideoPage() {
           <DialogHeader>
             <DialogTitle>{state.visible.title}</DialogTitle>
           </DialogHeader>
-          <Input type="file" />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Tutup
-              </Button>
-            </DialogClose>
-            <Button variant="default">Simpan</Button>
-          </DialogFooter>
+          <Form {...state.form}>
+            <form
+              onSubmit={state.form.handleSubmit(handler.handleSubmit)}
+              className="space-y-4"
+            >
+              <FormField
+                control={state.form.control}
+                name="url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="url">
+                      URL Video <br />
+                      <small className="text-red-600">
+                        (Contoh: https://www.youtube.com/embed/tgbNymZ7vqY,
+                        <strong>hanya youtube</strong>)
+                      </small>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="url"
+                        type="url"
+                        disabled={state.isLoadingForm}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Tutup
+                  </Button>
+                </DialogClose>
+                <Button variant="default" type="submit">
+                  Simpan
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </DashboardLayout>

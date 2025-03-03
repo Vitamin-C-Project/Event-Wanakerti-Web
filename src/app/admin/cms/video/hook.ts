@@ -1,4 +1,6 @@
-import { API_PATH_CONSTANT } from "@/constants/api_constant";
+import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
+import { VideoInterface } from "@/interfaces/cms_interface";
+import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -17,6 +19,7 @@ export default function Hook() {
   });
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
+  const [video, setVideo] = useState<VideoInterface>();
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
@@ -28,7 +31,15 @@ export default function Hook() {
   const handleSubmit = async (data: z.infer<typeof schemaForm>) => {
     setIsLoadingForm(true);
     try {
+      const response = await postData(API_PATH_CONSTANT.CMS.VIDEO.UPDATE, {
+        video_url: data.url,
+      });
+
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      setVisible({ show: false, title: "", type: 1 });
+      getVideo();
     } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
     } finally {
       setIsLoadingForm(false);
     }
@@ -38,8 +49,14 @@ export default function Hook() {
     setIsLoadingData(true);
     try {
       const response = await postData(API_PATH_CONSTANT.CMS.VIDEO.SHOW, {});
-      console.log(response);
+
+      setVideo({
+        url: response.data.data.video_url,
+      });
     } catch (error: any) {
+      setVideo({
+        url: "https://www.youtube.com/embed/tgbNymZ7vqY",
+      });
     } finally {
       setIsLoadingData(false);
     }
@@ -50,7 +67,7 @@ export default function Hook() {
   }, []);
 
   return {
-    state: { visible, form },
+    state: { visible, form, video, isLoadingForm, isLoadingData },
     handler: { setVisible, handleSubmit },
   };
 }

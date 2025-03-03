@@ -17,3 +17,7 @@ export interface ContactInterface extends CommonColumn {
   email: string;
   message: string;
 }
+
+export interface VideoInterface extends CommonColumn {
+  url: string;
+}
