@@ -26,76 +26,18 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@radix-ui/react-label";
 import { Textarea } from "@/components/ui/textarea";
+import Hook from "./hook";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export default function CategoriesPage() {
-  const categories = [
-    {
-      division: {
-        name: "Hiking Penegak Putra",
-        markings: "[]",
-        school_type: { name: "SMK/SMA/MA" },
-        price: "100.000",
-      },
-      description: "Lomba hiking untuk penegak putra",
-      image: "https://soundsfest.com/wp-content/uploads/2024/05/img.png",
-    },
-    {
-      division: {
-        name: "Hiking Penegak Putri",
-        markings: "[]",
-        school_type: { name: "SMK/SMA/MA" },
-        price: "100.000",
-      },
-      description: "Lomba hiking untuk penegak putra",
-      image: "https://soundsfest.com/wp-content/uploads/2024/05/img.png",
-    },
-    {
-      division: {
-        name: "Hiking Penggalang Putra",
-        markings: "[]",
-        school_type: { name: "SMP/MTs" },
-        price: "100.000",
-      },
-      description: "Lomba hiking untuk penegak putra",
-      image: "https://soundsfest.com/wp-content/uploads/2024/05/img.png",
-    },
-    {
-      division: {
-        name: "Hiking Penggalang Putri",
-        markings: "[]",
-        school_type: { name: "SMP/MTs" },
-        price: "100.000",
-      },
-      description: "Lomba hiking untuk penegak putra",
-      image: "https://soundsfest.com/wp-content/uploads/2024/05/img.png",
-    },
-    {
-      division: {
-        name: "LKBBT Penegak",
-        markings: "[]",
-        school_type: { name: "SMK/SMA/MA" },
-        price: "100.000",
-      },
-      description: "Lomba hiking untuk penegak putra",
-      image: "https://soundsfest.com/wp-content/uploads/2024/05/img.png",
-    },
-    {
-      division: {
-        name: "LKBBT Penggalang",
-        markings: "[]",
-        school_type: { name: "SMP/MTs" },
-        price: "100.000",
-      },
-      description: "Lomba hiking untuk penegak putra",
-      image: "https://soundsfest.com/wp-content/uploads/2024/05/img.png",
-    },
-  ] as CategoryInterface[];
-
-  const [visible, setVisible] = useState({
-    show: false,
-    type: 1,
-    title: "",
-  });
+  const { state, handler } = Hook();
 
   return (
     <DashboardLayout breadcrumbs={[{ title: "Dashboard", href: "/dashboard" }]}>
@@ -103,7 +45,7 @@ export default function CategoriesPage() {
         <Heading>Kategori Lomba</Heading>
         <Button
           onClick={() =>
-            setVisible({
+            handler.setVisible({
               show: true,
               type: 1,
               title: "Tambah Kategori Baru",
@@ -116,59 +58,126 @@ export default function CategoriesPage() {
 
       <DataTable
         columns={columns({
-          edit: () =>
-            setVisible({
-              show: true,
-              type: 1,
-              title: "Edit Kategori",
-            }),
-          delete: () => {},
+          edit: handler.handleEdit,
+          delete: handler.handleDelete,
         })}
-        data={categories}
+        data={state.categories}
       />
 
       <Dialog
-        open={visible.show}
-        onOpenChange={() => setVisible({ show: false, title: "", type: 1 })}
+        open={state.visible.show}
+        onOpenChange={() => handler.resetState()}
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{visible.title}</DialogTitle>
+            <DialogTitle>{state.visible.title}</DialogTitle>
           </DialogHeader>
-          <div>
-            <Label className="font-semibold">Divisi</Label>
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Pilih Divisi" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {categories.map((category) => (
-                    <SelectItem value={category.division.name}>
-                      {category.division.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label className="font-semibold">Deskripsi</Label>
-            <Textarea placeholder="Deskripsi" />
-          </div>
-          <div>
-            <Label className="font-semibold">Upload Gambar</Label>
-            <Input type="file" />
-          </div>
+          <Form {...state.form}>
+            <form
+              className="space-y-4"
+              onSubmit={
+                state.visible.type == 1
+                  ? state.form.handleSubmit(handler.handleSubmit)
+                  : state.form.handleSubmit(handler.handleUpdate)
+              }
+            >
+              <FormField
+                control={state.form.control}
+                name="division_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="url">Divisi</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => field.onChange(value)}
+                        disabled={state.isLoadingForm}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={
+                              state.visible.type == 1
+                                ? field.value || "Pilih Divisi"
+                                : state.category?.division?.name ||
+                                  "Pilih Divisi"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {state.disivions.map((division) => (
+                              <SelectItem value={division.id?.toString()}>
+                                {division.name}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={state.form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="description">Deskripsi</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Deskripsi"
+                        {...field}
+                        disabled={state.isLoadingForm}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={state.form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="image">Upload Gambar</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        disabled={state.isLoadingForm}
+                        onChange={(event: any) => {
+                          field.onChange(event.target.files[0]);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Tutup
-              </Button>
-            </DialogClose>
-            <Button variant="default">Simpan</Button>
-          </DialogFooter>
+              {state.visible.type == 2 && (
+                <img
+                  src={state.category?.image}
+                  alt={state.category?.division?.name}
+                  className="w-full"
+                />
+              )}
+
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => handler.resetState()}
+                  >
+                    Tutup
+                  </Button>
+                </DialogClose>
+                <Button variant="default" type="submit">
+                  Simpan
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </DashboardLayout>

@@ -1,0 +1,194 @@
+import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
+import { CategoryInterface } from "@/interfaces/cms_interface";
+import { DivisionInterface } from "@/interfaces/division_interface";
+import { toastRender } from "@/lib/alert";
+import { formatCurrency, postData } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
+import { z } from "zod";
+
+const schemaForm = z.object({
+  description: z.string().min(3).max(100),
+  division_id: z.string(),
+  image: z
+    .instanceof(File, {
+      message: "Image is requires",
+    })
+    .refine(
+      (file) => ["image/jpg", "image/jpeg", "image/png"].includes(file.type),
+      { message: "Image type not allowed" }
+    )
+    .optional()
+    .transform((file) => (file ? file : {})),
+});
+
+export default function Hook() {
+  const [categories, setCategories] = useState<CategoryInterface[]>([]);
+  const [category, setCategory] = useState<CategoryInterface>();
+  const [disivions, setDivisions] = useState<DivisionInterface[]>([]);
+
+  const form = useForm<z.infer<typeof schemaForm>>({
+    resolver: zodResolver(schemaForm),
+    defaultValues: {
+      description: "",
+      division_id: "",
+      image: {},
+    },
+  });
+
+  const [visible, setVisible] = useState({
+    show: false,
+    type: 1,
+    title: "",
+  });
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+
+  const getCategories = async () => {
+    setIsLoadingData(true);
+    try {
+      const response = await postData(API_PATH_CONSTANT.CMS.CATEGORY.LIST, {
+        ...pagination,
+      });
+      setCategories(response.data.data);
+    } catch (error: any) {
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
+  const getDivisions = async () => {
+    try {
+      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {});
+      setDivisions(response.data.data);
+    } catch (error: any) {}
+  };
+
+  const handleSubmit = async (data: z.infer<typeof schemaForm>) => {
+    setIsLoadingForm(true);
+    try {
+      const response = await postData(
+        API_PATH_CONSTANT.CMS.CATEGORY.CREATE,
+        {
+          name: data.description,
+          ...data,
+        },
+        {
+          "Content-Type": "multipart/form-data",
+        }
+      );
+
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      resetState();
+      getCategories();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingForm(false);
+    }
+  };
+
+  const handleEdit = (data: CategoryInterface) => {
+    setCategory(data);
+    form.reset({
+      description: data.description,
+      division_id: data.division.id?.toString(),
+    });
+    setVisible({
+      show: true,
+      title: `Edit Kategori ${data.division.name}`,
+      type: 2,
+    });
+  };
+
+  const handleUpdate = async (data: z.infer<typeof schemaForm>) => {
+    setIsLoadingForm(true);
+    try {
+      const response = await postData(
+        API_PATH_CONSTANT.CMS.CATEGORY.UPDATE,
+        {
+          name: data.description,
+          ...data,
+          uid: category?.id,
+        },
+        {
+          "Content-Type": "multipart/form-data",
+        }
+      );
+
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      resetState();
+      getCategories();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingForm(false);
+    }
+  };
+
+  const handleDelete = (data: CategoryInterface) => {
+    Swal.fire({
+      title: "Apa kamu yakin?",
+      text: "Anda tidak akan dapat mengembalikannya!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, dihapus!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await postData(API_PATH_CONSTANT.CMS.CATEGORY.DELETE, {
+          uid: data?.id,
+        });
+
+        toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+
+        getCategories();
+      }
+    });
+  };
+
+  const resetState = () => {
+    setVisible({ show: false, title: "", type: 1 });
+    form.reset({
+      description: "",
+      division_id: "",
+      image: {},
+    });
+    setCategory(undefined);
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, [pagination]);
+
+  useEffect(() => {
+    getDivisions();
+  }, []);
+
+  return {
+    state: {
+      categories,
+      visible,
+      pagination,
+      isLoadingForm,
+      isLoadingData,
+      disivions,
+      form,
+      category,
+    },
+    handler: {
+      setVisible,
+      setPagination,
+      handleSubmit,
+      resetState,
+      formatCurrency,
+      handleEdit,
+      handleUpdate,
+      handleDelete,
+    },
+  };
+}

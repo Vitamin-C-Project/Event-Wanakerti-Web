@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { CategoryInterface } from "@/interfaces/cms_interface";
+import { formatCurrency } from "@/lib/utils";
 import { Flex, Text } from "@radix-ui/themes";
 import { ColumnDef } from "@tanstack/react-table";
 import {
@@ -10,6 +11,7 @@ import {
   Cross,
   MarsStroke,
 } from "lucide-react";
+import { format } from "path";
 import { Link, useNavigate } from "react-router-dom";
 
 type childProps = {
@@ -33,6 +35,15 @@ export const columns = (props: childProps): ColumnDef<CategoryInterface>[] => {
     {
       accessorKey: "division.price",
       header: "Harga Pendaftaran",
+      cell: ({ row }) => {
+        const original = row.original;
+
+        return (
+          <Text className="font-bold">
+            {formatCurrency(Number(original.division.price))}
+          </Text>
+        );
+      },
     },
     {
       accessorKey: "description",
@@ -45,14 +56,15 @@ export const columns = (props: childProps): ColumnDef<CategoryInterface>[] => {
 
         return (
           <Flex align="center" gap={"2"}>
-            <Button
+            <ButtonLink
               variant="default"
               size="sm"
               className="me-2"
-              onClick={() => navigate(`/member/teams/${original.image}`)}
+              to={original.image}
+              target="_blank"
             >
               Lihat Gambar
-            </Button>
+            </ButtonLink>
             <Button
               variant="secondary"
               size="sm"

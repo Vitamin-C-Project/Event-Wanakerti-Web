@@ -13,6 +13,13 @@ export const API_PATH_CONSTANT = {
     DELETE: "user/delete",
     UPDATE_PASSWORD: "user/update-password",
   },
+  DIVISION: {
+    LIST: "division/list",
+    CREATE: "division/create",
+    SHOW: "division/show",
+    UPDATE: "division/update",
+    DELETE: "division/delete",
+  },
   CMS: {
     CONTACT_US: {
       LIST: "cms/contact-us/list",
@@ -29,6 +36,13 @@ export const API_PATH_CONSTANT = {
       CREATE: "cms/brand-and-sponsorship/create",
       SHOW: "cms/brand-and-sponsorship/show",
       DELETE: "cms/brand-and-sponsorship/delete",
+    },
+    CATEGORY: {
+      LIST: "cms/category/list",
+      CREATE: "cms/category/create",
+      SHOW: "cms/category/show",
+      UPDATE: "cms/category/update",
+      DELETE: "cms/category/delete",
     },
   },
 };
