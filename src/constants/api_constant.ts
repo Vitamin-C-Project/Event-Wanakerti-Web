@@ -48,6 +48,18 @@ export const API_PATH_CONSTANT = {
       SHOW: "cms/agenda/show",
       UPDATE: "cms/agenda/update",
     },
+    MASCOT: {
+      UPDATE: "cms/mascot-and-logo/update-mascot",
+      SHOW: "cms/mascot-and-logo/show-mascot",
+    },
+    LOGO: {
+      UPDATE: "cms/mascot-and-logo/update-logo",
+      SHOW: "cms/mascot-and-logo/show-logo",
+    },
+    ACTIVITY: {
+      UPDATE: "cms/mascot-and-logo/update-activity",
+      SHOW: "cms/mascot-and-logo/show-activity",
+    },
   },
 };
 
