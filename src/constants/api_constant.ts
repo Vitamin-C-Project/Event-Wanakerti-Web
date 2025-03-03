@@ -44,6 +44,10 @@ export const API_PATH_CONSTANT = {
       UPDATE: "cms/category/update",
       DELETE: "cms/category/delete",
     },
+    AGENDA: {
+      SHOW: "cms/agenda/show",
+      UPDATE: "cms/agenda/update",
+    },
   },
 };
 

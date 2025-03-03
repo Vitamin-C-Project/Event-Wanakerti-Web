@@ -54,3 +54,7 @@ export const formatCurrency = (value: number) => {
   });
   return formatter.format(value);
 };
+
+export const formatDateYMD = (date: Date) => {
+  return date.toISOString().split("T")[0];
+};

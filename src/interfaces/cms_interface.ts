@@ -21,3 +21,8 @@ export interface ContactInterface extends CommonColumn {
 export interface VideoInterface extends CommonColumn {
   url: string;
 }
+
+export interface AgendaInterface extends CommonColumn {
+  name: string;
+  date: string;
+}
