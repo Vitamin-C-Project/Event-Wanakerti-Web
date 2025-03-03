@@ -21,6 +21,7 @@ export const API_PATH_CONSTANT = {
     DELETE: "division/delete",
   },
   CMS: {
+    ALL_CONTENT: "cms/contents",
     CONTACT_US: {
       LIST: "cms/contact-us/list",
       CREATE: "cms/contact-us/create",

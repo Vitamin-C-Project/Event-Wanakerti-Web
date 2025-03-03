@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import MaskotPng from "@/assets/img/maskot.png";
+import moment from "moment";
+import { AGENDA_NAME } from "@/constants/global_constant";
+import "moment/locale/id";
 
-export default function Hero() {
+export default function Hero({ contents }: { contents: any }) {
   const [timeRemaining, setTimeRemaining] = useState({
     days: 0,
     hours: 0,
@@ -9,8 +12,33 @@ export default function Hero() {
     seconds: 0,
   });
 
+  const [targetDate, setTargetDate] = useState<Date | null>(
+    new Date("2025-03-31 00:00:00")
+  );
+
   useEffect(() => {
-    const targetDate = new Date("2025-07-27T00:00:00");
+    if (contents.activities?.length > 0) {
+      const activity = contents.activities.find(
+        (item: any) => item.name === AGENDA_NAME.ACTIVITY
+      );
+
+      if (activity && activity.date) {
+        const parsedDate = new Date(activity.date);
+        if (!isNaN(parsedDate.getTime())) {
+          setTargetDate(parsedDate);
+        } else {
+          setTargetDate(new Date("2025-03-31 00:00:00")); // Fallback
+        }
+      } else {
+        setTargetDate(new Date("2025-03-31 00:00:00")); // Fallback
+      }
+    } else {
+      setTargetDate(new Date("2025-03-31 00:00:00")); // Fallback
+    }
+  }, [contents]);
+
+  useEffect(() => {
+    if (!targetDate) return;
 
     const updateCountdown = () => {
       const now = new Date();
@@ -60,17 +88,37 @@ export default function Hero() {
       <div className="container mx-auto px-4 pt-16 pb-24 text-center relative z-10">
         <div className="max-w-3xl mx-auto uppercase">
           <h1 className="text-xl md:text-3xl font-bold font-display mb-4 ">
-            Lomba Jelagah Jagat & Kreatifitas <br /> Pramuka Wanakerti <br />{" "}
-            2025
+            <div
+              dangerouslySetInnerHTML={{
+                __html: contents.theme
+                  ? contents.theme.full_title
+                  : "Lomba Jelagah Jagat & Kreatifitas <br /> Pramuka Wanakerti <br /> 2025",
+              }}
+            />
           </h1>
           <center>
-            <img src={MaskotPng} alt="" style={{ height: "30%" }} />
+            <img
+              src={contents.theme ? contents.theme.mascot : MaskotPng}
+              onError={(e: any) => (e.target.src = MaskotPng)}
+              alt=""
+              style={{ height: "30%" }}
+            />
           </center>
-          <h1 className="font-bold text-3xl mb-5">27 - 28 Juli 2025</h1>
+          <h1 className="font-bold text-3xl mb-5">
+            {contents.activities?.length > 0
+              ? moment(
+                  contents.activities.filter(
+                    (item: any) => item.name == AGENDA_NAME.ACTIVITY
+                  )[0].date
+                )
+                  .locale("id")
+                  .format("DD MMMM YYYY")
+              : "27 - 28 Juli 2025"}
+          </h1>
           <p className="text-xl md:text-1xl mb-6 uppercase">
-            SMK Negeri 1 Losarang
-            <br />
-            Indramayu
+            {contents.theme
+              ? contents.theme.location
+              : "SMK Negeri 1 Losarang Indramayu"}
           </p>
 
           {/* Countdown */}
@@ -81,25 +129,25 @@ export default function Hero() {
                 <div className="text-2xl font-bold">
                   {formatNumber(timeRemaining.days)}
                 </div>
-                <div className="text-xs">DAYS</div>
+                <div className="text-xs">HARI</div>
               </div>
               <div className="bg-white rounded-lg p-3 w-16">
                 <div className="text-2xl font-bold">
                   {formatNumber(timeRemaining.hours)}
                 </div>
-                <div className="text-xs">HOURS</div>
+                <div className="text-xs">JAM</div>
               </div>
               <div className="bg-white rounded-lg p-3 w-16">
                 <div className="text-2xl font-bold">
                   {formatNumber(timeRemaining.minutes)}
                 </div>
-                <div className="text-xs">MINS</div>
+                <div className="text-xs">MENIT</div>
               </div>
               <div className="bg-white rounded-lg p-3 w-16">
                 <div className="text-2xl font-bold">
                   {formatNumber(timeRemaining.seconds)}
                 </div>
-                <div className="text-xs">SECS</div>
+                <div className="text-xs">DETIK</div>
               </div>
             </div>
           </div>

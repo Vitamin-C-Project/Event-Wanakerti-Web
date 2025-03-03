@@ -9,15 +9,18 @@ import Footer from "./(components)/footer";
 
 import "./App.css";
 import ContactUs from "./(components)/contact/contact-us";
+import Hook from "./(components)/hook";
 
 function App() {
+  const { state, handler } = Hook();
+
   return (
     <div className="font-manrope">
       {/* Fixed Navigation */}
       <Nav />
 
       {/* Hero Section */}
-      <Hero />
+      <Hero contents={state.contents} />
 
       {/* Lineup Section */}
       <LineUp />
