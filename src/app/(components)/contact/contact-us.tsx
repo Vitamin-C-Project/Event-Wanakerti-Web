@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-export default function ContactUs() {
+export default function ContactUs({ contents }: { contents: any }) {
   const { handler, state } = Hook();
 
   return (
@@ -108,8 +108,18 @@ export default function ContactUs() {
 
       <div className="absolute bottom-2 right-20 max-w-xs">
         <div className="flex">
-          <img src={MaskotPng} alt="" style={{ height: 150 }} />
-          <img src={LogoPng} alt="" style={{ height: 150 }} />
+          <img
+            src={contents.theme ? contents.theme.mascot : MaskotPng}
+            onError={(e: any) => (e.target.src = MaskotPng)}
+            alt=""
+            style={{ height: 150 }}
+          />
+          <img
+            src={contents.theme ? contents.theme.logo : LogoPng}
+            onError={(e: any) => (e.target.src = LogoPng)}
+            alt=""
+            style={{ height: 150 }}
+          />
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/autoplay";
 
-export default function Sponsor() {
+export default function Sponsor({ contents }: { contents: any }) {
   return (
     <div className="bg-yellow-300 w-full px-5 py-16">
       <div className="container mx-auto px-4">
@@ -35,13 +35,9 @@ export default function Sponsor() {
           autoplay
           loop
         >
-          {[...Array(20)].map((_, i) => (
-            <SwiperSlide key={i}>
-              <img
-                src={`https://hakim-asrori.github.io/assets/web-acteeve.37a06fae.png`}
-                alt=""
-                style={{ height: 100 }}
-              />
+          {contents?.brands?.map((brand: any) => (
+            <SwiperSlide key={brand.image}>
+              <img src={brand.image} alt="" style={{ height: 100 }} />
             </SwiperSlide>
           ))}
         </Swiper>

@@ -1,6 +1,7 @@
+import { formatCurrency } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
-export default function Ticket() {
+export default function Ticket({ contents }: { contents: any }) {
   return (
     <div id="tickets" className="py-16 bg-yellow-300 relative overflow-hidden">
       <div className="absolute top-10 left-10 text-white text-4xl opacity-30">
@@ -20,39 +21,18 @@ export default function Ticket() {
           rasakan pengalaman kompetisi yang tak terlupakan!
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {/* Standard Registration */}
-          <div className="card bg-green-100 shadow-xl overflow-hidden relative">
-            <div className="absolute -left-6 top-1/2 -rotate-90 transform origin-center bg-green-200 px-4 py-1 font-bold text-sm">
-              STANDARD
+          {contents?.categories?.map((category: any) => (
+            <div className="card bg-green-100 shadow-xl overflow-hidden relative">
+              <div className="card-body items-center text-center pt-12">
+                <h3 className="card-title text-xl mb-2">{category.name}</h3>
+                <p className="text-3xl font-bold mb-4">
+                  {formatCurrency(category.price)}
+                </p>
+              </div>
             </div>
-            <div className="card-body items-center text-center pt-12">
-              <h3 className="card-title text-xl mb-2">Standard Access</h3>
-              <p className="text-3xl font-bold mb-4">IDR 150K</p>
-              <ul className="mb-4 text-left">
-                <li>• General admission</li>
-                <li>• Access to main stage</li>
-                <li>• Food court access</li>
-              </ul>
-            </div>
-          </div>
-
-          {/* VIP Registration */}
-          <div className="card bg-green-100 shadow-xl overflow-hidden relative">
-            <div className="absolute -right-6 top-1/2 rotate-90 transform origin-center bg-green-200 px-4 py-1 font-bold text-sm">
-              PREMIUM
-            </div>
-            <div className="card-body items-center text-center pt-12">
-              <h3 className="card-title text-xl mb-2">VIP Experience</h3>
-              <p className="text-3xl font-bold mb-4">IDR 300K</p>
-              <ul className="mb-4 text-left">
-                <li>• Priority entrance</li>
-                <li>• VIP viewing area</li>
-                <li>• Exclusive merchandise</li>
-                <li>• Meet & greet opportunity</li>
-              </ul>
-            </div>
-          </div>
+          ))}
         </div>
 
         <div className="text-center mt-10">

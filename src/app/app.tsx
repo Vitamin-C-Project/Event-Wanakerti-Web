@@ -23,22 +23,22 @@ function App() {
       <Hero contents={state.contents} />
 
       {/* Lineup Section */}
-      <LineUp />
+      <LineUp contents={state.contents} />
 
       {/* Video Section */}
-      <Video />
+      <Video contents={state.contents} />
 
       {/* Tickets Section */}
-      <Ticket />
+      <Ticket contents={state.contents} />
 
       {/* Sponsors Section */}
-      <Sponsor />
+      <Sponsor contents={state.contents} />
 
       {/* Contact Section */}
-      <ContactUs />
+      <ContactUs contents={state.contents} />
 
       {/* Footer */}
-      <Footer />
+      <Footer contents={state.contents} />
     </div>
   );
 }

@@ -63,7 +63,7 @@ export default function Hero({ contents }: { contents: any }) {
     const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [targetDate]);
 
   const formatNumber = (num: number) => {
     return num.toString().padStart(2, "0");

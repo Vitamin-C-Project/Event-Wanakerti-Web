@@ -1,6 +1,6 @@
 import { Play } from "lucide-react";
 
-export default function Video() {
+export default function Video({ contents }: { contents: any }) {
   return (
     <div
       id="festival"
@@ -27,7 +27,12 @@ export default function Video() {
           <div className="absolute inset-0 flex items-center justify-center">
             <button
               className="btn btn-circle btn-lg bg-white bg-opacity-70 hover:bg-opacity-90"
-              onClick={() => document.getElementById("my_modal_1").showModal()}
+              onClick={() => {
+                const modal = document.getElementById("my_modal_1");
+                if (modal) {
+                  (modal as HTMLDialogElement).showModal();
+                }
+              }}
             >
               <Play size={32} className="text-yellow-600" />
             </button>
@@ -40,7 +45,7 @@ export default function Video() {
           <iframe
             width="100%"
             height="90%"
-            src="https://www.youtube.com/embed/qxcxb_lJDfA?si=xchlTs3mJXY9Pe5O"
+            src={contents?.video}
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerPolicy="strict-origin-when-cross-origin"
