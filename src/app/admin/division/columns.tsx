@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DivisionInterface } from "@/interfaces/division_interface";
+import { formatCurrency } from "@/lib/utils";
 import { Flex } from "@radix-ui/themes";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -17,6 +18,15 @@ export const columns = (props: childProps): ColumnDef<DivisionInterface>[] => {
     {
       accessorKey: "school_type.name",
       header: "Tipe Divisi",
+    },
+    {
+      accessorKey: "price",
+      header: "Harga",
+      cell: ({ row }) => {
+        const original = row.original;
+
+        return formatCurrency(Number(original.price));
+      },
     },
     {
       id: "actions",

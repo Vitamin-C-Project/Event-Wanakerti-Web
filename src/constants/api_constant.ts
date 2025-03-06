@@ -13,6 +13,13 @@ export const API_PATH_CONSTANT = {
       UPDATE: "participant/school/update",
       DELETE: "participant/school/delete",
     },
+    TEAM: {
+      LIST: "participant/team/list",
+      CREATE: "participant/team/create",
+      SHOW: "participant/team/show",
+      UPDATE: "participant/team/update",
+      DELETE: "participant/team/delete",
+    },
   },
   USER: {
     LIST: "user/list",

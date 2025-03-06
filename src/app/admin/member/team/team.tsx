@@ -7,6 +7,7 @@ import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -67,9 +68,7 @@ export default function TeamPage() {
 
       <Dialog
         open={state.visible.show}
-        onOpenChange={() =>
-          handler.setVisible({ show: false, title: "", type: 1 })
-        }
+        onOpenChange={() => handler.resetState()}
       >
         <DialogContent
           onInteractOutside={(e) => e.preventDefault()}
@@ -82,7 +81,11 @@ export default function TeamPage() {
           <Form {...state.form}>
             <form
               className={cn("flex flex-col gap-5")}
-              onSubmit={state.form.handleSubmit(handler.handleSubmit)}
+              onSubmit={
+                state.visible.type == 1
+                  ? state.form.handleSubmit(handler.handleSubmit)
+                  : state.form.handleSubmit(handler.handleUpdate)
+              }
             >
               {state.location.pathname.includes("/dashboard/member/teams") && (
                 <FormField
@@ -93,17 +96,24 @@ export default function TeamPage() {
                       <FormLabel htmlFor="school">Asal Pangkalan</FormLabel>
                       <FormControl>
                         <Popover
-                          open={state.openCombobox}
-                          onOpenChange={() => handler.setOpenCombobox(true)}
+                          open={state.openComboboxSchool}
+                          onOpenChange={() =>
+                            handler.setOpenComboboxSchool(true)
+                          }
                         >
-                          <PopoverTrigger asChild>
+                          <PopoverTrigger
+                            asChild
+                            disabled={state.isLoadingForm}
+                          >
                             <Button
                               variant="outline"
                               role="combobox"
-                              aria-expanded={state.openCombobox}
+                              aria-expanded={state.openComboboxSchool}
                               className="justify-between"
                             >
-                              Cari pangkalan...
+                              {state.school
+                                ? state.school.name
+                                : "Cari pangkalan..."}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </PopoverTrigger>
@@ -115,16 +125,15 @@ export default function TeamPage() {
                                   pangkalan tidak ditemukan.
                                 </CommandEmpty>
                                 <CommandGroup>
-                                  {[
-                                    "SMKN 1 Losarang",
-                                    "SMPN 1 Losarang",
-                                    "MTsN 1 Losarang",
-                                  ].map((framework) => (
+                                  {state.schools.map((school) => (
                                     <CommandItem
-                                      key={framework}
-                                      value={framework}
+                                      key={school.id}
+                                      value={school.id?.toString()}
                                       onSelect={(currentValue) => {
-                                        handler.setOpenCombobox(false);
+                                        handler.setOpenComboboxSchool(false);
+                                        field.onChange(currentValue);
+                                        handler.setSchool(school);
+                                        handler.getDivisions(school);
                                       }}
                                     >
                                       <Check
@@ -133,7 +142,7 @@ export default function TeamPage() {
                                           "opacity-0"
                                         )}
                                       />
-                                      {framework}
+                                      {school.name}
                                     </CommandItem>
                                   ))}
                                 </CommandGroup>
@@ -148,70 +157,79 @@ export default function TeamPage() {
                 />
               )}
 
-              <FormField
-                control={state.form.control}
-                name="division"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="participant_school_type">
-                      Tingkat Pangkalan
-                    </FormLabel>
-                    <FormControl>
-                      <Popover
-                        open={state.openCombobox}
-                        onOpenChange={() => handler.setOpenCombobox(true)}
-                      >
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={state.openCombobox}
-                            className="justify-between"
+              {state.visible.type == 1 && (
+                <FormField
+                  control={state.form.control}
+                  name="division"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="participant_school_type">
+                        Bidang Lomba
+                      </FormLabel>
+                      <FormControl>
+                        <Popover
+                          open={state.openComboboxDivision}
+                          onOpenChange={() =>
+                            handler.setOpenComboboxDivision(true)
+                          }
+                        >
+                          <PopoverTrigger
+                            asChild
+                            disabled={
+                              state.form.getValues("school").length < 1 ||
+                              state.isLoadingForm
+                            }
                           >
-                            Cari tingkat...
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="p-0">
-                          <Command>
-                            <CommandInput placeholder="Cari tingkat..." />
-                            <CommandList>
-                              <CommandEmpty>
-                                tingkat tidak ditemukan.
-                              </CommandEmpty>
-                              <CommandGroup>
-                                {[
-                                  "Hiking Penegak Putra",
-                                  "Hiking Penegak Putri",
-                                  "Hiking Penggalang Putra",
-                                  "Hiking Penggalang Putri",
-                                ].map((framework) => (
-                                  <CommandItem
-                                    key={framework}
-                                    value={framework}
-                                    onSelect={(currentValue) => {
-                                      handler.setOpenCombobox(false);
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "mr-2 h-4 w-4",
-                                        "opacity-0"
-                                      )}
-                                    />
-                                    {framework}
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={state.openComboboxDivision}
+                              className="justify-between"
+                            >
+                              {state.division
+                                ? state.division.name
+                                : "Cari bidang..."}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="p-0">
+                            <Command>
+                              <CommandInput placeholder="Cari bidang..." />
+                              <CommandList>
+                                <CommandEmpty>
+                                  bidang tidak ditemukan.
+                                </CommandEmpty>
+                                <CommandGroup>
+                                  {state.divisions.map((division) => (
+                                    <CommandItem
+                                      key={division.id}
+                                      value={division.id?.toString()}
+                                      onSelect={(currentValue) => {
+                                        handler.setOpenComboboxDivision(false);
+                                        field.onChange(currentValue);
+                                        handler.setDivision(division);
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          "opacity-0"
+                                        )}
+                                      />
+                                      {division.name}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
               <FormField
                 control={state.form.control}
                 name="name"
@@ -240,9 +258,9 @@ export default function TeamPage() {
                     <FormLabel htmlFor="status">Status Keikutsertaan</FormLabel>
                     <FormControl>
                       <Switch
+                        disabled={state.isLoadingForm}
                         checked={field.value}
                         {...handler.register("status")}
-                        {...field}
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
@@ -261,9 +279,9 @@ export default function TeamPage() {
                     </FormLabel>
                     <FormControl>
                       <Switch
+                        disabled={state.isLoadingForm}
                         checked={field.value}
                         {...handler.register("payment_status")}
-                        {...field}
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
@@ -272,15 +290,15 @@ export default function TeamPage() {
                 )}
               />
               <DialogFooter>
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    handler.setVisible({ show: false, title: "", type: 1 })
-                  }
-                  size="sm"
-                >
-                  Batal
-                </Button>
+                <DialogClose asChild>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handler.resetState()}
+                    size="sm"
+                  >
+                    Batal
+                  </Button>
+                </DialogClose>
                 <Button size="sm" type="submit">
                   Simpan
                 </Button>

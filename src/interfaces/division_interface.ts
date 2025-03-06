@@ -4,6 +4,7 @@ export interface DivisionInterface extends CommonColumn {
   school_type?: SchoolTypeInterface;
   name: string;
   markings: Array<string>;
+  price: number;
 }
 
 export interface SchoolTypeInterface extends CommonColumn {

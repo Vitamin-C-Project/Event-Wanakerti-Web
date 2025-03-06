@@ -1,15 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { ParticipantTeamInterface } from "@/interfaces/participant_interface";
 import { Flex, Text } from "@radix-ui/themes";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  Check,
-  CheckCheck,
-  CheckCircle,
-  CircleX,
-  Cross,
-  MarsStroke,
-} from "lucide-react";
+import { CheckCircle, CircleX } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 type childProps = {
@@ -52,21 +46,25 @@ export const columns = (
       cell: ({ row }) => {
         const original = row.original;
 
-        return original.payment_status && original.status
-          ? "Lunas"
-          : "Belum Lunas";
+        return original.payment_status ? (
+          <CheckCircle className="text-green-500" />
+        ) : (
+          <CircleX className="text-red-500" />
+        );
       },
     },
     {
-      id: "registration_status",
+      id: "re_registration_status",
       header: "Status Registrasi Ulang",
       cell: ({ row }) => {
         const original = row.original;
 
-        return original.payment_status && original.status ? (
-          <CheckCircle />
+        return original.re_registration_status ? (
+          <CheckCircle className="text-green-500" />
         ) : (
-          <CircleX />
+          <Flex align={"center"} gap={"3"}>
+            <Switch /> <CircleX className="text-red-500 ms-2" />
+          </Flex>
         );
       },
     },

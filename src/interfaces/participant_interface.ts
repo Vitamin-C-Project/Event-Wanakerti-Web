@@ -12,6 +12,7 @@ export interface ParticipantSchoolInterface extends CommonColumn {
   email: string;
   lkbbt_count: number;
   hiking_count: number;
+  school_type_id: number;
 }
 
 export interface ParticipantTeamInterface extends CommonColumn {
@@ -21,6 +22,7 @@ export interface ParticipantTeamInterface extends CommonColumn {
   code: string;
   status: number;
   payment_status: number;
+  re_registration_status: number;
 }
 
 export interface ParticipantMemberInterface extends CommonColumn {

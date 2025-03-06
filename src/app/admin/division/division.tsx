@@ -168,6 +168,25 @@ export default function DivisionPage() {
               />
               <FormField
                 control={state.form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="price">Harga Lomba</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="price"
+                        type="text"
+                        pattern="[0-9]*"
+                        {...field}
+                        disabled={state.isLoadingForm}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={state.form.control}
                 name="markings"
                 render={() => (
                   <FormItem>

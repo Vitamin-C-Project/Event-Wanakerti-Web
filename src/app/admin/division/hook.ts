@@ -15,6 +15,7 @@ const schemaForm = z.object({
   name: z.string().min(3).max(100),
   school_type: z.string(),
   markings: z.array(z.string()),
+  price: z.string().min(3).max(11),
 });
 
 export default function Hook() {
@@ -33,6 +34,7 @@ export default function Hook() {
       name: "",
       school_type: "",
       markings: [],
+      price: "",
     },
   });
 
@@ -80,6 +82,7 @@ export default function Hook() {
       name: data.name,
       school_type: data.school_type?.id?.toString(),
       markings: data.markings,
+      price: data.price.toString(),
     });
     setVisible({ show: true, title: `Edit ${data.name}`, type: 2 });
   };
