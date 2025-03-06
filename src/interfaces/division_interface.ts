@@ -3,8 +3,7 @@ import { CommonColumn } from "./common";
 export interface DivisionInterface extends CommonColumn {
   school_type?: SchoolTypeInterface;
   name: string;
-  markings: string;
-  price: string;
+  markings: Array<string>;
 }
 
 export interface SchoolTypeInterface extends CommonColumn {

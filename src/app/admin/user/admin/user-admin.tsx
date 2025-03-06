@@ -7,6 +7,7 @@ import { Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -141,13 +142,15 @@ export default function UserAdminPage() {
                 />
               )}
               <DialogFooter className="justify-content-between">
-                <Button
-                  variant="secondary"
-                  onClick={() => handler.resetState()}
-                  size="sm"
-                >
-                  Batal
-                </Button>
+                <DialogClose asChild>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handler.resetState()}
+                    size="sm"
+                  >
+                    Batal
+                  </Button>
+                </DialogClose>
                 <Button color="primary" size="sm" type="submit">
                   Simpan
                 </Button>

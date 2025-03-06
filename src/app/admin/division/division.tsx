@@ -11,11 +11,12 @@ import Hook from "./hook";
 import { Input } from "@/components/ui/input";
 import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Plus, X } from "lucide-react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { DataTable } from "./data-table";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -71,9 +72,7 @@ export default function DivisionPage() {
 
       <Dialog
         open={state.visible.show}
-        onOpenChange={() =>
-          handler.setVisible({ show: false, title: "", type: 1 })
-        }
+        onOpenChange={() => handler.resetState()}
       >
         <DialogContent>
           <DialogHeader>
@@ -81,7 +80,11 @@ export default function DivisionPage() {
           </DialogHeader>
           <Form {...state.form}>
             <form
-              onSubmit={state.form.handleSubmit(handler.handleSubmit)}
+              onSubmit={
+                state.visible.type == 1
+                  ? state.form.handleSubmit(handler.handleSubmit)
+                  : state.form.handleSubmit(handler.handleUpdate)
+              }
               className="space-y-4"
             >
               <FormField
@@ -114,33 +117,40 @@ export default function DivisionPage() {
                         open={state.openCombobox}
                         onOpenChange={handler.setOpenCombobox}
                       >
-                        <PopoverTrigger asChild>
+                        <PopoverTrigger asChild disabled={state.isLoadingForm}>
                           <Button
                             variant="outline"
                             role="combobox"
                             aria-expanded={state.openCombobox}
                             className=" justify-between"
                           >
-                            {"Pilih Bidang"}
+                            {field.value
+                              ? state.schoolTypes[Number(field.value) - 1].VALUE
+                              : "Pilih Bidang"}
                             <ChevronsUpDown className="opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className=" p-0">
                           <Command>
                             <CommandInput
-                              placeholder="Search framework..."
+                              placeholder="Cari no bidang..."
                               className="h-9"
                             />
                             <CommandList>
-                              <CommandEmpty>No framework found.</CommandEmpty>
+                              <CommandEmpty>
+                                Bidang tidak tersedia.
+                              </CommandEmpty>
                               <CommandGroup>
                                 {state.schoolTypes.map((type) => (
                                   <CommandItem
-                                    key={type.VALUE}
-                                    value={type.VALUE}
-                                    onSelect={(currentValue) => {}}
+                                    key={type.KEY}
+                                    value={type.KEY.toString()}
+                                    onSelect={(currentValue) => {
+                                      field.onChange(currentValue);
+                                      handler.setOpenCombobox(false);
+                                    }}
                                   >
-                                    {type.VALUE}
+                                    {type.KEY}). {type.VALUE}
                                     <Check
                                       className={cn("ml-auto", "opacity-0")}
                                     />
@@ -151,25 +161,6 @@ export default function DivisionPage() {
                           </Command>
                         </PopoverContent>
                       </Popover>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={state.form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="price">Harga Bidang</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="price"
-                        type="text"
-                        placeholder=""
-                        {...field}
-                        disabled={state.isLoadingForm}
-                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -198,14 +189,18 @@ export default function DivisionPage() {
                                     `markings.${index}` as const
                                   )}
                                   placeholder={`Penilaian ${index + 1}`}
+                                  disabled={state.isLoadingForm}
                                 />
 
-                                <i
-                                  className="uil-times-circle fs-3 text-danger cursor-pointer"
+                                <X
+                                  className=" text-red-600 cursor-pointer ms-3"
+                                  display={
+                                    state.isLoadingForm ? "none" : "block"
+                                  }
                                   onClick={() =>
                                     state.formMarking.remove(index)
                                   }
-                                ></i>
+                                />
                               </Flex>
                             );
                           }
@@ -213,6 +208,7 @@ export default function DivisionPage() {
                         <Button
                           type="button"
                           onClick={() => state.formMarking.append("")}
+                          disabled={state.isLoadingForm}
                         >
                           Tambah Penilaian
                         </Button>
@@ -223,15 +219,15 @@ export default function DivisionPage() {
                 )}
               />
               <DialogFooter className="justify-content-between">
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    handler.setVisible({ show: false, title: "", type: 1 })
-                  }
-                  size="sm"
-                >
-                  Batal
-                </Button>
+                <DialogClose asChild>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handler.resetState()}
+                    size="sm"
+                  >
+                    Batal
+                  </Button>
+                </DialogClose>
                 <Button color="primary" size="sm" type="submit">
                   Simpan
                 </Button>

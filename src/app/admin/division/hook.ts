@@ -1,18 +1,19 @@
+import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import {
   DivisionInterface,
   SCHOOL_TYPE,
 } from "@/interfaces/division_interface";
-import { alertSuccess } from "@/lib/alert";
+import { alertSuccess, toastRender } from "@/lib/alert";
+import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { z } from "zod";
 
 const schemaForm = z.object({
   name: z.string().min(3).max(100),
-  school_type: z.string().min(3).max(100),
-  price: z.string().min(3).max(100),
+  school_type: z.string(),
   markings: z.array(z.string()),
 });
 
@@ -23,15 +24,15 @@ export default function Hook() {
     type: 1,
   });
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
   const [openCombobox, setOpenCombobox] = useState(false);
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
     defaultValues: {
-      name: "Hiking Penegak Putra",
-      school_type: "SMK/SMA/MA",
+      name: "",
+      school_type: "",
       markings: [],
-      price: "125.000",
     },
   });
 
@@ -40,57 +41,65 @@ export default function Hook() {
     name: "markings",
   });
 
-  const divisions = [
-    {
-      name: "Hiking Penegak Putra",
-      markings: "[]",
-      school_type: { name: "SMK/SMA/MA" },
-      price: "100.000",
-    },
-    {
-      name: "Hiking Penegak Putri",
-      markings: "[]",
-      school_type: { name: "SMK/SMA/MA" },
-      price: "100.000",
-    },
-    {
-      name: "Hiking Penggalang Putra",
-      markings: "[]",
-      school_type: { name: "SMP/MTs" },
-      price: "100.000",
-    },
-    {
-      name: "Hiking Penggalang Putri",
-      markings: "[]",
-      school_type: { name: "SMP/MTs" },
-      price: "100.000",
-    },
-    {
-      name: "LKBBT Penegak",
-      markings: "[]",
-      school_type: { name: "SMK/SMA/MA" },
-      price: "100.000",
-    },
-    {
-      name: "LKBBT Penggalang",
-      markings: "[]",
-      school_type: { name: "SMP/MTs" },
-      price: "100.000",
-    },
-  ] as DivisionInterface[];
+  const [divisions, setDivisions] = useState<DivisionInterface[]>([]);
+  const [division, setDivision] = useState<DivisionInterface>();
+
+  const getDivisions = async () => {
+    setIsLoadingData(true);
+    try {
+      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {});
+      setDivisions(response.data.data);
+    } catch (error) {
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
 
   const handleSubmit = async (data: z.infer<typeof schemaForm>) => {
-    console.log(data);
-    setVisible({ show: false, title: "", type: 1 });
+    setIsLoadingForm(true);
+
+    try {
+      const response = await postData(API_PATH_CONSTANT.DIVISION.CREATE, {
+        ...data,
+        school_type_id: data.school_type,
+      });
+
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      resetState();
+      getDivisions();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingForm(false);
+    }
   };
 
   const handleEdit = (data: DivisionInterface) => {
+    setDivision(data);
     form.reset({
       name: data.name,
-      school_type: data.school_type?.name,
-      markings: JSON.parse(data.markings),
+      school_type: data.school_type?.id?.toString(),
+      markings: data.markings,
     });
-    setVisible({ show: true, title: `Edit ${data.name}`, type: 1 });
+    setVisible({ show: true, title: `Edit ${data.name}`, type: 2 });
+  };
+
+  const handleUpdate = async (data: z.infer<typeof schemaForm>) => {
+    setIsLoadingForm(true);
+    try {
+      const response = await postData(API_PATH_CONSTANT.DIVISION.UPDATE, {
+        ...data,
+        uid: division?.id,
+        school_type_id: data.school_type,
+      });
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      resetState();
+      getDivisions();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingForm(false);
+    }
   };
 
   const handleDelete = (data: DivisionInterface) => {
@@ -102,12 +111,25 @@ export default function Hook() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Ya, dihapus!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        alertSuccess("Hapus data berhasil!");
+        const response = await postData(API_PATH_CONSTANT.DIVISION.DELETE, {
+          uid: data?.id,
+        });
+        toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+        getDivisions();
       }
     });
   };
+
+  const resetState = () => {
+    form.reset();
+    setVisible({ show: false, title: "", type: 1 });
+  };
+
+  useEffect(() => {
+    getDivisions();
+  }, []);
 
   return {
     state: {
@@ -118,6 +140,7 @@ export default function Hook() {
       schoolTypes: SCHOOL_TYPE,
       formMarking: { fields, append, remove },
       openCombobox,
+      isLoadingData,
     },
     handler: {
       setVisible,
@@ -125,6 +148,8 @@ export default function Hook() {
       handleEdit,
       handleDelete,
       setOpenCombobox,
+      resetState,
+      handleUpdate,
     },
   };
 }
