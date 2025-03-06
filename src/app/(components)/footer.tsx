@@ -39,7 +39,9 @@ export default function Footer({ contents }: { contents: any }) {
         </div>
 
         <div className="text-center text-sm text-gray-600">
-          Copyright © {new Date().getFullYear()} LJJKPW. All rights reserved.
+          Copyright © {new Date().getFullYear()}{" "}
+          {contents.theme ? contents.theme.short_title : "LJJKPW"}. All rights
+          reserved.
         </div>
       </div>
     </footer>

@@ -29,18 +29,18 @@ export const columns = (props: childProps): ColumnDef<CategoryInterface>[] => {
       cell: ({ row }) => {
         const original = row.original;
 
-        return <Text className="font-bold">{original.division.name}</Text>;
+        return <Text className="font-bold">{original.school_type.name}</Text>;
       },
     },
     {
-      accessorKey: "division.price",
+      accessorKey: "price",
       header: "Harga Pendaftaran",
       cell: ({ row }) => {
         const original = row.original;
 
         return (
           <Text className="font-bold">
-            {formatCurrency(Number(original.division.price))}
+            {formatCurrency(Number(original.price))}
           </Text>
         );
       },

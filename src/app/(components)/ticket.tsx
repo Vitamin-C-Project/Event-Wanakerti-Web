@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 
 export default function Ticket({ contents }: { contents: any }) {
   return (
-    <div id="tickets" className="py-16 bg-yellow-300 relative overflow-hidden">
+    <div
+      id="tickets"
+      className="pb-16 bg-yellow-300 relative overflow-hidden pt-28"
+    >
       <div className="absolute top-10 left-10 text-white text-4xl opacity-30">
         ★
       </div>
@@ -12,7 +15,7 @@ export default function Ticket({ contents }: { contents: any }) {
       </div>
 
       <div className="container mx-auto px-4 ">
-        <h2 className="text-center text-3xl font-display font-bold mb-6 uppercase">
+        <h2 className="text-center text-3xl font-comic-sans-ms font-bold mb-6 uppercase">
           Registrasi Sekarang
         </h2>
         <p className="text-center max-w-2xl mx-auto mb-10">
@@ -26,7 +29,7 @@ export default function Ticket({ contents }: { contents: any }) {
           {contents?.categories?.map((category: any) => (
             <div className="card bg-green-100 shadow-xl overflow-hidden relative">
               <div className="card-body items-center text-center pt-12">
-                <h3 className="card-title text-xl mb-2">{category.name}</h3>
+                <h3 className="card-title text-xl mb-2">{category.alias}</h3>
                 <p className="text-3xl font-bold mb-4">
                   {formatCurrency(category.price)}
                 </p>

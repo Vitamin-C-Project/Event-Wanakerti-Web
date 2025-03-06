@@ -67,6 +67,14 @@ export default function Nav() {
           </LinkReactScroll>
           <LinkReactScroll
             spy={true}
+            to="tickets"
+            smooth={true}
+            className="hover:text-yellow-600 cursor-pointer"
+          >
+            Biaya Pendaftaran
+          </LinkReactScroll>
+          <LinkReactScroll
+            spy={true}
             to="contact"
             smooth={true}
             className="hover:text-yellow-600 cursor-pointer"
@@ -115,6 +123,14 @@ export default function Nav() {
             className="py-2 border-b border-gray-100 hover:text-yellow-600"
           >
             Kategori Lomba
+          </LinkReactScroll>
+          <LinkReactScroll
+            spy={true}
+            to="tickets"
+            smooth={true}
+            className="py-2 border-b border-gray-100 hover:text-yellow-600"
+          >
+            Biaya Pendaftaran
           </LinkReactScroll>
           <LinkReactScroll
             spy={true}

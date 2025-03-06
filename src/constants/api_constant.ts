@@ -20,6 +20,10 @@ export const API_PATH_CONSTANT = {
     UPDATE: "division/update",
     DELETE: "division/delete",
   },
+  SCHOOL_TYPE: {
+    LIST: "school-type/list",
+    SHOW: "school-type/show",
+  },
   CMS: {
     ALL_CONTENT: "cms/contents",
     CONTACT_US: {

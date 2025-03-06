@@ -6,4 +6,15 @@
 @theme {
   --font-manrope: "Manrope", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-comic-sans-ms: "Comic Sans MS", "Manrope", ui-sans-serif, system-ui,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+}
+
+@font-face {
+  font-family: "Comic Sans MS";
+  font-style: normal;
+  font-weight: 200 400 600 700 800 900;
+  font-display: swap;
+  src: url("../assets/fonts/comic-sans-ms/ComicSansMS3.ttf") format("truetype");
 }

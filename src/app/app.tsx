@@ -10,6 +10,7 @@ import Footer from "./(components)/footer";
 import "./App.css";
 import ContactUs from "./(components)/contact/contact-us";
 import Hook from "./(components)/hook";
+import TimeLine from "./(components)/time-line";
 
 function App() {
   const { state, handler } = Hook();
@@ -24,6 +25,9 @@ function App() {
 
       {/* Lineup Section */}
       <LineUp contents={state.contents} />
+
+      {/* Timeline Section */}
+      <TimeLine contents={state.contents} />
 
       {/* Video Section */}
       <Video contents={state.contents} />

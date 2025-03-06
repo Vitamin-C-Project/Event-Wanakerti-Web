@@ -1,10 +1,11 @@
 import { CommonColumn } from "./common";
-import { DivisionInterface } from "./division_interface";
+import { SchoolTypeInterface } from "./division_interface";
 
 export interface CategoryInterface extends CommonColumn {
-  division: DivisionInterface;
+  school_type: SchoolTypeInterface;
   description: string;
   image: string;
+  price: number;
 }
 
 export interface BrandInterface extends CommonColumn {

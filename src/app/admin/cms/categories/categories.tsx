@@ -83,7 +83,7 @@ export default function CategoriesPage() {
             >
               <FormField
                 control={state.form.control}
-                name="division_id"
+                name="type_id"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel htmlFor="url">Divisi</FormLabel>
@@ -97,21 +97,40 @@ export default function CategoriesPage() {
                             placeholder={
                               state.visible.type == 1
                                 ? field.value || "Pilih Divisi"
-                                : state.category?.division?.name ||
+                                : state.category?.school_type?.name ||
                                   "Pilih Divisi"
                             }
                           />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            {state.disivions.map((division) => (
-                              <SelectItem value={division.id?.toString()}>
-                                {division.name}
+                            {state.schoolTypes.map((type) => (
+                              <SelectItem value={type.id?.toString()}>
+                                {type.name} - ({type.alias})
                               </SelectItem>
                             ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={state.form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="price">Harga Lomba</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        disabled={state.isLoadingForm}
+                        pattern="[0-9]*"
+                        placeholder="0"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -155,11 +174,13 @@ export default function CategoriesPage() {
               />
 
               {state.visible.type == 2 && (
-                <img
-                  src={state.category?.image}
-                  alt={state.category?.division?.name}
-                  className="w-full"
-                />
+                <a href={state.category?.image} target="_blank">
+                  <img
+                    src={state.category?.image}
+                    alt={state.category?.school_type?.name}
+                    className="w-40 h-40"
+                  />
+                </a>
               )}
 
               <DialogFooter>

@@ -1,6 +1,6 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { CategoryInterface } from "@/interfaces/cms_interface";
-import { DivisionInterface } from "@/interfaces/division_interface";
+import { SchoolTypeInterface } from "@/interfaces/division_interface";
 import { toastRender } from "@/lib/alert";
 import { formatCurrency, postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,8 +10,9 @@ import Swal from "sweetalert2";
 import { z } from "zod";
 
 const schemaForm = z.object({
-  description: z.string().min(3).max(100),
-  division_id: z.string(),
+  description: z.string().min(3).max(200),
+  type_id: z.string(),
+  price: z.string().min(3).max(11),
   image: z
     .instanceof(File, {
       message: "Image is requires",
@@ -27,14 +28,15 @@ const schemaForm = z.object({
 export default function Hook() {
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
   const [category, setCategory] = useState<CategoryInterface>();
-  const [disivions, setDivisions] = useState<DivisionInterface[]>([]);
+  const [schoolTypes, setSchoolTypes] = useState<SchoolTypeInterface[]>([]);
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
     defaultValues: {
       description: "",
-      division_id: "",
+      type_id: "",
       image: {},
+      price: "",
     },
   });
 
@@ -60,10 +62,10 @@ export default function Hook() {
     }
   };
 
-  const getDivisions = async () => {
+  const getSchoolTypes = async () => {
     try {
-      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {});
-      setDivisions(response.data.data);
+      const response = await postData(API_PATH_CONSTANT.SCHOOL_TYPE.LIST, {});
+      setSchoolTypes(response.data.data);
     } catch (error: any) {}
   };
 
@@ -95,11 +97,12 @@ export default function Hook() {
     setCategory(data);
     form.reset({
       description: data.description,
-      division_id: data.division.id?.toString(),
+      price: data.price.toString(),
+      type_id: data.school_type.id?.toString(),
     });
     setVisible({
       show: true,
-      title: `Edit Kategori ${data.division.name}`,
+      title: `Edit Kategori ${data.school_type.name}`,
       type: 2,
     });
   };
@@ -155,8 +158,9 @@ export default function Hook() {
     setVisible({ show: false, title: "", type: 1 });
     form.reset({
       description: "",
-      division_id: "",
+      type_id: "",
       image: {},
+      price: "",
     });
     setCategory(undefined);
   };
@@ -166,7 +170,7 @@ export default function Hook() {
   }, [pagination]);
 
   useEffect(() => {
-    getDivisions();
+    getSchoolTypes();
   }, []);
 
   return {
@@ -176,7 +180,7 @@ export default function Hook() {
       pagination,
       isLoadingForm,
       isLoadingData,
-      disivions,
+      schoolTypes,
       form,
       category,
     },

@@ -9,6 +9,7 @@ export interface DivisionInterface extends CommonColumn {
 
 export interface SchoolTypeInterface extends CommonColumn {
   name: string;
+  alias: string;
 }
 
 export const SCHOOL_TYPE = [

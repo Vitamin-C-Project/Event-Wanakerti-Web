@@ -5,7 +5,7 @@ export default function LineUp({ contents }: { contents: any }) {
         ★
       </div>
       <div className="container mx-auto px-4 pt-10">
-        <h2 className="text-center text-3xl font-display font-bold mb-12 uppercase">
+        <h2 className="text-center text-3xl font-comic-sans-ms font-bold mb-12 uppercase">
           Kategori Lomba
         </h2>
 
@@ -23,6 +23,9 @@ export default function LineUp({ contents }: { contents: any }) {
                 className="card-body absolute inset-0 translate-y-full group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-1000 text-white"
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
               >
+                <h3 className="card-title text-xl font-bold">
+                  {category.alias}
+                </h3>
                 <p>{category.description}</p>
               </div>
             </div>

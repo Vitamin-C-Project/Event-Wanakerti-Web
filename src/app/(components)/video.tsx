@@ -14,7 +14,7 @@ export default function Video({ contents }: { contents: any }) {
       </div>
 
       <div className="container mx-auto px-4">
-        <h2 className="text-center text-3xl font-display font-bold mb-12 uppercase">
+        <h2 className="text-center text-3xl font-comic-sans-ms font-bold mb-12 uppercase">
           Rekap pada LJJKPW 5
         </h2>
 

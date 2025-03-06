@@ -89,6 +89,7 @@ export default function Hero({ contents }: { contents: any }) {
         <div className="max-w-3xl mx-auto uppercase">
           <h1 className="text-xl md:text-3xl font-bold font-display mb-4 ">
             <div
+              className="font-comic-sans-ms font-extrabold"
               dangerouslySetInnerHTML={{
                 __html: contents.theme
                   ? contents.theme.full_title
