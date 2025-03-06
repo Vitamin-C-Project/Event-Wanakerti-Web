@@ -5,6 +5,15 @@ export const API_PATH_CONSTANT = {
     REGISTER: "auth/register",
     CHECK_AUTHENTICATED: "auth/check-authenticated",
   },
+  PARTICIPANT: {
+    SCHOOL: {
+      LIST: "participant/school/list",
+      CREATE: "participant/school/create",
+      SHOW: "participant/school/show",
+      UPDATE: "participant/school/update",
+      DELETE: "participant/school/delete",
+    },
+  },
   USER: {
     LIST: "user/list",
     CREATE: "user/create",

@@ -28,7 +28,7 @@ export const columns = (
             <Flex direction={"column"} gap={"2"}>
               <div className="w-full overflow-hidden mb-2">
                 <Text className="text-ellipsis">
-                  Tingkat : <br /> {original.participant_school_type.name}
+                  Tingkat : <br /> {original.school_type.name}
                 </Text>
               </div>
             </Flex>
@@ -75,12 +75,18 @@ export const columns = (
             <Flex direction={"column"} gap={"2"}>
               <div className="w-full overflow-hidden mb-2">
                 <Text className="text-ellipsis ">
-                  Hiking : <br /> <Text className="font-semibold">3 Regu</Text>
+                  Hiking : <br />{" "}
+                  <Text className="font-semibold">
+                    {original.hiking_count} Regu
+                  </Text>
                 </Text>
               </div>
               <div className="w-full overflow-hidden">
                 <Text className="text-ellipsis ">
-                  LKBBT : <br /> <Text className="font-semibold">1 Pleton</Text>
+                  LKBBT : <br />{" "}
+                  <Text className="font-semibold">
+                    {original.lkbbt_count} Pleton
+                  </Text>
                 </Text>
               </div>
             </Flex>

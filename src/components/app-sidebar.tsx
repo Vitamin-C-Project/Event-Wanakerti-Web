@@ -178,6 +178,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {}
       );
 
+      jsCookie.set("USER", JSON.stringify(response.data.data));
       setUser(response.data.data);
     } catch (error) {
       jsCookie.remove("LJJKPW");

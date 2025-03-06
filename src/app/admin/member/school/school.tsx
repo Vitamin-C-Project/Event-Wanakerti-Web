@@ -7,6 +7,7 @@ import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -73,9 +74,7 @@ export default function SchoolPage() {
 
       <Dialog
         open={state.visible.show}
-        onOpenChange={() =>
-          handler.setVisible({ show: false, title: "", type: 1 })
-        }
+        onOpenChange={() => handler.resetState()}
       >
         <DialogContent
           onInteractOutside={(e) => e.preventDefault()}
@@ -88,7 +87,11 @@ export default function SchoolPage() {
           <Form {...state.form}>
             <form
               className={cn("flex flex-col gap-4")}
-              onSubmit={state.form.handleSubmit(handler.handleSubmit)}
+              onSubmit={
+                state.visible.type == 1
+                  ? state.form.handleSubmit(handler.handleSubmit)
+                  : state.form.handleSubmit(handler.handleUpdate)
+              }
             >
               <Flex className="gap-5">
                 <FormField
@@ -99,17 +102,17 @@ export default function SchoolPage() {
                       <FormLabel htmlFor="account">Akun Pengguna</FormLabel>
                       <FormControl>
                         <Popover
-                          open={state.openCombobox}
-                          onOpenChange={() => handler.setOpenCombobox(true)}
+                          open={state.openComboboxUser}
+                          onOpenChange={() => handler.setOpenComboboxUser(true)}
                         >
                           <PopoverTrigger asChild>
                             <Button
                               variant="outline"
                               role="combobox"
-                              aria-expanded={state.openCombobox}
+                              aria-expanded={state.openComboboxUser}
                               className="justify-between"
                             >
-                              Cari akun...
+                              {state.user ? state.user.name : "Cari akun..."}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </PopoverTrigger>
@@ -121,25 +124,25 @@ export default function SchoolPage() {
                                   Akun tidak ditemukan.
                                 </CommandEmpty>
                                 <CommandGroup>
-                                  {["Carnadi", "Hakim", "Maulana"].map(
-                                    (framework) => (
-                                      <CommandItem
-                                        key={framework}
-                                        value={framework}
-                                        onSelect={(currentValue) => {
-                                          handler.setOpenCombobox(false);
-                                        }}
-                                      >
-                                        <Check
-                                          className={cn(
-                                            "mr-2 h-4 w-4",
-                                            "opacity-0"
-                                          )}
-                                        />
-                                        {framework}
-                                      </CommandItem>
-                                    )
-                                  )}
+                                  {state.users.map((user) => (
+                                    <CommandItem
+                                      key={user.id}
+                                      value={user.id?.toString()}
+                                      onSelect={(currentValue) => {
+                                        field.onChange(currentValue);
+                                        handler.setOpenComboboxUser(false);
+                                        handler.setUser(user);
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          "opacity-0"
+                                        )}
+                                      />
+                                      {user.name}
+                                    </CommandItem>
+                                  ))}
                                 </CommandGroup>
                               </CommandList>
                             </Command>
@@ -160,43 +163,50 @@ export default function SchoolPage() {
                       </FormLabel>
                       <FormControl>
                         <Popover
-                          open={state.openCombobox}
-                          onOpenChange={() => handler.setOpenCombobox(true)}
+                          open={state.openComboboxSchool}
+                          onOpenChange={handler.setOpenComboboxSchool}
                         >
-                          <PopoverTrigger asChild>
+                          <PopoverTrigger
+                            asChild
+                            disabled={state.isLoadingForm}
+                          >
                             <Button
                               variant="outline"
                               role="combobox"
-                              aria-expanded={state.openCombobox}
-                              className="justify-between"
+                              aria-expanded={state.openComboboxSchool}
+                              className=" justify-between"
                             >
-                              Cari tingkat...
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              {field.value
+                                ? state.schoolTypes[Number(field.value) - 1]
+                                    .VALUE
+                                : "Pilih Tingkat..."}
+                              <ChevronsUpDown className="opacity-50" />
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="p-0">
+                          <PopoverContent className=" p-0">
                             <Command>
-                              <CommandInput placeholder="Cari tingkat..." />
+                              <CommandInput
+                                placeholder="Cari no tingkat..."
+                                className="h-9"
+                              />
                               <CommandList>
                                 <CommandEmpty>
-                                  Akun tidak ditemukan.
+                                  Bidang tidak tersedia.
                                 </CommandEmpty>
                                 <CommandGroup>
                                   {state.schoolTypes.map((type) => (
                                     <CommandItem
-                                      key={type.VALUE}
-                                      value={type.VALUE}
+                                      key={type.KEY}
+                                      value={type.KEY.toString()}
                                       onSelect={(currentValue) => {
-                                        handler.setOpenCombobox(false);
+                                        field.onChange(currentValue);
+                                        handler.setOpenComboboxSchool(false);
                                       }}
                                     >
+                                      {type.KEY}). {type.VALUE}
                                       <Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          "opacity-0"
-                                        )}
+                                        className={cn("ml-auto", "opacity-0")}
                                       />
-                                      {type.VALUE}
                                     </CommandItem>
                                   ))}
                                 </CommandGroup>
@@ -308,15 +318,15 @@ export default function SchoolPage() {
                 )}
               />
               <DialogFooter className="justify-content-between">
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    handler.setVisible({ show: false, title: "", type: 1 })
-                  }
-                  size="sm"
-                >
-                  Batal
-                </Button>
+                <DialogClose asChild>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handler.resetState()}
+                    size="sm"
+                  >
+                    Batal
+                  </Button>
+                </DialogClose>
                 <Button size="sm" type="submit">
                   Simpan
                 </Button>

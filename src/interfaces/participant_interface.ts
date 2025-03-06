@@ -4,12 +4,14 @@ import { UserInterface } from "./user_interface";
 
 export interface ParticipantSchoolInterface extends CommonColumn {
   user: UserInterface;
-  participant_school_type: SchoolTypeInterface;
+  school_type: SchoolTypeInterface;
   name: string;
   address: string;
   person_responsible: string;
   phone_number: string;
   email: string;
+  lkbbt_count: number;
+  hiking_count: number;
 }
 
 export interface ParticipantTeamInterface extends CommonColumn {
