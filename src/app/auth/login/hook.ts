@@ -30,12 +30,15 @@ export default function Hook() {
 
     try {
       let response = await postData(API_PATH_CONSTANT.AUTH.LOGIN, data);
+      console.log(response);
 
       jsCookie.set("LJJKPW", response.data.data.token);
 
       toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
       navigate("/dashboard");
     } catch (error: any) {
+      console.log(error);
+
       alertRender(error.status, error.response.data.messages);
     } finally {
       setIsLoadingForm(false);

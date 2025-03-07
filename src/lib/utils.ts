@@ -24,6 +24,32 @@ export const generateSignature = async ({ _uri }: { _uri: string }) => {
   };
 };
 
+export const decryptApiResponse = async (data: any) => {
+  const decoded = atob(data);
+  const iv = new Uint8Array(
+    [...decoded].slice(0, 16).map((x) => x.charCodeAt(0))
+  );
+  const encryptedData = new Uint8Array(
+    [...decoded].slice(16).map((c) => c.charCodeAt(0))
+  );
+
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(import.meta.env.VITE_SECRET_KEY),
+    { name: "AES-CBC" },
+    false,
+    ["decrypt"]
+  );
+
+  const decrypted = await crypto.subtle.decrypt(
+    { name: "AES-CBC", iv: iv },
+    cryptoKey,
+    encryptedData
+  );
+
+  return JSON.parse(new TextDecoder().decode(decrypted));
+};
+
 export async function postData(
   path: string,
   body_request: any,
@@ -42,6 +68,11 @@ export async function postData(
   });
 
   const response = await axiosInstance.post(path, body_request);
+
+  if (response.data.data) {
+    response.data.data = await decryptApiResponse(response.data.data);
+  }
+  console.log(response);
 
   return response;
 }
