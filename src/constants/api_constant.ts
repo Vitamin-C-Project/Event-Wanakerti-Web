@@ -20,6 +20,13 @@ export const API_PATH_CONSTANT = {
       UPDATE: "participant/team/update",
       DELETE: "participant/team/delete",
     },
+    MEMBER: {
+      LIST: "participant/team-member/list",
+      CREATE: "participant/team-member/create",
+      SHOW: "participant/team-member/show",
+      UPDATE: "participant/team-member/update",
+      DELETE: "participant/team-member/delete",
+    },
   },
   USER: {
     LIST: "user/list",

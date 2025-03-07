@@ -26,7 +26,7 @@ export interface ParticipantTeamInterface extends CommonColumn {
 }
 
 export interface ParticipantMemberInterface extends CommonColumn {
-  participant_team: ParticipantTeamInterface;
+  team: ParticipantTeamInterface;
   name: string;
   class: string;
   gender: string;

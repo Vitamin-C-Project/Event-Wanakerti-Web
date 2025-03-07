@@ -13,12 +13,12 @@ export const columns = (
 ): ColumnDef<ParticipantMemberInterface>[] => {
   return [
     {
-      accessorKey: "name",
-      header: "Nama Peserta",
+      accessorKey: "team.name",
+      header: "Nama Tim",
     },
     {
-      accessorKey: "participant_team.name",
-      header: "Nama Tim",
+      accessorKey: "name",
+      header: "Nama Peserta",
     },
     {
       accessorKey: "class",
@@ -27,6 +27,15 @@ export const columns = (
     {
       accessorKey: "gender",
       header: "Jenis Kelamin",
+      cell: ({ row }) => {
+        const original = row.original;
+
+        return (
+          <div className="capitalize">
+            {Number(original.gender) == 1 ? "Laki-laki" : "Perempuan"}
+          </div>
+        );
+      },
     },
     {
       id: "actions",

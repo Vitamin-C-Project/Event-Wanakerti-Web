@@ -7,6 +7,7 @@ import { DataTable } from "@/components/data-table";
 import Hook from "./hook";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -50,13 +51,13 @@ export default function ParticipantPage() {
   return (
     <DashboardLayout>
       <Flex align={"center"} justify={"between"}>
-        <Heading>Daftar Divisi</Heading>
+        <Heading>Data Peserta</Heading>
         <Button
           onClick={() =>
             handler.setVisible({
               show: true,
               type: 1,
-              title: "Tambah Divisi Baru",
+              title: "Tambah Peserta Baru",
             })
           }
         >
@@ -73,9 +74,7 @@ export default function ParticipantPage() {
 
       <Dialog
         open={state.visible.show}
-        onOpenChange={() =>
-          handler.setVisible({ show: false, title: "", type: 1 })
-        }
+        onOpenChange={() => handler.resetState()}
       >
         <DialogContent>
           <DialogHeader>
@@ -104,7 +103,11 @@ export default function ParticipantPage() {
                             aria-expanded={state.openCombobox}
                             className=" justify-between"
                           >
-                            {"Pilih Tim"}
+                            {field.value
+                              ? state.teams.find(
+                                  (team) => team.id == Number(field.value)
+                                )?.name
+                              : "Pilih Tim..."}
                             <ChevronsUpDown className="opacity-50" />
                           </Button>
                         </PopoverTrigger>
@@ -117,18 +120,16 @@ export default function ParticipantPage() {
                             <CommandList>
                               <CommandEmpty>Tim tidak ditemukan.</CommandEmpty>
                               <CommandGroup>
-                                {[
-                                  "Insyaallah Menang",
-                                  "Insyaallah Menang 2",
-                                ].map((type) => (
+                                {state.teams.map((team) => (
                                   <CommandItem
-                                    key={type}
-                                    value={type}
+                                    key={team.id}
+                                    value={team.id?.toString()}
                                     onSelect={(currentValue) => {
                                       handler.setOpenCombobox(false);
+                                      field.onChange(currentValue);
                                     }}
                                   >
-                                    {type}
+                                    {team.name}
                                     <Check
                                       className={cn("ml-auto", "opacity-0")}
                                     />
@@ -149,7 +150,7 @@ export default function ParticipantPage() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="name">Nama Bidang</FormLabel>
+                    <FormLabel htmlFor="name">Nama Lengkap Peserta</FormLabel>
                     <FormControl>
                       <Input
                         id="name"
@@ -190,9 +191,12 @@ export default function ParticipantPage() {
                   <FormItem>
                     <FormLabel htmlFor="gender">Jenis Kelamin</FormLabel>
                     <FormControl>
-                      <Select>
+                      <Select
+                        onValueChange={(value) => field.onChange(value)}
+                        disabled={state.isLoadingForm}
+                      >
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Laki-laki" />
+                          <SelectValue placeholder={field.value} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="1">Laki-laki</SelectItem>
@@ -211,7 +215,11 @@ export default function ParticipantPage() {
                   <FormItem>
                     <FormLabel htmlFor="badge">Kartu Tanda Anggota</FormLabel>
                     <FormControl>
-                      <Input type="file" />
+                      <Input
+                        type="file"
+                        onChange={(e: any) => field.onChange(e.target.files[0])}
+                        disabled={state.isLoadingForm}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -226,22 +234,26 @@ export default function ParticipantPage() {
                       Surat Bukti Kesehatan
                     </FormLabel>
                     <FormControl>
-                      <Input type="file" />
+                      <Input
+                        type="file"
+                        onChange={(e: any) => field.onChange(e.target.files[0])}
+                        disabled={state.isLoadingForm}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <DialogFooter className="justify-content-between">
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    handler.setVisible({ show: false, title: "", type: 1 })
-                  }
-                  size="sm"
-                >
-                  Batal
-                </Button>
+                <DialogClose asChild>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handler.resetState()}
+                    size="sm"
+                  >
+                    Batal
+                  </Button>
+                </DialogClose>
                 <Button color="primary" size="sm" type="submit">
                   Simpan
                 </Button>
