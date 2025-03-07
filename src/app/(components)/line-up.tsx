@@ -10,8 +10,11 @@ export default function LineUp({ contents }: { contents: any }) {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {contents?.categories?.map((category: any) => (
-            <div className="card bg-base-100 shadow-xl overflow-hidden group">
+          {contents?.categories?.map((category: any, index: number) => (
+            <div
+              className="card bg-base-100 shadow-xl overflow-hidden group"
+              key={index}
+            >
               <figure>
                 <img
                   src={category.image}

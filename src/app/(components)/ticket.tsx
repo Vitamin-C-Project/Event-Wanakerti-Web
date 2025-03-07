@@ -26,8 +26,11 @@ export default function Ticket({ contents }: { contents: any }) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {/* Standard Registration */}
-          {contents?.categories?.map((category: any) => (
-            <div className="card bg-green-100 shadow-xl overflow-hidden relative">
+          {contents?.categories?.map((category: any, index: number) => (
+            <div
+              className="card bg-green-100 shadow-xl overflow-hidden relative"
+              key={index}
+            >
               <div className="card-body items-center text-center pt-12">
                 <h3 className="card-title text-xl mb-2">{category.alias}</h3>
                 <p className="text-3xl font-bold mb-4">

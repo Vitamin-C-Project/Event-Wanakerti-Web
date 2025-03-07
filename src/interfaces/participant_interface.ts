@@ -23,6 +23,19 @@ export interface ParticipantTeamInterface extends CommonColumn {
   status: number;
   payment_status: number;
   re_registration_status: number;
+  members?: ParticipantTeamMemberInterface[];
+}
+
+export interface ParticipantTeamMemberInterface extends CommonColumn {
+  name?: string;
+  code?: string;
+  school_name?: string;
+  team?: ParticipantTeamInterface;
+  class?: string;
+  gender?: number;
+  badge?: string;
+  proof_health?: string;
+  type?: string;
 }
 
 export interface ParticipantMemberInterface extends CommonColumn {

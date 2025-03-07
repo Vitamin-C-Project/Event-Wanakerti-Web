@@ -3,7 +3,6 @@ import DashboardLayout from "@/layout/dashboard-layout";
 import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
-import { DataTable } from "@/components/data-table";
 import Hook from "./hook";
 import {
   Dialog,
@@ -44,6 +43,7 @@ import {
 } from "@/components/ui/select";
 
 import { cn } from "@/lib/utils";
+import { DataTable } from "./data-table";
 
 export default function ParticipantPage() {
   const { state, handler } = Hook();

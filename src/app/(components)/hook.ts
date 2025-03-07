@@ -8,8 +8,11 @@ export default function Hook() {
   const getContents = async () => {
     try {
       const response = await postData(API_PATH_CONSTANT.CMS.ALL_CONTENT, {});
+
       setContents(response.data.data);
-    } catch (error: any) {}
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

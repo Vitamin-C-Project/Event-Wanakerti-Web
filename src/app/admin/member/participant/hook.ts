@@ -2,6 +2,7 @@ import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import {
   ParticipantMemberInterface,
   ParticipantTeamInterface,
+  ParticipantTeamMemberInterface,
 } from "@/interfaces/participant_interface";
 import { alertSuccess, toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
@@ -54,7 +55,7 @@ export default function Hook() {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [openCombobox, setOpenCombobox] = useState(false);
   const [teams, setTeams] = useState<ParticipantTeamInterface[]>([]);
-  const [members, setMembers] = useState<ParticipantMemberInterface[]>([]);
+  const [members, setMembers] = useState<ParticipantTeamMemberInterface[]>([]);
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
@@ -134,7 +135,13 @@ export default function Hook() {
         API_PATH_CONSTANT.PARTICIPANT.MEMBER.LIST,
         {}
       );
-      setMembers(response.data.data);
+
+      setMembers(
+        response.data.data.flatMap((team: ParticipantTeamInterface) => [
+          { type: "team", ...team },
+          ...team.members!.map((member) => ({ ...member, type: "member" })),
+        ])
+      );
     } catch (error) {
     } finally {
       setIsLoadingData(false);

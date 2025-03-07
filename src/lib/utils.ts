@@ -4,6 +4,7 @@ import moment from "moment";
 import axios from "axios";
 import hmacSHA256 from "crypto-js/hmac-sha256";
 import jsCookie from "js-cookie";
+import CryptoJS from "crypto-js";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -24,30 +25,28 @@ export const generateSignature = async ({ _uri }: { _uri: string }) => {
   };
 };
 
-export const decryptApiResponse = async (data: any) => {
-  const decoded = atob(data);
-  const iv = new Uint8Array(
-    [...decoded].slice(0, 16).map((x) => x.charCodeAt(0))
-  );
-  const encryptedData = new Uint8Array(
-    [...decoded].slice(16).map((c) => c.charCodeAt(0))
-  );
+export const decryptApiResponse = async (data: string) => {
+  const result = data.split(".");
 
-  const cryptoKey = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(import.meta.env.VITE_SECRET_KEY),
-    { name: "AES-CBC" },
-    false,
-    ["decrypt"]
-  );
+  const iv = CryptoJS.enc.Hex.parse(result[0]);
+  const salt = CryptoJS.enc.Hex.parse(result[1]);
+  const ciphertext = CryptoJS.enc.Base64.parse(result[2]);
 
-  const decrypted = await crypto.subtle.decrypt(
-    { name: "AES-CBC", iv: iv },
-    cryptoKey,
-    encryptedData
-  );
+  const key = CryptoJS.PBKDF2(import.meta.env.VITE_SECRET_KEY, salt, {
+    keySize: 64 / 8, // 64 byte (512 bit) → 32 byte (256 bit) untuk AES-256
+    iterations: 999,
+    hasher: CryptoJS.algo.SHA512,
+  });
 
-  return JSON.parse(new TextDecoder().decode(decrypted));
+  const decrypted = CryptoJS.AES.decrypt({ ciphertext }, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
+
+  const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+
+  return JSON.parse(decryptedText);
 };
 
 export async function postData(
@@ -69,10 +68,11 @@ export async function postData(
 
   const response = await axiosInstance.post(path, body_request);
 
-  if (response.data.data) {
+  const baseURL = new URL(axiosInstance.defaults.baseURL as string).hostname;
+
+  if (response.data.data && !["localhost", "127.0.0.1"].includes(baseURL)) {
     response.data.data = await decryptApiResponse(response.data.data);
   }
-  console.log(response);
 
   return response;
 }
