@@ -2,10 +2,11 @@ import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { alertRender, toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
+import jsCookie from "js-cookie";
 
 const schemaForm = z.object({
   name: z.string().min(3).max(100),
@@ -40,6 +41,15 @@ export default function Hook() {
       setIsLoadingForm(false);
     }
   };
+
+  const checkToken = () => {
+    const token = jsCookie.get("LJJKPW");
+    if (token) navigate("/dashboard");
+  };
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   return {
     state: { form, isLoadingForm },
