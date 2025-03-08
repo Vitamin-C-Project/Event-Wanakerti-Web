@@ -3,7 +3,7 @@ import { columns } from "./columns";
 import Hook from "./hook";
 import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import {
   Dialog,
@@ -31,7 +31,8 @@ export default function UserAdminPage() {
     <DashboardLayout
       breadcrumbs={[
         { title: "Dasbor", href: "/dashboard" },
-        { title: "Pengguna", href: "/dashboard/users" },
+        { title: "Pengaturan", href: "/dashboard/users/admin" },
+        { title: "Pengguna", href: "/dashboard/users/admin" },
         { title: "Admin", href: "/dashboard/users/admin" },
       ]}
     >
@@ -56,6 +57,7 @@ export default function UserAdminPage() {
           delete: handler.handleDelete,
         })}
         data={state.users}
+        isLoadingData={state.isLoadingData}
       />
       <DataTablePagination
         metadata={state.metadata!}
@@ -142,18 +144,27 @@ export default function UserAdminPage() {
                 />
               )}
               <DialogFooter className="justify-content-between">
-                <DialogClose asChild>
-                  <Button
-                    variant="secondary"
-                    onClick={() => handler.resetState()}
-                    size="sm"
-                  >
-                    Batal
+                {state.isLoadingForm ? (
+                  <Button disabled>
+                    <Loader2 className="animate-spin" />
+                    Silahkan Tunggu
                   </Button>
-                </DialogClose>
-                <Button color="primary" size="sm" type="submit">
-                  Simpan
-                </Button>
+                ) : (
+                  <>
+                    <DialogClose asChild>
+                      <Button
+                        variant="secondary"
+                        onClick={() => handler.resetState()}
+                        size="sm"
+                      >
+                        Batal
+                      </Button>
+                    </DialogClose>
+                    <Button color="primary" size="sm" type="submit">
+                      Simpan
+                    </Button>
+                  </>
+                )}
               </DialogFooter>
             </form>
           </Form>

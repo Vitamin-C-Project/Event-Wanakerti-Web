@@ -68,11 +68,11 @@ export async function postData(
 
   const response = await axiosInstance.post(path, body_request);
 
-  const baseURL = new URL(axiosInstance.defaults.baseURL as string).hostname;
+  // const baseURL = new URL(axiosInstance.defaults.baseURL as string).hostname;
 
-  if (response.data.data && !["localhost", "127.0.0.1"].includes(baseURL)) {
-    response.data.data = await decryptApiResponse(response.data.data);
-  }
+  // if (response.data.data && !["localhost", "127.0.0.1"].includes(baseURL)) {
+  //   response.data.data = await decryptApiResponse(response.data.data);
+  // }
 
   return response;
 }

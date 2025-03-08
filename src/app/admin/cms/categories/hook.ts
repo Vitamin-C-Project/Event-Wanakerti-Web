@@ -143,6 +143,8 @@ export default function Hook() {
       confirmButtonText: "Ya, dihapus!",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setIsLoadingData(true);
+
         const response = await postData(API_PATH_CONSTANT.CMS.CATEGORY.DELETE, {
           uid: data?.id,
         });

@@ -3,11 +3,11 @@ import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import { SCHOOL_TYPE } from "@/interfaces/division_interface";
 import { ParticipantSchoolInterface } from "@/interfaces/participant_interface";
 import { UserInterface } from "@/interfaces/user_interface";
-import { alertSuccess, toastRender } from "@/lib/alert";
+import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { z } from "zod";
 
@@ -127,6 +127,8 @@ export default function Hook() {
       confirmButtonText: "Ya, dihapus!",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setIsLoadingData(true);
+
         const response = await postData(
           API_PATH_CONSTANT.PARTICIPANT.SCHOOL.DELETE,
           {

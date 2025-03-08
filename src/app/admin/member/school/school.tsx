@@ -1,9 +1,9 @@
 import { columns } from "./columns";
 import Hook from "./hook";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { Flex, Grid, Heading } from "@radix-ui/themes";
+import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import {
   Dialog,
@@ -46,11 +46,11 @@ export default function SchoolPage() {
       breadcrumbs={[
         { title: "Dasbor", href: "/dashboard" },
         { title: "Member", href: "/dashboard/member/schools" },
-        { title: "Daftar Pangkalan", href: "/dashboard/member/schools" },
+        { title: "Data Pangkalan", href: "/dashboard/member/schools" },
       ]}
     >
       <Flex align={"center"} justify={"between"}>
-        <Heading>Daftar Pangkalan</Heading>
+        <Heading>Data Pangkalan</Heading>
         <Button
           onClick={() =>
             handler.setVisible({
@@ -70,6 +70,7 @@ export default function SchoolPage() {
           delete: handler.handleDelete,
         })}
         data={state.schools}
+        isLoadingData={state.isLoadingData}
       />
 
       <Dialog
@@ -318,18 +319,27 @@ export default function SchoolPage() {
                 )}
               />
               <DialogFooter className="justify-content-between">
-                <DialogClose asChild>
-                  <Button
-                    variant="secondary"
-                    onClick={() => handler.resetState()}
-                    size="sm"
-                  >
-                    Batal
+                {state.isLoadingForm ? (
+                  <Button disabled>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Silahkan tunggu
                   </Button>
-                </DialogClose>
-                <Button size="sm" type="submit">
-                  Simpan
-                </Button>
+                ) : (
+                  <>
+                    <DialogClose asChild>
+                      <Button
+                        variant="secondary"
+                        onClick={() => handler.resetState()}
+                        size="sm"
+                      >
+                        Batal
+                      </Button>
+                    </DialogClose>
+                    <Button color="primary" size="sm" type="submit">
+                      Simpan
+                    </Button>
+                  </>
+                )}
               </DialogFooter>
             </form>
           </Form>

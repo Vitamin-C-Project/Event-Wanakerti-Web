@@ -1,6 +1,6 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { ContactInterface } from "@/interfaces/cms_interface";
-import { alertRender, toastRender } from "@/lib/alert";
+import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -32,6 +32,7 @@ export default function Hook() {
       confirmButtonText: "Ya, dihapus!",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setIsLoadingData(true);
         const response = await postData(
           API_PATH_CONSTANT.CMS.CONTACT_US.DELETE,
           {
@@ -51,7 +52,7 @@ export default function Hook() {
   }, []);
 
   return {
-    state: { contacts },
+    state: { contacts, isLoadingData },
     handler: { handleDelete },
   };
 }

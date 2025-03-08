@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Table, TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { ParticipantSchoolInterface } from "@/interfaces/participant_interface";
 import { Flex, Heading, Text } from "@radix-ui/themes";
 import { ColumnDef } from "@tanstack/react-table";

@@ -3,7 +3,7 @@ import { columns } from "./columns";
 import Hook from "./hook";
 import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import {
   Dialog,
@@ -42,9 +42,15 @@ export default function TeamPage() {
   const { state, handler } = Hook();
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      breadcrumbs={[
+        { title: "Dasbor", href: "/dashboard" },
+        { title: "Member", href: "/dashboard/member/teams" },
+        { title: "Data Tim", href: "/dashboard/member/teams" },
+      ]}
+    >
       <Flex align={"center"} justify={"between"}>
-        <Heading>Daftar Team</Heading>
+        <Heading>Data Tim</Heading>
         <Button
           onClick={() =>
             handler.setVisible({
@@ -64,6 +70,7 @@ export default function TeamPage() {
           delete: handler.handleDelete,
         })}
         data={state.teams}
+        isLoadingData={state.isLoadingData}
       />
 
       <Dialog
@@ -290,18 +297,27 @@ export default function TeamPage() {
                 )}
               />
               <DialogFooter>
-                <DialogClose asChild>
-                  <Button
-                    variant="secondary"
-                    onClick={() => handler.resetState()}
-                    size="sm"
-                  >
-                    Batal
+                {state.isLoadingForm ? (
+                  <Button disabled>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Silahkan tunggu
                   </Button>
-                </DialogClose>
-                <Button size="sm" type="submit">
-                  Simpan
-                </Button>
+                ) : (
+                  <>
+                    <DialogClose asChild>
+                      <Button
+                        variant="secondary"
+                        onClick={() => handler.resetState()}
+                        size="sm"
+                      >
+                        Batal
+                      </Button>
+                    </DialogClose>
+                    <Button color="primary" size="sm" type="submit">
+                      Simpan
+                    </Button>
+                  </>
+                )}
               </DialogFooter>
             </form>
           </Form>

@@ -1,11 +1,9 @@
 import { DataTable } from "@/components/data-table";
-import { BrandInterface } from "@/interfaces/cms_interface";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { Flex, Heading } from "@radix-ui/themes";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -14,7 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import Hook from "./hook";
 import {
@@ -30,7 +27,13 @@ export default function BrandPage() {
   const { state, handler } = Hook();
 
   return (
-    <DashboardLayout breadcrumbs={[{ title: "Dashboard", href: "/dashboard" }]}>
+    <DashboardLayout
+      breadcrumbs={[
+        { title: "Dashboard", href: "/dashboard" },
+        { title: "Konten Manajemen", href: "/dashboard/cms/brand-sponsorship" },
+        { title: "Brand & Sponsor", href: "/dashboard/cms/brand-sponsorship" },
+      ]}
+    >
       <Flex align={"center"} justify={"between"}>
         <Heading>Brand & Sponsor</Heading>
         <Button
@@ -52,6 +55,7 @@ export default function BrandPage() {
           edit: () => {},
         })}
         data={state.brands}
+        isLoadingData={state.isLoadingData}
       />
 
       <Dialog
@@ -100,7 +104,7 @@ export default function BrandPage() {
                         type="file"
                         disabled={state.isLoadingForm}
                         onChange={(event: any) => {
-                          state.form.setValue("image", event.target.files[0]);
+                          field.onChange(event.target.files[0]);
                         }}
                       />
                     </FormControl>
@@ -110,14 +114,23 @@ export default function BrandPage() {
               />
 
               <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Tutup
+                {state.isLoadingForm ? (
+                  <Button disabled>
+                    <Loader2 className="animate-spin" />
+                    Tunggu Sebentar
                   </Button>
-                </DialogClose>
-                <Button variant="default" type="submit">
-                  Simpan
-                </Button>
+                ) : (
+                  <>
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">
+                        Tutup
+                      </Button>
+                    </DialogClose>
+                    <Button variant="default" type="submit">
+                      Simpan
+                    </Button>
+                  </>
+                )}
               </DialogFooter>
             </form>
           </Form>

@@ -13,7 +13,6 @@ import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown, Plus, X } from "lucide-react";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { DataTable } from "./data-table";
 import {
   Dialog,
   DialogClose,
@@ -36,6 +35,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { DataTable } from "@/components/data-table";
 
 export default function DivisionPage() {
   const { state, handler } = Hook();
@@ -44,6 +44,7 @@ export default function DivisionPage() {
     <DashboardLayout
       breadcrumbs={[
         { title: "Dasbor", href: "/dashboard" },
+        { title: "Pengaturan", href: "/dashboard/division" },
         { title: "Divisi", href: "/dashboard/division" },
       ]}
     >
@@ -68,6 +69,7 @@ export default function DivisionPage() {
           delete: handler.handleDelete,
         })}
         data={state.divisions}
+        isLoadingData={state.isLoadingData}
       />
 
       <Dialog

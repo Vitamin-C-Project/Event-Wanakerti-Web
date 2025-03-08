@@ -2,10 +2,8 @@ import { DataTable } from "@/components/data-table";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { Flex, Heading } from "@radix-ui/themes";
 import { columns } from "./columns";
-import { CategoryInterface } from "@/interfaces/cms_interface";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { useState } from "react";
+import { Loader2, Plus } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -20,11 +18,9 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@radix-ui/react-label";
 import { Textarea } from "@/components/ui/textarea";
 import Hook from "./hook";
 import {
@@ -40,7 +36,13 @@ export default function CategoriesPage() {
   const { state, handler } = Hook();
 
   return (
-    <DashboardLayout breadcrumbs={[{ title: "Dashboard", href: "/dashboard" }]}>
+    <DashboardLayout
+      breadcrumbs={[
+        { title: "Dashboard", href: "/dashboard" },
+        { title: "Konten Manajemen", href: "/dashboard/cms/categories" },
+        { title: "Kategori Lomba", href: "/dashboard/cms/categories" },
+      ]}
+    >
       <Flex align={"center"} justify={"between"}>
         <Heading>Kategori Lomba</Heading>
         <Button
@@ -62,6 +64,7 @@ export default function CategoriesPage() {
           delete: handler.handleDelete,
         })}
         data={state.categories}
+        isLoadingData={state.isLoadingData}
       />
 
       <Dialog
@@ -184,18 +187,27 @@ export default function CategoriesPage() {
               )}
 
               <DialogFooter>
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => handler.resetState()}
-                  >
-                    Tutup
+                {state.isLoadingForm ? (
+                  <Button disabled>
+                    <Loader2 className="animate-spin" />
+                    Silahkan tunggu
                   </Button>
-                </DialogClose>
-                <Button variant="default" type="submit">
-                  Simpan
-                </Button>
+                ) : (
+                  <>
+                    <DialogClose asChild>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => handler.resetState()}
+                      >
+                        Tutup
+                      </Button>
+                    </DialogClose>
+                    <Button variant="default" type="submit">
+                      Simpan
+                    </Button>
+                  </>
+                )}
               </DialogFooter>
             </form>
           </Form>

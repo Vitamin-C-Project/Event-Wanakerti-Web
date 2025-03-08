@@ -8,7 +8,13 @@ export default function ContactPage() {
   const { state, handler } = Hook();
 
   return (
-    <DashboardLayout breadcrumbs={[{ title: "Dashboard", href: "/dashboard" }]}>
+    <DashboardLayout
+      breadcrumbs={[
+        { title: "Dashboard", href: "/dashboard" },
+        { title: "Konten Manajemen", href: "/dashboard/cms/contact" },
+        { title: "Kontak Masuk", href: "/dashboard/cms/contact" },
+      ]}
+    >
       <Flex align={"center"} justify={"between"}>
         <Heading>Kontak Masuk</Heading>
       </Flex>
@@ -19,6 +25,7 @@ export default function ContactPage() {
           edit: () => {},
         })}
         data={state.contacts}
+        isLoadingData={state.isLoadingData}
       />
     </DashboardLayout>
   );

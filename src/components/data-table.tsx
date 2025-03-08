@@ -16,15 +16,18 @@ import {
 } from "@/components/ui/table";
 import { Flex } from "@radix-ui/themes";
 import { Button } from "./ui/button";
+import SkeletonGeneral from "./skeleton";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoadingData?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  isLoadingData,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -33,7 +36,9 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  return (
+  return isLoadingData ? (
+    <SkeletonGeneral />
+  ) : (
     <div className="rounded-md border">
       <Table>
         <TableHeader>

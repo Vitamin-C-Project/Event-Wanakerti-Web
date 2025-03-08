@@ -12,18 +12,16 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import MaskotPng from "@/assets/img/maskot.png";
 import LogoPng from "@/assets/img/logo-wanakerti.png";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { useState } from "react";
 import Hook from "./hook";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Form,
   FormControl,
@@ -32,12 +30,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 
 export default function MascotLogoPage() {
   const { state, handler } = Hook();
 
   return (
-    <DashboardLayout breadcrumbs={[{ title: "Dashboard", href: "/dashboard" }]}>
+    <DashboardLayout
+      breadcrumbs={[
+        { title: "Dashboard", href: "/dashboard" },
+        { title: "Konten Manajemen", href: "/dashboard/cms/mascot-logo" },
+        { title: "Maskot & Logo", href: "/dashboard/cms/mascot-logo" },
+      ]}
+    >
       <Flex align={"center"} justify={"between"}>
         <Heading>Maskot & Logo</Heading>
       </Flex>
@@ -62,16 +67,20 @@ export default function MascotLogoPage() {
             </Flex>
           </CardHeader>
           <CardContent className="flex justify-center items-center">
-            <img
-              src={
-                state.mascot?.mascot_image
-                  ? state.mascot.mascot_image
-                  : MaskotPng
-              }
-              onError={(e) => (e.currentTarget.src = MaskotPng)}
-              alt=""
-              style={{ height: 200 }}
-            />
+            {state.isLoadingMascot ? (
+              <Skeleton className="h-[200px] w-full" />
+            ) : (
+              <img
+                src={
+                  state.mascot?.mascot_image
+                    ? state.mascot.mascot_image
+                    : MaskotPng
+                }
+                onError={(e) => (e.currentTarget.src = MaskotPng)}
+                alt=""
+                style={{ height: 200 }}
+              />
+            )}
           </CardContent>
         </Card>
         <Card className="w-full col-span-12 sm:col-span-6">
@@ -93,12 +102,16 @@ export default function MascotLogoPage() {
             </Flex>
           </CardHeader>
           <CardContent className="flex justify-center items-center">
-            <img
-              src={state.logo?.logo_image ? state.logo.logo_image : LogoPng}
-              alt=""
-              style={{ height: 200 }}
-              onError={(e) => (e.currentTarget.src = LogoPng)}
-            />
+            {state.isLoadingLogo ? (
+              <Skeleton className="h-[200px] w-full" />
+            ) : (
+              <img
+                src={state.logo?.logo_image ? state.logo.logo_image : LogoPng}
+                alt=""
+                style={{ height: 200 }}
+                onError={(e) => (e.currentTarget.src = LogoPng)}
+              />
+            )}
           </CardContent>
         </Card>
       </Grid>
@@ -117,80 +130,104 @@ export default function MascotLogoPage() {
             </CardHeader>
             <CardContent>
               <Grid columns="12" className="gap-4">
-                <Label className="col-span-4 w-full">Judul Lengkap</Label>
-                <FormField
-                  control={state.formActivity.control}
-                  name="full_title"
-                  render={({ field }) => (
-                    <FormItem className="w-full col-span-8">
-                      <FormControl>
-                        <Input
-                          type="text"
-                          {...field}
-                          disabled={state.isLoadingActivity}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Label className="col-span-4 w-full">Judul Singkatan</Label>
-                <FormField
-                  control={state.formActivity.control}
-                  name="short_title"
-                  render={({ field }) => (
-                    <FormItem className="w-full col-span-8">
-                      <FormControl>
-                        <Input
-                          type="text"
-                          {...field}
-                          disabled={state.isLoadingActivity}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Label className="col-span-4 w-full">Nama Pangkalan</Label>
-                <FormField
-                  control={state.formActivity.control}
-                  name="location"
-                  render={({ field }) => (
-                    <FormItem className="w-full col-span-8">
-                      <FormControl>
-                        <Input
-                          type="text"
-                          {...field}
-                          disabled={state.isLoadingActivity}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Label className="col-span-4 w-full">Nama Gugus Depan</Label>
-                <FormField
-                  control={state.formActivity.control}
-                  name="group_name"
-                  render={({ field }) => (
-                    <FormItem className="w-full col-span-8">
-                      <FormControl>
-                        <Input
-                          type="text"
-                          {...field}
-                          disabled={state.isLoadingActivity}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {state.isLoadingActivity ? (
+                  <>
+                    <Skeleton className="h-10 col-span-4" />
+                    <Skeleton className="h-10 col-span-8" />
+                    <Skeleton className="h-10 col-span-4" />
+                    <Skeleton className="h-10 col-span-8" />
+                    <Skeleton className="h-10 col-span-4" />
+                    <Skeleton className="h-10 col-span-8" />
+                    <Skeleton className="h-10 col-span-4" />
+                    <Skeleton className="h-10 col-span-8" />
+                  </>
+                ) : (
+                  <>
+                    <Label className="col-span-4 w-full">Judul Lengkap</Label>
+                    <FormField
+                      control={state.formActivity.control}
+                      name="full_title"
+                      render={({ field }) => (
+                        <FormItem className="w-full col-span-8">
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={state.isLoadingActivity}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Label className="col-span-4 w-full">Judul Singkatan</Label>
+                    <FormField
+                      control={state.formActivity.control}
+                      name="short_title"
+                      render={({ field }) => (
+                        <FormItem className="w-full col-span-8">
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={state.isLoadingActivity}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Label className="col-span-4 w-full">Nama Pangkalan</Label>
+                    <FormField
+                      control={state.formActivity.control}
+                      name="location"
+                      render={({ field }) => (
+                        <FormItem className="w-full col-span-8">
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={state.isLoadingActivity}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Label className="col-span-4 w-full">
+                      Nama Gugus Depan
+                    </Label>
+                    <FormField
+                      control={state.formActivity.control}
+                      name="group_name"
+                      render={({ field }) => (
+                        <FormItem className="w-full col-span-8">
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={state.isLoadingActivity}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
               </Grid>
             </CardContent>
             <CardFooter className="justify-end">
-              <Button variant="default" type="submit">
-                Simpan
-              </Button>
+              {state.isLoadingActivity ? (
+                <Button disabled>
+                  <Loader2 className="animate-spin" />
+                  Silahkan tunggu
+                </Button>
+              ) : (
+                <Button variant="default" type="submit">
+                  Simpan
+                </Button>
+              )}
             </CardFooter>
           </Card>
         </form>
@@ -238,12 +275,21 @@ export default function MascotLogoPage() {
                 )}
               />
               <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Tutup
+                {state.isLoadingLogo || state.isLoadingMascot ? (
+                  <Button disabled>
+                    <Loader2 className="animate-spin" />
+                    Silahkan tunggu
                   </Button>
-                </DialogClose>
-                <Button variant="default">Simpan</Button>
+                ) : (
+                  <>
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">
+                        Tutup
+                      </Button>
+                    </DialogClose>
+                    <Button variant="default">Simpan</Button>
+                  </>
+                )}
               </DialogFooter>
             </form>
           </Form>

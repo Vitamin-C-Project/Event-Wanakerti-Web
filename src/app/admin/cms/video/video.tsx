@@ -20,12 +20,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2 } from "lucide-react";
 
 export default function VideoPage() {
   const { state, handler } = Hook();
 
   return (
-    <DashboardLayout breadcrumbs={[{ title: "Dashboard", href: "/dashboard" }]}>
+    <DashboardLayout
+      breadcrumbs={[
+        { title: "Dashboard", href: "/dashboard" },
+        { title: "Konten Manajemen", href: "/dashboard/cms/video" },
+        { title: "Video Lomba", href: "/dashboard/cms/video" },
+      ]}
+    >
       <Flex align={"center"} justify={"between"}>
         <Heading>Video Lomba</Heading>
         <Button
@@ -44,15 +52,19 @@ export default function VideoPage() {
 
       <Card className="w-full">
         <CardContent>
-          <iframe
-            width="100%"
-            height="500"
-            src={state.video?.url}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
+          {state.isLoadingData ? (
+            <Skeleton className="h-[500px] w-full" />
+          ) : (
+            <iframe
+              width="100%"
+              height="500"
+              src={state.video?.url}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          )}
         </CardContent>
       </Card>
 
@@ -96,14 +108,23 @@ export default function VideoPage() {
                 )}
               />
               <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Tutup
+                {state.isLoadingForm ? (
+                  <Button disabled>
+                    <Loader2 className="animate-spin" />
+                    Silahkan tunggu
                   </Button>
-                </DialogClose>
-                <Button variant="default" type="submit">
-                  Simpan
-                </Button>
+                ) : (
+                  <>
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">
+                        Tutup
+                      </Button>
+                    </DialogClose>
+                    <Button variant="default" type="submit">
+                      Simpan
+                    </Button>
+                  </>
+                )}
               </DialogFooter>
             </form>
           </Form>

@@ -1,14 +1,13 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import {
-  ParticipantMemberInterface,
   ParticipantTeamInterface,
   ParticipantTeamMemberInterface,
 } from "@/interfaces/participant_interface";
-import { alertSuccess, toastRender } from "@/lib/alert";
+import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { z } from "zod";
 
@@ -92,7 +91,7 @@ export default function Hook() {
     }
   };
 
-  const handleDelete = (data: ParticipantMemberInterface) => {
+  const handleDelete = (data: ParticipantTeamMemberInterface) => {
     Swal.fire({
       title: "Apa kamu yakin?",
       text: "Anda tidak akan dapat mengembalikannya!",
@@ -103,6 +102,8 @@ export default function Hook() {
       confirmButtonText: "Ya, dihapus!",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setIsLoadingData(true);
+
         const response = await postData(
           API_PATH_CONSTANT.PARTICIPANT.MEMBER.DELETE,
           {
