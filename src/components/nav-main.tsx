@@ -17,12 +17,12 @@ import {
 } from "./ui/collapsible";
 import { Link } from "react-router-dom";
 import { UserInterface } from "@/interfaces/user_interface";
+import { useAppSelector } from "@/lib/hooks";
 
 export function NavMain({
   title = "",
   role,
   items,
-  user,
 }: {
   title?: string;
   role?: Array<number>;
@@ -38,18 +38,21 @@ export function NavMain({
       role: Array<number>;
     }[];
   }[];
-  user?: UserInterface;
 }) {
   const pathname = "dashboard";
 
+  const userAuthenticted = useAppSelector(
+    (state) => state.user.userAuthenticated
+  );
+
   return (
-    user && (
+    userAuthenticted && (
       // <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroup>
         {title.length > 0 && (
           <SidebarGroupLabel
             className="uppercase"
-            hidden={!role?.includes(user?.role?.id!)}
+            hidden={!role?.includes(userAuthenticted.role?.id!)}
           >
             {title}
           </SidebarGroupLabel>
@@ -60,7 +63,7 @@ export function NavMain({
             item.children.length < 1 ? (
               <SidebarMenuItem
                 key={item.title}
-                hidden={!item.role.includes(user?.role?.id!)}
+                hidden={!item.role.includes(userAuthenticted.role?.id!)}
               >
                 <SidebarMenuButton asChild isActive={pathname == item.url}>
                   <Link to={item.url}>
@@ -77,7 +80,7 @@ export function NavMain({
                   (child) => pathname == child.url
                 )}
                 className="group/collapsible"
-                hidden={!item.role.includes(user?.role?.id!)}
+                hidden={!item.role.includes(userAuthenticted.role?.id!)}
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
@@ -92,7 +95,9 @@ export function NavMain({
                       {item.children.map((child) => (
                         <SidebarMenuSubItem
                           key={child.title}
-                          hidden={!child.role?.includes(user?.role?.id!)}
+                          hidden={
+                            !child.role?.includes(userAuthenticted.role?.id!)
+                          }
                         >
                           <SidebarMenuSubButton
                             asChild

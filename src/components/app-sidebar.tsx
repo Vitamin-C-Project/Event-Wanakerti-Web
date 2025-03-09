@@ -32,6 +32,8 @@ import { UserInterface } from "@/interfaces/user_interface";
 import jsCookie from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
+import { useAppDispatch } from "@/lib/hooks";
+import { setUserAuthenticated } from "@/lib/slices/user_slice";
 
 const data = {
   user: {
@@ -213,6 +215,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();
 
   const [user, setUser] = React.useState<UserInterface>();
+  const dispatch = useAppDispatch();
 
   const getUserAuth = async () => {
     try {
@@ -222,6 +225,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       );
 
       jsCookie.set("USER", JSON.stringify(response.data.data));
+      dispatch(setUserAuthenticated(response.data.data));
       setUser(response.data.data);
     } catch (error) {
       jsCookie.remove("LJJKPW");
@@ -259,7 +263,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title={menu.title}
             role={menu.role}
             key={index}
-            user={user}
           />
         ))}
       </SidebarContent>
