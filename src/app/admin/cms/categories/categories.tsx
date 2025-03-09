@@ -3,7 +3,7 @@ import DashboardLayout from "@/layout/dashboard-layout";
 import { Flex, Heading } from "@radix-ui/themes";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus } from "lucide-react";
+import { Filter, Loader2, Plus } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -45,17 +45,37 @@ export default function CategoriesPage() {
     >
       <Flex align={"center"} justify={"between"}>
         <Heading>Kategori Lomba</Heading>
-        <Button
-          onClick={() =>
-            handler.setVisible({
-              show: true,
-              type: 1,
-              title: "Tambah Kategori Baru",
-            })
-          }
-        >
-          <Plus /> Tambah Baru
-        </Button>
+
+        <Flex>
+          <Select>
+            <SelectTrigger className="w-full me-3">
+              <SelectValue
+                placeholder={
+                  <>
+                    <Filter />
+                    Semua Divisi
+                  </>
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="0">Semua Divisi</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button
+            onClick={() =>
+              handler.setVisible({
+                show: true,
+                type: 1,
+                title: "Tambah Kategori Baru",
+              })
+            }
+          >
+            <Plus /> Tambah Baru
+          </Button>
+        </Flex>
       </Flex>
 
       <DataTable

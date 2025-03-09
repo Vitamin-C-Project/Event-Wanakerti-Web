@@ -39,6 +39,12 @@ export default function Hook() {
   const [division, setDivision] = useState<DivisionInterface>();
   const [teams, setTeams] = useState<ParticipantTeamInterface[]>([]);
   const [team, setTeam] = useState<ParticipantTeamInterface>();
+  const [showFilter, setShowFilter] = useState(false);
+  const [filters, setFilters] = useState({
+    search: "",
+    type: 0,
+  });
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
 
   const { register } = useForm();
 
@@ -177,6 +183,7 @@ export default function Hook() {
     form.reset();
     setSchool(undefined);
     setDivision(undefined);
+    setShowFilter(false);
   };
 
   useEffect(() => {
@@ -198,6 +205,8 @@ export default function Hook() {
       school,
       divisions,
       division,
+      showFilter,
+      pagination,
     },
     handler: {
       setVisible,
@@ -212,6 +221,8 @@ export default function Hook() {
       resetState,
       getDivisions,
       setDivision,
+      setShowFilter,
+      setPagination,
     },
   };
 }

@@ -45,6 +45,12 @@ export default function Hook() {
 
   const [divisions, setDivisions] = useState<DivisionInterface[]>([]);
   const [division, setDivision] = useState<DivisionInterface>();
+  const [showFilter, setShowFilter] = useState(false);
+  const [filters, setFilters] = useState({
+    search: "",
+    type: 0,
+  });
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
 
   const getDivisions = async () => {
     setIsLoadingData(true);
@@ -128,6 +134,7 @@ export default function Hook() {
   const resetState = () => {
     form.reset();
     setVisible({ show: false, title: "", type: 1 });
+    setShowFilter(false);
   };
 
   useEffect(() => {
@@ -144,6 +151,8 @@ export default function Hook() {
       formMarking: { fields, append, remove },
       openCombobox,
       isLoadingData,
+      showFilter,
+      pagination,
     },
     handler: {
       setVisible,
@@ -153,6 +162,8 @@ export default function Hook() {
       setOpenCombobox,
       resetState,
       handleUpdate,
+      setShowFilter,
+      setPagination,
     },
   };
 }

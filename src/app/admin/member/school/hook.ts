@@ -29,12 +29,18 @@ export default function Hook() {
     title: "",
     type: 1,
   });
+  const [showFilter, setShowFilter] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [schools, setSchools] = useState<ParticipantSchoolInterface[]>([]);
   const [school, setSchool] = useState<ParticipantSchoolInterface>();
   const [users, setUsers] = useState<UserInterface[]>([]);
   const [user, setUser] = useState<UserInterface>();
+  const [filters, setFilters] = useState({
+    search: "",
+    type: 0,
+  });
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
@@ -50,7 +56,6 @@ export default function Hook() {
   });
 
   const handleSubmit = async (data: z.infer<typeof schemaForm>) => {
-    console.log(data);
     try {
       const response = await postData(
         API_PATH_CONSTANT.PARTICIPANT.SCHOOL.CREATE,
@@ -178,12 +183,16 @@ export default function Hook() {
       participant_school_type: "",
     });
     setUser(undefined);
+    setShowFilter(false);
   };
 
   useEffect(() => {
     getUser();
-    getSchools();
   }, []);
+
+  useEffect(() => {
+    getSchools();
+  }, [pagination]);
 
   return {
     state: {
@@ -197,6 +206,8 @@ export default function Hook() {
       users,
       user,
       isLoadingData,
+      showFilter,
+      pagination,
     },
     handler: {
       setVisible,
@@ -208,6 +219,8 @@ export default function Hook() {
       setOpenComboboxSchool,
       resetState,
       setUser,
+      setShowFilter,
+      setPagination,
     },
   };
 }

@@ -38,17 +38,26 @@ export default function UserAdminPage() {
     >
       <Flex align={"center"} justify={"between"}>
         <Heading>Daftar Pengguna Peserta</Heading>
-        <Button
-          onClick={() =>
-            handler.setVisible({
-              show: true,
-              type: 1,
-              title: "Tambah Peserta Baru",
-            })
-          }
-        >
-          <Plus /> Tambah Baru
-        </Button>
+
+        <Flex>
+          <Input
+            className="w-64 me-3"
+            type="search"
+            placeholder="Cari berdasarkan nama dan akun"
+          />
+
+          <Button
+            onClick={() =>
+              handler.setVisible({
+                show: true,
+                type: 1,
+                title: "Tambah Peserta Baru",
+              })
+            }
+          >
+            <Plus /> Tambah Baru
+          </Button>
+        </Flex>
       </Flex>
 
       <DataTable

@@ -3,6 +3,7 @@ import DashboardLayout from "@/layout/dashboard-layout";
 import { Flex, Heading } from "@radix-ui/themes";
 import { columns } from "./columns";
 import Hook from "./hook";
+import { Input } from "@/components/ui/input";
 
 export default function ContactPage() {
   const { state, handler } = Hook();
@@ -17,6 +18,14 @@ export default function ContactPage() {
     >
       <Flex align={"center"} justify={"between"}>
         <Heading>Kontak Masuk</Heading>
+
+        <div>
+          <Input
+            className="w-64"
+            type="search"
+            placeholder="Cari berdasarkan nama dan pesan"
+          />
+        </div>
       </Flex>
 
       <DataTable

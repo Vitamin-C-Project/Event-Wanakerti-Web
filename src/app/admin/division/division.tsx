@@ -11,7 +11,7 @@ import Hook from "./hook";
 import { Input } from "@/components/ui/input";
 import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Plus, X } from "lucide-react";
+import { Check, ChevronsUpDown, Filter, Plus, X } from "lucide-react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import {
   Dialog,
@@ -36,6 +36,23 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { DataTable } from "@/components/data-table";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function DivisionPage() {
   const { state, handler } = Hook();
@@ -50,17 +67,27 @@ export default function DivisionPage() {
     >
       <Flex align={"center"} justify={"between"}>
         <Heading>Daftar Divisi</Heading>
-        <Button
-          onClick={() =>
-            handler.setVisible({
-              show: true,
-              type: 1,
-              title: "Tambah Divisi Baru",
-            })
-          }
-        >
-          <Plus /> Tambah Baru
-        </Button>
+
+        <Flex>
+          <Button
+            variant={"secondary"}
+            className="me-3"
+            onClick={() => handler.setShowFilter(true)}
+          >
+            <Filter /> Filter
+          </Button>
+          <Button
+            onClick={() =>
+              handler.setVisible({
+                show: true,
+                type: 1,
+                title: "Tambah Divisi Baru",
+              })
+            }
+          >
+            <Plus /> Tambah Baru
+          </Button>
+        </Flex>
       </Flex>
 
       <DataTable
@@ -71,6 +98,57 @@ export default function DivisionPage() {
         data={state.divisions}
         isLoadingData={state.isLoadingData}
       />
+
+      <Drawer
+        direction="right"
+        open={state.showFilter}
+        onOpenChange={() => handler.setShowFilter(false)}
+      >
+        <DrawerContent
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DrawerHeader>
+            <DrawerTitle>Semua Jenis Filter dan Pencarian</DrawerTitle>
+          </DrawerHeader>
+          <Flex direction={"column"} className="px-4">
+            <Flex direction={"column"} className="w-full mb-5">
+              <Label htmlFor="search" className="mb-2">
+                Pencarian
+              </Label>
+              <Input
+                id="search"
+                type="text"
+                placeholder="Pencarian berdasarkan nama"
+                disabled={state.isLoadingForm}
+              />
+            </Flex>
+            <Flex direction={"column"} className="w-full mb-5">
+              <Label htmlFor="type" className="mb-2">
+                Divisi
+              </Label>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="0">Semua Divisi</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </Flex>
+          </Flex>
+          <DrawerFooter>
+            <Button>Terapkan Filter</Button>
+            <DrawerClose>
+              <Button variant="outline" className="w-full">
+                Batal
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
       <Dialog
         open={state.visible.show}

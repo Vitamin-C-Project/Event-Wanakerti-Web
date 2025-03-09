@@ -3,7 +3,7 @@ import Hook from "./hook";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Loader2, Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Filter, Loader2, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import {
   Dialog,
@@ -35,8 +35,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export default function SchoolPage() {
   const { state, handler } = Hook();
@@ -51,17 +69,26 @@ export default function SchoolPage() {
     >
       <Flex align={"center"} justify={"between"}>
         <Heading>Data Pangkalan</Heading>
-        <Button
-          onClick={() =>
-            handler.setVisible({
-              show: true,
-              type: 1,
-              title: "Tambah Pangkalan Baru",
-            })
-          }
-        >
-          <Plus /> Tambah Baru
-        </Button>
+        <Flex>
+          <Button
+            variant={"secondary"}
+            className="me-3"
+            onClick={() => handler.setShowFilter(true)}
+          >
+            <Filter /> Filter
+          </Button>
+          <Button
+            onClick={() =>
+              handler.setVisible({
+                show: true,
+                type: 1,
+                title: "Tambah Pangkalan Baru",
+              })
+            }
+          >
+            <Plus /> Tambah Baru
+          </Button>
+        </Flex>
       </Flex>
 
       <DataTable
@@ -72,6 +99,62 @@ export default function SchoolPage() {
         data={state.schools}
         isLoadingData={state.isLoadingData}
       />
+
+      <Drawer
+        direction="right"
+        open={state.showFilter}
+        onOpenChange={() => handler.setShowFilter(false)}
+      >
+        <DrawerContent
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DrawerHeader>
+            <DrawerTitle>Semua Jenis Filter dan Pencarian</DrawerTitle>
+          </DrawerHeader>
+          <Flex direction={"column"} className="px-4">
+            <Flex direction={"column"} className="w-full mb-5">
+              <Label htmlFor="search" className="mb-2">
+                Pencarian
+              </Label>
+              <Input
+                id="search"
+                type="text"
+                placeholder="Pencarian berdasarkan nama pangkalan dan kontak"
+                disabled={state.isLoadingForm}
+              />
+            </Flex>
+            <Flex direction={"column"} className="w-full">
+              <Label htmlFor="type" className="mb-2">
+                Jenis Pangkalan
+              </Label>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="0">Semua Jenis</SelectItem>
+                    {state.schoolTypes.map((type) => (
+                      <SelectItem value={type.VALUE} key={type.KEY}>
+                        {type.VALUE}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </Flex>
+          </Flex>
+          <DrawerFooter>
+            <Button>Terapkan Filter</Button>
+            <DrawerClose>
+              <Button variant="outline" className="w-full">
+                Batal
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
       <Dialog
         open={state.visible.show}

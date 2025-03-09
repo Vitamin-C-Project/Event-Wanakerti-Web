@@ -7,7 +7,7 @@ import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { z } from "zod";
 
@@ -55,6 +55,12 @@ export default function Hook() {
   const [openCombobox, setOpenCombobox] = useState(false);
   const [teams, setTeams] = useState<ParticipantTeamInterface[]>([]);
   const [members, setMembers] = useState<ParticipantTeamMemberInterface[]>([]);
+  const [showFilter, setShowFilter] = useState(false);
+  const [filters, setFilters] = useState({
+    search: "",
+    type: 0,
+  });
+  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
@@ -152,6 +158,7 @@ export default function Hook() {
   const resetState = () => {
     setVisible({ show: false, title: "", type: 1 });
     form.reset();
+    setShowFilter(false);
   };
 
   useEffect(() => {
@@ -168,6 +175,8 @@ export default function Hook() {
       isLoadingForm,
       teams,
       isLoadingData,
+      showFilter,
+      pagination,
     },
     handler: {
       setVisible,
@@ -176,6 +185,8 @@ export default function Hook() {
       setOpenCombobox,
       setIsLoadingForm,
       resetState,
+      setShowFilter,
+      setPagination,
     },
   };
 }

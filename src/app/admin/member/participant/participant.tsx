@@ -2,7 +2,7 @@ import { columns } from "./columns";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Loader2, Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Filter, Loader2, Plus } from "lucide-react";
 import Hook from "./hook";
 import {
   Dialog,
@@ -37,10 +37,20 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { Label } from "@/components/ui/label";
 
 import { cn } from "@/lib/utils";
 import { DataTable } from "./data-table";
@@ -58,17 +68,27 @@ export default function ParticipantPage() {
     >
       <Flex align={"center"} justify={"between"}>
         <Heading>Data Peserta</Heading>
-        <Button
-          onClick={() =>
-            handler.setVisible({
-              show: true,
-              type: 1,
-              title: "Tambah Peserta Baru",
-            })
-          }
-        >
-          <Plus /> Tambah Baru
-        </Button>
+
+        <Flex>
+          <Button
+            variant={"secondary"}
+            className="me-3"
+            onClick={() => handler.setShowFilter(true)}
+          >
+            <Filter /> Filter
+          </Button>
+          <Button
+            onClick={() =>
+              handler.setVisible({
+                show: true,
+                type: 1,
+                title: "Tambah Peserta Baru",
+              })
+            }
+          >
+            <Plus /> Tambah Baru
+          </Button>
+        </Flex>
       </Flex>
 
       <DataTable
@@ -78,6 +98,72 @@ export default function ParticipantPage() {
         data={state.members}
         isLoadingData={state.isLoadingData}
       />
+
+      <Drawer
+        direction="right"
+        open={state.showFilter}
+        onOpenChange={() => handler.setShowFilter(false)}
+      >
+        <DrawerContent
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DrawerHeader>
+            <DrawerTitle>Semua Jenis Filter dan Pencarian</DrawerTitle>
+          </DrawerHeader>
+          <Flex direction={"column"} className="px-4">
+            <Flex direction={"column"} className="w-full mb-5">
+              <Label htmlFor="search" className="mb-2">
+                Pencarian
+              </Label>
+              <Input
+                id="search"
+                type="text"
+                placeholder="Pencarian berdasarkan nama peserta"
+                disabled={state.isLoadingForm}
+              />
+            </Flex>
+            <Flex direction={"column"} className="w-full mb-5">
+              <Label htmlFor="type" className="mb-2">
+                Asal Pangkalan
+              </Label>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="0">Semua Pangkalan</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </Flex>
+            <Flex direction={"column"} className="w-full mb-5">
+              <Label htmlFor="type" className="mb-2">
+                Tim
+              </Label>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="0">Semua Tim</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </Flex>
+          </Flex>
+          <DrawerFooter>
+            <Button>Terapkan Filter</Button>
+            <DrawerClose>
+              <Button variant="outline" className="w-full">
+                Batal
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
       <Dialog
         open={state.visible.show}

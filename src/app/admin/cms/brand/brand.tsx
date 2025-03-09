@@ -36,17 +36,25 @@ export default function BrandPage() {
     >
       <Flex align={"center"} justify={"between"}>
         <Heading>Brand & Sponsor</Heading>
-        <Button
-          onClick={() =>
-            handler.setVisible({
-              show: true,
-              type: 1,
-              title: "Tambah Brand / Sponsor Baru",
-            })
-          }
-        >
-          <Plus /> Tambah Baru
-        </Button>
+
+        <Flex>
+          <Input
+            className="w-full me-3"
+            type="search"
+            placeholder="Cari berdasarkan nama"
+          />
+          <Button
+            onClick={() =>
+              handler.setVisible({
+                show: true,
+                type: 1,
+                title: "Tambah Brand / Sponsor Baru",
+              })
+            }
+          >
+            <Plus /> Tambah Baru
+          </Button>
+        </Flex>
       </Flex>
 
       <DataTable
