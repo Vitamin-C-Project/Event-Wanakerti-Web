@@ -21,6 +21,8 @@ import CategoriesPage from "@/app/admin/cms/categories/categories";
 import VideoPage from "@/app/admin/cms/video/video";
 import BrandPage from "@/app/admin/cms/brand/brand";
 import ContactPage from "@/app/admin/cms/contact/contact";
+import ProtectedRoute from "./protected-route";
+import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 
 export default function Routes() {
   return (
@@ -37,22 +39,33 @@ export default function Routes() {
         <Route path="/dashboard" element={<AppLayout />}>
           <Route index element={<DashboardAdminPage />} />
 
-          <Route path="divisions" element={<DivisionPage />} />
+          <Route
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  USER_TYPE_CONSTANT.ADMIN,
+                  USER_TYPE_CONSTANT.SUPER_ADMIN,
+                ]}
+              />
+            }
+          >
+            <Route path="divisions" element={<DivisionPage />} />
 
-          <Route path="users">
-            <Route index element={<UserParticipantPage />} />
-            <Route path="admin" element={<UserAdminPage />} />
-            <Route path="participant" element={<UserParticipantPage />} />
-          </Route>
+            <Route path="users">
+              <Route index element={<UserParticipantPage />} />
+              <Route path="admin" element={<UserAdminPage />} />
+              <Route path="participant" element={<UserParticipantPage />} />
+            </Route>
 
-          <Route path="cms">
-            <Route index element={<MascotLogoPage />} />
-            <Route path="mascot-logo" element={<MascotLogoPage />} />
-            <Route path="agenda" element={<AgendaPage />} />
-            <Route path="categories" element={<CategoriesPage />} />
-            <Route path="video" element={<VideoPage />} />
-            <Route path="brand-sponsorship" element={<BrandPage />} />
-            <Route path="contact" element={<ContactPage />} />
+            <Route path="cms">
+              <Route index element={<MascotLogoPage />} />
+              <Route path="mascot-logo" element={<MascotLogoPage />} />
+              <Route path="agenda" element={<AgendaPage />} />
+              <Route path="categories" element={<CategoriesPage />} />
+              <Route path="video" element={<VideoPage />} />
+              <Route path="brand-sponsorship" element={<BrandPage />} />
+              <Route path="contact" element={<ContactPage />} />
+            </Route>
           </Route>
 
           <Route path="member">
@@ -63,13 +76,13 @@ export default function Routes() {
           </Route>
         </Route>
 
-        <Route path="/member" element={<AppLayout />}>
+        {/* <Route path="/member" element={<AppLayout />}>
           <Route index element={<DashboardMemberPage />} />
           <Route path="edit-school" element={<EditSchoolPage />} />
           <Route path="teams" element={<MemberTeamPage />} />
           <Route path="teams/:id" element={<DetailTeamPage />} />
           <Route path="participants" element={<MemberParticipantPage />} />
-        </Route>
+        </Route> */}
       </ReactRoutes>
     </BrowserRouter>
   );
