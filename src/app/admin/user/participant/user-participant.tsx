@@ -32,12 +32,12 @@ export default function UserAdminPage() {
       breadcrumbs={[
         { title: "Dasbor", href: "/dashboard" },
         { title: "Pengaturan", href: "/dashboard/users/participant" },
-        { title: "Pengguna", href: "/dashboard/users/participant" },
+        { title: "Data Akun", href: "/dashboard/users/participant" },
         { title: "Peserta", href: "/dashboard/users/participant" },
       ]}
     >
       <Flex align={"center"} justify={"between"}>
-        <Heading>Daftar Pengguna Peserta</Heading>
+        <Heading>Data Akun Peserta</Heading>
 
         <Flex>
           <Input

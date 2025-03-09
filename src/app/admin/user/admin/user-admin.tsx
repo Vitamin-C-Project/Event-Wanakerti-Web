@@ -32,12 +32,12 @@ export default function UserAdminPage() {
       breadcrumbs={[
         { title: "Dasbor", href: "/dashboard" },
         { title: "Pengaturan", href: "/dashboard/users/admin" },
-        { title: "Pengguna", href: "/dashboard/users/admin" },
+        { title: "Data Akun", href: "/dashboard/users/admin" },
         { title: "Admin", href: "/dashboard/users/admin" },
       ]}
     >
       <Flex align={"center"} justify={"between"}>
-        <Heading>Daftar Pengguna Admin</Heading>
+        <Heading>Data Akun Admin</Heading>
         <Flex>
           <Input
             className="w-64 me-3"
