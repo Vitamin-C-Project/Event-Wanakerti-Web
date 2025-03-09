@@ -32,9 +32,11 @@ function Hook() {
     navigate("/auth/login");
   };
 
+  const redirect = (path: string) => navigate(path);
+
   return {
     state: { isMobile },
-    handler: { handleLogout },
+    handler: { handleLogout, redirect },
   };
 }
 
@@ -87,7 +89,9 @@ export function NavUser({ user }: { user: UserInterface }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handler.redirect("/dashboard/profile")}
+              >
                 <BadgeCheck />
                 Profil Saya
               </DropdownMenuItem>

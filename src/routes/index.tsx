@@ -23,6 +23,7 @@ import BrandPage from "@/app/admin/cms/brand/brand";
 import ContactPage from "@/app/admin/cms/contact/contact";
 import ProtectedRoute from "./protected-route";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
+import ProfilePage from "@/app/admin/profile/profile";
 
 export default function Routes() {
   return (
@@ -74,15 +75,9 @@ export default function Routes() {
             <Route path="teams" element={<TeamPage />} />
             <Route path="participants" element={<ParticipantPage />} />
           </Route>
-        </Route>
 
-        {/* <Route path="/member" element={<AppLayout />}>
-          <Route index element={<DashboardMemberPage />} />
-          <Route path="edit-school" element={<EditSchoolPage />} />
-          <Route path="teams" element={<MemberTeamPage />} />
-          <Route path="teams/:id" element={<DetailTeamPage />} />
-          <Route path="participants" element={<MemberParticipantPage />} />
-        </Route> */}
+          <Route path="profile" element={<ProfilePage />} />
+        </Route>
       </ReactRoutes>
     </BrowserRouter>
   );
