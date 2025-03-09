@@ -6,6 +6,7 @@ import { ColumnDef } from "@tanstack/react-table";
 type childProps = {
   edit: (data: UserInterface) => void;
   delete: (data: UserInterface) => void;
+  editPassword: (data: UserInterface) => void;
 };
 
 export const columns = (props: childProps): ColumnDef<UserInterface>[] => {
@@ -30,12 +31,19 @@ export const columns = (props: childProps): ColumnDef<UserInterface>[] => {
         return (
           <Flex align="center" gap={"2"}>
             <Button
-              variant={"secondary"}
               size="sm"
               className="me-3"
               onClick={() => props.edit(original)}
             >
-              Edit
+              Edit Profil
+            </Button>
+            <Button
+              variant={"secondary"}
+              size="sm"
+              onClick={() => props.editPassword(original)}
+              className="me-3"
+            >
+              Edit Password
             </Button>
             <Button
               size="sm"

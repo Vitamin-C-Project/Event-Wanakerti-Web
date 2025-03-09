@@ -81,11 +81,35 @@ export default function Hook() {
     setVisible({ show: true, title: `Edit Akun ${data.name}`, type: 2 });
   };
 
+  const handleEditPassword = (data: UserInterface) => {
+    form.reset({ email: data.email, name: data.name, password: "" });
+    setUser(data);
+    setVisible({ show: true, title: `Ubah Password ${data.name}`, type: 3 });
+  };
+
   const handleUpdate = async (data: z.infer<typeof schemaForm>) => {
     setIsLoadingForm(true);
     try {
       const response = await postData(API_PATH_CONSTANT.USER.UPDATE, {
         ...data,
+        uid: user?.id,
+      });
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      resetState();
+      getUsers();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingForm(false);
+    }
+  };
+
+  const handleUpdatePassword = async (data: z.infer<typeof schemaForm>) => {
+    setIsLoadingForm(true);
+    try {
+      const response = await postData(API_PATH_CONSTANT.USER.UPDATE_PASSWORD, {
+        ...data,
+        password_confirmation: data.password,
         uid: user?.id,
       });
       toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
@@ -151,6 +175,8 @@ export default function Hook() {
       handleEdit,
       handleDelete,
       handleUpdate,
+      handleEditPassword,
+      handleUpdatePassword,
       setPagination,
       resetState,
     },

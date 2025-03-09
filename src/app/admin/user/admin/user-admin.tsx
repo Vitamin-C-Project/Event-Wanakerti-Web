@@ -55,6 +55,7 @@ export default function UserAdminPage() {
         columns={columns({
           edit: handler.handleEdit,
           delete: handler.handleDelete,
+          editPassword: handler.handleEditPassword,
         })}
         data={state.users}
         isLoadingData={state.isLoadingData}
@@ -79,49 +80,55 @@ export default function UserAdminPage() {
               onSubmit={
                 state.visible.type == 1
                   ? state.form.handleSubmit(handler.handleSubmit)
-                  : state.form.handleSubmit(handler.handleUpdate)
+                  : state.visible.type == 2
+                  ? state.form.handleSubmit(handler.handleUpdate)
+                  : state.form.handleSubmit(handler.handleUpdatePassword)
               }
               className="space-y-4"
             >
-              <FormField
-                control={state.form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="name">Nama Lengkap</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="name"
-                        type="text"
-                        placeholder=""
-                        {...field}
-                        disabled={state.isLoadingForm}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={state.form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="email">Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="email"
-                        type="text"
-                        placeholder=""
-                        {...field}
-                        disabled={state.isLoadingForm}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {state.visible.type == 1 && (
+              {(state.visible.type == 1 || state.visible.type == 2) && (
+                <>
+                  <FormField
+                    control={state.form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="name">Nama Lengkap</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="name"
+                            type="text"
+                            placeholder=""
+                            {...field}
+                            disabled={state.isLoadingForm}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={state.form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="email">Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="email"
+                            type="text"
+                            placeholder=""
+                            {...field}
+                            disabled={state.isLoadingForm}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+              {(state.visible.type == 1 || state.visible.type == 3) && (
                 <FormField
                   control={state.form.control}
                   name="password"
@@ -135,7 +142,9 @@ export default function UserAdminPage() {
                           placeholder=""
                           {...field}
                           value={field.value || ""}
-                          disabled
+                          disabled={
+                            state.visible.type == 1 || state.isLoadingForm
+                          }
                         />
                       </FormControl>
                       <FormMessage />
