@@ -5,6 +5,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import { makeStore, AppStore } from "@/lib/store";
 import { persistStore } from "redux-persist";
 import { LoaderPage } from "./components/ui/loader-page";
+import { Theme } from "@radix-ui/themes";
+import "@radix-ui/themes/styles.css";
 
 function App() {
   const storeRef = useRef<AppStore | null>(null);
@@ -18,7 +20,9 @@ function App() {
         loading={<LoaderPage />}
         persistor={persistStore(storeRef.current)}
       >
-        <Routes />
+        <Theme>
+          <Routes />
+        </Theme>
       </PersistGate>
     </Provider>
   );

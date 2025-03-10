@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 
 export default function ProfilePage() {
   const { state, handler } = Hook();
@@ -31,7 +32,12 @@ export default function ProfilePage() {
       <Grid className="auto-rows-min gap-4" columns={{ md: "2" }}>
         <Card className="w-full">
           <Form {...state.formProfile}>
-            <form className="space-y-4">
+            <form
+              className="space-y-4"
+              onSubmit={state.formProfile.handleSubmit(
+                handler.handleUpdateProfile
+              )}
+            >
               <CardContent className="space-y-4">
                 <FormField
                   control={state.formProfile.control}
@@ -69,14 +75,26 @@ export default function ProfilePage() {
                 />
               </CardContent>
               <CardFooter className="justify-end">
-                <Button type="submit">Simpan</Button>
+                {state.isLoadingProfile ? (
+                  <Button disabled>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <span>Loading...</span>
+                  </Button>
+                ) : (
+                  <Button type="submit">Simpan</Button>
+                )}
               </CardFooter>
             </form>
           </Form>
         </Card>
         <Card className="w-full">
           <Form {...state.formPassword}>
-            <form className="space-y-4">
+            <form
+              className="space-y-4"
+              onSubmit={state.formPassword.handleSubmit(
+                handler.handleUpdatePassword
+              )}
+            >
               <CardContent className="space-y-4">
                 <FormField
                   control={state.formPassword.control}
@@ -114,7 +132,14 @@ export default function ProfilePage() {
                 />
               </CardContent>
               <CardFooter className="justify-end">
-                <Button type="submit">Ubah Password</Button>
+                {state.isLoadingProfile ? (
+                  <Button disabled>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <span>Loading...</span>
+                  </Button>
+                ) : (
+                  <Button type="submit">Ubah Password</Button>
+                )}
               </CardFooter>
             </form>
           </Form>

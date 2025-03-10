@@ -1,5 +1,6 @@
-import { API_PATH_CONSTANT } from "@/constants/api_constant";
+import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { UserInterface } from "@/interfaces/user_interface";
+import { toastRender } from "@/lib/alert";
 import { useAppDispatch } from "@/lib/hooks";
 import { setUserAuthenticated } from "@/lib/slices/user_slice";
 import { postData } from "@/lib/utils";
@@ -35,6 +36,7 @@ export default function Hook() {
     },
   });
 
+  const [user, setUser] = useState<UserInterface>();
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [isLoadingPassword, setIsLoadingPassword] = useState(false);
   const dispatch = useAppDispatch();
@@ -47,6 +49,7 @@ export default function Hook() {
         {}
       );
 
+      setUser(response.data.data);
       dispatch(setUserAuthenticated(response.data.data));
       formProfile.setValue("name", response.data.data.name);
       formProfile.setValue("email", response.data.data.email);
@@ -56,11 +59,42 @@ export default function Hook() {
     }
   };
 
-  const handleUpdateProfile = async (data: z.infer<typeof schemaForm>) => {};
+  const handleUpdateProfile = async (data: z.infer<typeof schemaForm>) => {
+    setIsLoadingProfile(true);
 
-  const handleUpdatePassword = async (
-    data: z.infer<typeof schemaPassword>
-  ) => {};
+    try {
+      const response = await postData(API_PATH_CONSTANT.USER.UPDATE, {
+        ...data,
+        uid: user?.id,
+      });
+
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      getUserAuth();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
+
+  const handleUpdatePassword = async (data: z.infer<typeof schemaPassword>) => {
+    setIsLoadingPassword(true);
+
+    try {
+      const response = await postData(API_PATH_CONSTANT.USER.UPDATE_PASSWORD, {
+        ...data,
+        password_confirmation: data.password,
+        uid: user?.id,
+      });
+
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      getUserAuth();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingPassword(false);
+    }
+  };
 
   useEffect(() => {
     getUserAuth();
