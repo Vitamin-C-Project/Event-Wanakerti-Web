@@ -1,13 +1,16 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
+import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import {
   ParticipantTeamInterface,
   ParticipantTeamMemberInterface,
 } from "@/interfaces/participant_interface";
 import { toastRender } from "@/lib/alert";
+import { useAppSelector } from "@/lib/hooks";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { z } from "zod";
 
@@ -45,6 +48,7 @@ const schemaForm = z.object({
 });
 
 export default function Hook() {
+  const navigate = useNavigate();
   const [visible, setVisible] = useState({
     show: false,
     title: "",
@@ -61,6 +65,7 @@ export default function Hook() {
     type: 0,
   });
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+  const user = useAppSelector((state) => state.user.userAuthenticated);
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
@@ -164,11 +169,20 @@ export default function Hook() {
   useEffect(() => {
     getTeams();
     getMembers();
+
+    if (
+      [USER_TYPE_CONSTANT.PARTICIPANT].includes(user?.role?.id!) &&
+      !user.school
+    ) {
+      navigate("/dashboard");
+    }
   }, []);
 
   return {
     state: {
+      user,
       members,
+      userType: USER_TYPE_CONSTANT,
       visible,
       form,
       openCombobox,

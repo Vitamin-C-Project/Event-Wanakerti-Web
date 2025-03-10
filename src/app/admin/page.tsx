@@ -9,6 +9,7 @@ import MaskotPng from "@/assets/img/maskot.png";
 import LogoPng from "@/assets/img/logo-wanakerti.png";
 import { useAppSelector } from "@/lib/hooks";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
+import RegisterSchool from "./(components)/register-school/register-school";
 
 export default function DashboardPage() {
   const [app, setApp] = useState({});
@@ -95,38 +96,45 @@ export default function DashboardPage() {
         </Grid>
       )}
 
-      <Grid className="auto-rows-min" gap={"4"} columns={{ md: "2" }}>
-        <Card>
-          <CardHeader>
-            <Flex align={"center"} justify={"between"}>
-              <CardTitle>Logo</CardTitle>
-            </Flex>
-          </CardHeader>
-          <CardContent className="flex justify-center items-center">
-            <img
-              src={contents.theme ? contents.theme.logo : LogoPng}
-              alt=""
-              style={{ height: 200 }}
-              onError={(e) => (e.currentTarget.src = LogoPng)}
-            />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <Flex align={"center"} justify={"between"}>
-              <CardTitle>Maskot</CardTitle>
-            </Flex>
-          </CardHeader>
-          <CardContent className="flex justify-center items-center">
-            <img
-              src={contents.theme ? contents.theme.mascot : MaskotPng}
-              alt=""
-              style={{ height: 200 }}
-              onError={(e) => (e.currentTarget.src = MaskotPng)}
-            />
-          </CardContent>
-        </Card>
-      </Grid>
+      {/* {JSON.stringify(user.)} */}
+
+      {[USER_TYPE_CONSTANT.PARTICIPANT].includes(user.role?.id!) &&
+        (user.school ? (
+          <Grid className="auto-rows-min" gap={"4"} columns={{ md: "2" }}>
+            <Card>
+              <CardHeader>
+                <Flex align={"center"} justify={"between"}>
+                  <CardTitle>Logo</CardTitle>
+                </Flex>
+              </CardHeader>
+              <CardContent className="flex justify-center items-center">
+                <img
+                  src={contents.theme ? contents.theme.logo : LogoPng}
+                  alt=""
+                  style={{ height: 200 }}
+                  onError={(e) => (e.currentTarget.src = LogoPng)}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <Flex align={"center"} justify={"between"}>
+                  <CardTitle>Maskot</CardTitle>
+                </Flex>
+              </CardHeader>
+              <CardContent className="flex justify-center items-center">
+                <img
+                  src={contents.theme ? contents.theme.mascot : MaskotPng}
+                  alt=""
+                  style={{ height: 200 }}
+                  onError={(e) => (e.currentTarget.src = MaskotPng)}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+        ) : (
+          <RegisterSchool />
+        ))}
     </DashboardLayout>
   );
 }

@@ -19,6 +19,8 @@ export const API_PATH_CONSTANT = {
       SHOW: "participant/team/show",
       UPDATE: "participant/team/update",
       DELETE: "participant/team/delete",
+      UPDATE_STATUS_RE_REGISTRATION:
+        "participant/team/update-status-re-registration",
     },
     MEMBER: {
       LIST: "participant/team-member/list",

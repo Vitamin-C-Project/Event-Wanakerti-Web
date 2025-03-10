@@ -1,15 +1,17 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
+import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import { DivisionInterface } from "@/interfaces/division_interface";
 import {
   ParticipantSchoolInterface,
   ParticipantTeamInterface,
 } from "@/interfaces/participant_interface";
 import { alertSuccess, toastRender } from "@/lib/alert";
+import { useAppSelector } from "@/lib/hooks";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { set, useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { z } from "zod";
 
@@ -23,6 +25,8 @@ const schemaForm = z.object({
 
 export default function Hook() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const user = useAppSelector((state) => state.user.userAuthenticated);
 
   const [openComboboxSchool, setOpenComboboxSchool] = useState(false);
   const [openComboboxDivision, setOpenComboboxDivision] = useState(false);
@@ -118,6 +122,24 @@ export default function Hook() {
     }
   };
 
+  const handleUpdateReRegistration = async (data: ParticipantTeamInterface) => {
+    setIsLoadingData(true);
+    try {
+      const response = await postData(
+        API_PATH_CONSTANT.PARTICIPANT.TEAM.UPDATE_STATUS_RE_REGISTRATION,
+        {
+          teams: [{ id: data?.id, re_registration_status: 1 }],
+        }
+      );
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      getTeams();
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
   const handleDelete = (data: ParticipantTeamInterface) => {
     Swal.fire({
       title: "Apa kamu yakin?",
@@ -189,10 +211,23 @@ export default function Hook() {
   useEffect(() => {
     getSchools();
     getTeams();
+
+    if (
+      [USER_TYPE_CONSTANT.PARTICIPANT].includes(user?.role?.id!) &&
+      !user.school
+    ) {
+      navigate("/dashboard");
+    }
+
+    if ([USER_TYPE_CONSTANT.PARTICIPANT].includes(user?.role?.id!)) {
+      form.setValue("school", user?.school?.id?.toString() || "");
+      getDivisions(user?.school!);
+    }
   }, []);
 
   return {
     state: {
+      user,
       teams,
       form,
       isLoadingForm,
@@ -207,6 +242,7 @@ export default function Hook() {
       division,
       showFilter,
       pagination,
+      userType: USER_TYPE_CONSTANT,
     },
     handler: {
       setVisible,
@@ -214,6 +250,7 @@ export default function Hook() {
       handleEdit,
       handleDelete,
       handleUpdate,
+      handleUpdateReRegistration,
       register,
       setOpenComboboxSchool,
       setOpenComboboxDivision,

@@ -9,11 +9,7 @@ import DashboardAdminPage from "@/app/admin/page";
 import UserAdminPage from "@/app/admin/user/admin/user-admin";
 import UserParticipantPage from "@/app/admin/user/participant/user-participant";
 import { BrowserRouter, Routes as ReactRoutes, Route } from "react-router-dom";
-import DashboardMemberPage from "@/app/member/page";
-import MemberTeamPage from "@/app/member/team/team";
-import MemberParticipantPage from "@/app/member/participant/participant";
-import EditSchoolPage from "@/app/member/school/edit";
-import DetailTeamPage from "@/app/admin/member/team/detail/page";
+import EditSchoolPage from "@/app/admin/member/edit-school/edit-school";
 import AppLayout from "@/app/layout/app-layout";
 import MascotLogoPage from "@/app/admin/cms/mascot-logo/mascot-logo";
 import AgendaPage from "@/app/admin/cms/agenda/agenda";
@@ -67,13 +63,23 @@ export default function Routes() {
               <Route path="brand-sponsorship" element={<BrandPage />} />
               <Route path="contact" element={<ContactPage />} />
             </Route>
+
+            <Route path="member/schools" element={<SchoolPage />} />
           </Route>
 
           <Route path="member">
-            <Route index element={<SchoolPage />} />
-            <Route path="schools" element={<SchoolPage />} />
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[USER_TYPE_CONSTANT.PARTICIPANT]}
+                />
+              }
+            >
+              <Route path="edit-school" element={<EditSchoolPage />} />
+            </Route>
             <Route path="teams" element={<TeamPage />} />
             <Route path="participants" element={<ParticipantPage />} />
+            <Route index element={<ParticipantPage />} />
           </Route>
 
           <Route path="profile" element={<ProfilePage />} />

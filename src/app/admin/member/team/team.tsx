@@ -94,6 +94,7 @@ export default function TeamPage() {
         columns={columns({
           edit: handler.handleEdit,
           delete: handler.handleDelete,
+          updateReRegistration: handler.handleUpdateReRegistration,
         })}
         data={state.teams}
         isLoadingData={state.isLoadingData}
@@ -123,21 +124,23 @@ export default function TeamPage() {
                 disabled={state.isLoadingForm}
               />
             </Flex>
-            <Flex direction={"column"} className="w-full mb-5">
-              <Label htmlFor="type" className="mb-2">
-                Asal Pangkalan
-              </Label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="0">Semua Pangkalan</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Flex>
+            {state.user.role?.id != state.userType.PARTICIPANT && (
+              <Flex direction={"column"} className="w-full mb-5">
+                <Label htmlFor="type" className="mb-2">
+                  Asal Pangkalan
+                </Label>
+                <Select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="0">Semua Pangkalan</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Flex>
+            )}
             <Flex direction={"column"} className="w-full mb-5">
               <Label htmlFor="type" className="mb-2">
                 Jenis Bidang Lomba
@@ -153,21 +156,23 @@ export default function TeamPage() {
                 </SelectContent>
               </Select>
             </Flex>
-            <Flex direction={"column"} className="w-full mb-5">
-              <Label htmlFor="type" className="mb-2">
-                Status
-              </Label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="0">Semua Status</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Flex>
+            {state.user.role?.id != state.userType.PARTICIPANT && (
+              <Flex direction={"column"} className="w-full mb-5">
+                <Label htmlFor="type" className="mb-2">
+                  Status
+                </Label>
+                <Select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="0">Semua Status</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Flex>
+            )}
           </Flex>
           <DrawerFooter>
             <Button>Terapkan Filter</Button>
@@ -201,7 +206,7 @@ export default function TeamPage() {
                   : state.form.handleSubmit(handler.handleUpdate)
               }
             >
-              {state.location.pathname.includes("/dashboard/member/teams") && (
+              {state.user.role?.id != state.userType.PARTICIPANT && (
                 <FormField
                   control={state.form.control}
                   name="school"
@@ -290,8 +295,9 @@ export default function TeamPage() {
                           <PopoverTrigger
                             asChild
                             disabled={
-                              state.form.getValues("school").length < 1 ||
-                              state.isLoadingForm
+                              (state.form.getValues("school").length < 1 ||
+                                state.isLoadingForm) &&
+                              state.user.role?.id != state.userType.PARTICIPANT
                             }
                           >
                             <Button
@@ -364,45 +370,51 @@ export default function TeamPage() {
                 )}
               />
 
-              <FormField
-                control={state.form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="status">Status Keikutsertaan</FormLabel>
-                    <FormControl>
-                      <Switch
-                        disabled={state.isLoadingForm}
-                        checked={field.value}
-                        {...handler.register("status")}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {state.user.role?.id != state.userType.PARTICIPANT && (
+                <>
+                  <FormField
+                    control={state.form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="status">
+                          Status Keikutsertaan
+                        </FormLabel>
+                        <FormControl>
+                          <Switch
+                            disabled={state.isLoadingForm}
+                            checked={field.value}
+                            {...handler.register("status")}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={state.form.control}
-                name="payment_status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="payment_status">
-                      Status Pembayaran
-                    </FormLabel>
-                    <FormControl>
-                      <Switch
-                        disabled={state.isLoadingForm}
-                        checked={field.value}
-                        {...handler.register("payment_status")}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <FormField
+                    control={state.form.control}
+                    name="payment_status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="payment_status">
+                          Status Pembayaran
+                        </FormLabel>
+                        <FormControl>
+                          <Switch
+                            disabled={state.isLoadingForm}
+                            checked={field.value}
+                            {...handler.register("payment_status")}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
               <DialogFooter>
                 {state.isLoadingForm ? (
                   <Button disabled>

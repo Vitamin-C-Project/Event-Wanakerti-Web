@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import { ParticipantTeamInterface } from "@/interfaces/participant_interface";
+import { useAppSelector } from "@/lib/hooks";
 import { Flex, Text } from "@radix-ui/themes";
 import { ColumnDef } from "@tanstack/react-table";
 import { CheckCircle, CircleX } from "lucide-react";
@@ -9,12 +11,14 @@ import { Link, useNavigate } from "react-router-dom";
 type childProps = {
   edit: (data: ParticipantTeamInterface) => void;
   delete: (data: ParticipantTeamInterface) => void;
+  updateReRegistration: (data: ParticipantTeamInterface) => void;
 };
 
 export const columns = (
   props: childProps
 ): ColumnDef<ParticipantTeamInterface>[] => {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.user.userAuthenticated);
 
   return [
     {
@@ -63,7 +67,13 @@ export const columns = (
           <CheckCircle className="text-green-500" />
         ) : (
           <Flex align={"center"} gap={"3"}>
-            <Switch /> <CircleX className="text-red-500 ms-2" />
+            {user.role?.id != USER_TYPE_CONSTANT.PARTICIPANT && (
+              <Switch
+                disabled={!original.payment_status}
+                onClick={() => props.updateReRegistration(original)}
+              />
+            )}
+            <CircleX className="text-red-500 ms-2" />
           </Flex>
         );
       },

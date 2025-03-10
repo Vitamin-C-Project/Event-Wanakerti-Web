@@ -123,21 +123,23 @@ export default function ParticipantPage() {
                 disabled={state.isLoadingForm}
               />
             </Flex>
-            <Flex direction={"column"} className="w-full mb-5">
-              <Label htmlFor="type" className="mb-2">
-                Asal Pangkalan
-              </Label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="0">Semua Pangkalan</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Flex>
+            {state.user.role?.id != state.userType.PARTICIPANT && (
+              <Flex direction={"column"} className="w-full mb-5">
+                <Label htmlFor="type" className="mb-2">
+                  Asal Pangkalan
+                </Label>
+                <Select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="0">Semua Pangkalan</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Flex>
+            )}
             <Flex direction={"column"} className="w-full mb-5">
               <Label htmlFor="type" className="mb-2">
                 Tim
