@@ -206,6 +206,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 ],
               },
               {
+                title: "Tim Penilaian",
+                url: "/dashboard/users/assessment-team",
+                role: [
+                  USER_TYPE_CONSTANT.ADMIN,
+                  USER_TYPE_CONSTANT.SUPER_ADMIN,
+                ],
+              },
+              {
                 title: "Peserta",
                 url: "/dashboard/users/participant",
                 role: [

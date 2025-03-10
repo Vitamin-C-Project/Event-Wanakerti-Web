@@ -91,6 +91,9 @@ export const API_PATH_CONSTANT = {
       SHOW: "cms/mascot-and-logo/show-activity",
     },
   },
+  ROLE: {
+    LIST: "role/list",
+  },
 };
 
 export const API_CODE_CONSTANT = {

@@ -7,6 +7,8 @@ export interface UserInterface extends CommonColumn {
   username: string;
   role?: RoleInterface;
   school?: ParticipantSchoolInterface;
+  user_type?: string;
+  role_id?: number;
 }
 
 export interface RoleInterface extends CommonColumn {

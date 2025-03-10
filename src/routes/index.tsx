@@ -20,6 +20,7 @@ import ContactPage from "@/app/admin/cms/contact/contact";
 import ProtectedRoute from "./protected-route";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import ProfilePage from "@/app/admin/profile/profile";
+import AssessmentTeamPage from "@/app/admin/user/assessment-team/assessment-team";
 
 export default function Routes() {
   return (
@@ -52,6 +53,7 @@ export default function Routes() {
               <Route index element={<UserParticipantPage />} />
               <Route path="admin" element={<UserAdminPage />} />
               <Route path="participant" element={<UserParticipantPage />} />
+              <Route path="assessment-team" element={<AssessmentTeamPage />} />
             </Route>
 
             <Route path="cms">
