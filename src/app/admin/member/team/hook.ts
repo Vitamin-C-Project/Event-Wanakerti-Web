@@ -178,9 +178,7 @@ export default function Hook() {
 
   const getDivisions = async (school: ParticipantSchoolInterface) => {
     try {
-      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {
-        school_type_id: school.school_type_id,
-      });
+      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {});
 
       setDivisions(response.data.data);
     } catch (error) {}

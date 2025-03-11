@@ -16,10 +16,6 @@ export const columns = (props: childProps): ColumnDef<DivisionInterface>[] => {
       header: "Nama Divisi",
     },
     {
-      accessorKey: "school_type.name",
-      header: "Tipe Divisi",
-    },
-    {
       accessorKey: "price",
       header: "Harga",
       cell: ({ row }) => {

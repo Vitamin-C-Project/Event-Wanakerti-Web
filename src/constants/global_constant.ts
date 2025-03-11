@@ -2,6 +2,7 @@ export const USER_TYPE_CONSTANT = {
   SUPER_ADMIN: 1,
   ADMIN: 2,
   PARTICIPANT: 3,
+  JUDGE: 4,
 };
 
 export const AGENDA_NAME = {

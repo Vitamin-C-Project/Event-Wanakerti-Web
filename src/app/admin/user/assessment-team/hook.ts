@@ -1,8 +1,12 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import { IMeta } from "@/interfaces/common";
-import { RoleInterface, UserInterface } from "@/interfaces/user_interface";
-import { alertRender, alertSuccess, toastRender } from "@/lib/alert";
+import {
+  DivisionInterface,
+  MarkingInterface,
+} from "@/interfaces/division_interface";
+import { UserInterface } from "@/interfaces/user_interface";
+import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -14,7 +18,7 @@ const schemaForm = z.object({
   name: z.string().min(3).max(100),
   email: z.string().email().min(3).max(150),
   password: z.string().nullable(),
-  role_id: z.string(),
+  criteria_id: z.string(),
 });
 
 export default function Hook() {
@@ -32,7 +36,8 @@ export default function Hook() {
     page: 1,
     per_page: 10,
   });
-  const [roles, setRoles] = useState<RoleInterface[]>([]);
+  const [divisions, setDivisions] = useState<DivisionInterface[]>([]);
+  const [markings, setMarkings] = useState<MarkingInterface[]>([]);
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
@@ -40,7 +45,6 @@ export default function Hook() {
       name: "",
       email: "",
       password: "LJJKPW" + Math.round(Math.random() * 10000),
-      role_id: "",
     },
   });
 
@@ -50,11 +54,7 @@ export default function Hook() {
     try {
       const response = await postData(API_PATH_CONSTANT.USER.LIST, {
         ...pagination,
-        not_in_role_id: [
-          USER_TYPE_CONSTANT.PARTICIPANT,
-          USER_TYPE_CONSTANT.ADMIN,
-          USER_TYPE_CONSTANT.SUPER_ADMIN,
-        ],
+        role_id: USER_TYPE_CONSTANT.JUDGE,
       });
 
       setUsers(response.data.data);
@@ -65,17 +65,10 @@ export default function Hook() {
     }
   };
 
-  const getRoles = async () => {
+  const getDivisions = async () => {
     try {
-      const response = await postData(API_PATH_CONSTANT.ROLE.LIST, {
-        not_in: [
-          USER_TYPE_CONSTANT.PARTICIPANT,
-          USER_TYPE_CONSTANT.ADMIN,
-          USER_TYPE_CONSTANT.SUPER_ADMIN,
-        ],
-      });
-
-      setRoles(response.data.data);
+      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {});
+      setDivisions(response.data.data);
     } catch (error) {}
   };
 
@@ -84,6 +77,7 @@ export default function Hook() {
     try {
       const response = await postData(API_PATH_CONSTANT.USER.CREATE, {
         ...data,
+        role_id: USER_TYPE_CONSTANT.JUDGE,
       });
       toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
       resetState();
@@ -96,11 +90,15 @@ export default function Hook() {
   };
 
   const handleEdit = (data: UserInterface) => {
+    setMarkings(
+      divisions.find((div) => div.id === data.marking?.division_id)
+        ?.criteria_markings || []
+    );
     form.reset({
       email: data.email,
       name: data.name,
       password: "",
-      role_id: data.role_id?.toString(),
+      criteria_id: data.marking?.id?.toString(),
     });
     setUser(data);
     setVisible({ show: true, title: `Edit Akun ${data.name}`, type: 2 });
@@ -111,7 +109,7 @@ export default function Hook() {
       email: data.email,
       name: data.name,
       password: "",
-      role_id: data.role_id?.toString(),
+      criteria_id: data.marking?.id?.toString(),
     });
     setUser(data);
     setVisible({ show: true, title: `Ubah Password ${data.name}`, type: 3 });
@@ -123,6 +121,7 @@ export default function Hook() {
       const response = await postData(API_PATH_CONSTANT.USER.UPDATE, {
         ...data,
         uid: user?.id,
+        role_id: USER_TYPE_CONSTANT.JUDGE,
       });
       toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
       resetState();
@@ -136,7 +135,6 @@ export default function Hook() {
 
   const handleUpdatePassword = async (data: z.infer<typeof schemaForm>) => {
     setIsLoadingForm(true);
-    console.log(data);
 
     try {
       const response = await postData(API_PATH_CONSTANT.USER.UPDATE_PASSWORD, {
@@ -184,7 +182,7 @@ export default function Hook() {
       name: "",
       email: "",
       password: "LJJKPW" + Math.round(Math.random() * 10000),
-      role_id: "",
+      criteria_id: "",
     });
   };
 
@@ -193,7 +191,7 @@ export default function Hook() {
   }, [pagination]);
 
   useEffect(() => {
-    getRoles();
+    getDivisions();
   }, []);
 
   return {
@@ -205,7 +203,9 @@ export default function Hook() {
       pagination,
       metadata,
       isLoadingData,
-      roles,
+      divisions,
+      markings,
+      user,
     },
     handler: {
       setVisible,
@@ -217,6 +217,7 @@ export default function Hook() {
       handleUpdatePassword,
       setPagination,
       resetState,
+      setMarkings,
     },
   };
 }

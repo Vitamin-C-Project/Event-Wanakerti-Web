@@ -10,6 +10,7 @@ import LogoPng from "@/assets/img/logo-wanakerti.png";
 import { useAppSelector } from "@/lib/hooks";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import RegisterSchool from "./(components)/register-school/register-school";
+import StoreMark from "./(components)/store-mark/store-mark";
 
 export default function DashboardPage() {
   const [app, setApp] = useState({});
@@ -96,8 +97,6 @@ export default function DashboardPage() {
         </Grid>
       )}
 
-      {/* {JSON.stringify(user.)} */}
-
       {[USER_TYPE_CONSTANT.PARTICIPANT].includes(user.role?.id!) &&
         (user.school ? (
           <Grid className="auto-rows-min" gap={"4"} columns={{ md: "2" }}>
@@ -135,6 +134,10 @@ export default function DashboardPage() {
         ) : (
           <RegisterSchool />
         ))}
+
+      {[USER_TYPE_CONSTANT.JUDGE].includes(user.role?.id!) && (
+        <StoreMark user={user} />
+      )}
     </DashboardLayout>
   );
 }

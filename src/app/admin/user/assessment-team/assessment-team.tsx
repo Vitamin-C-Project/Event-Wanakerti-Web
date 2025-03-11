@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/pagination-datatable";
+import { Label } from "@/components/ui/label";
 
 export default function AssessmentTeamPage() {
   const { state, handler } = Hook();
@@ -73,6 +74,7 @@ export default function AssessmentTeamPage() {
           edit: handler.handleEdit,
           delete: handler.handleDelete,
           editPassword: handler.handleEditPassword,
+          divisions: state.divisions,
         })}
         data={state.users}
         isLoadingData={state.isLoadingData}
@@ -143,9 +145,35 @@ export default function AssessmentTeamPage() {
                       </FormItem>
                     )}
                   />
+                  <>
+                    <Label data-slot="form-label">Bidang Lomba</Label>
+                    <Select
+                      onValueChange={(e: any) =>
+                        handler.setMarkings(JSON.parse(e).criteria_markings)
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue
+                          placeholder={state.user?.marking?.division?.name}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {state.divisions.map((divison) => (
+                            <SelectItem
+                              value={JSON.stringify(divison)}
+                              key={divison.id}
+                            >
+                              {divison.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </>
                   <FormField
                     control={state.form.control}
-                    name="role_id"
+                    name="criteria_id"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel htmlFor="role_id">
@@ -156,7 +184,7 @@ export default function AssessmentTeamPage() {
                             <SelectTrigger className="w-full">
                               <SelectValue
                                 placeholder={
-                                  state.roles.find(
+                                  state.markings.find(
                                     (r) => r.id === Number(field.value)
                                   )?.name
                                 }
@@ -164,7 +192,7 @@ export default function AssessmentTeamPage() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                {state.roles.map((role) => (
+                                {state.markings.map((role) => (
                                   <SelectItem
                                     value={role.id!.toString()}
                                     key={role.id}

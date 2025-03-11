@@ -185,7 +185,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         role: [USER_TYPE_CONSTANT.ADMIN, USER_TYPE_CONSTANT.SUPER_ADMIN],
         items: [
           {
-            title: "Data Divisi",
+            title: "Data Bidang Lomba",
             url: "/dashboard/divisions",
             icon: LucideGrab,
             children: [],

@@ -11,7 +11,7 @@ import Hook from "./hook";
 import { Input } from "@/components/ui/input";
 import { Flex, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Filter, Plus, X } from "lucide-react";
+import { Check, ChevronsUpDown, Filter, Loader2, Plus, X } from "lucide-react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import {
   Dialog,
@@ -21,20 +21,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { DataTable } from "@/components/data-table";
 import {
   Drawer,
@@ -66,7 +52,7 @@ export default function DivisionPage() {
       ]}
     >
       <Flex align={"center"} justify={"between"}>
-        <Heading>Daftar Divisi</Heading>
+        <Heading>Data Bidang Lomba</Heading>
 
         <Flex>
           <Button
@@ -81,7 +67,7 @@ export default function DivisionPage() {
               handler.setVisible({
                 show: true,
                 type: 1,
-                title: "Tambah Divisi Baru",
+                title: "Tambah Bidang Lomba Baru",
               })
             }
           >
@@ -188,66 +174,6 @@ export default function DivisionPage() {
               />
               <FormField
                 control={state.form.control}
-                name="school_type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="school_type">Tipe Bidang</FormLabel>
-                    <FormControl>
-                      <Popover
-                        open={state.openCombobox}
-                        onOpenChange={handler.setOpenCombobox}
-                      >
-                        <PopoverTrigger asChild disabled={state.isLoadingForm}>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={state.openCombobox}
-                            className=" justify-between"
-                          >
-                            {field.value
-                              ? state.schoolTypes[Number(field.value) - 1].VALUE
-                              : "Pilih Bidang"}
-                            <ChevronsUpDown className="opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className=" p-0">
-                          <Command>
-                            <CommandInput
-                              placeholder="Cari no bidang..."
-                              className="h-9"
-                            />
-                            <CommandList>
-                              <CommandEmpty>
-                                Bidang tidak tersedia.
-                              </CommandEmpty>
-                              <CommandGroup>
-                                {state.schoolTypes.map((type) => (
-                                  <CommandItem
-                                    key={type.KEY}
-                                    value={type.KEY.toString()}
-                                    onSelect={(currentValue) => {
-                                      field.onChange(currentValue);
-                                      handler.setOpenCombobox(false);
-                                    }}
-                                  >
-                                    {type.KEY}). {type.VALUE}
-                                    <Check
-                                      className={cn("ml-auto", "opacity-0")}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={state.form.control}
                 name="price"
                 render={({ field }) => (
                   <FormItem>
@@ -318,18 +244,27 @@ export default function DivisionPage() {
                 )}
               />
               <DialogFooter className="justify-content-between">
-                <DialogClose asChild>
-                  <Button
-                    variant="secondary"
-                    onClick={() => handler.resetState()}
-                    size="sm"
-                  >
-                    Batal
+                {state.isLoadingForm ? (
+                  <Button disabled>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading...
                   </Button>
-                </DialogClose>
-                <Button color="primary" size="sm" type="submit">
-                  Simpan
-                </Button>
+                ) : (
+                  <>
+                    <DialogClose asChild>
+                      <Button
+                        variant="secondary"
+                        onClick={() => handler.resetState()}
+                        size="sm"
+                      >
+                        Batal
+                      </Button>
+                    </DialogClose>
+                    <Button color="primary" size="sm" type="submit">
+                      Simpan
+                    </Button>
+                  </>
+                )}
               </DialogFooter>
             </form>
           </Form>

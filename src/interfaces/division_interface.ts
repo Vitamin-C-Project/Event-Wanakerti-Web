@@ -1,15 +1,20 @@
 import { CommonColumn } from "./common";
 
 export interface DivisionInterface extends CommonColumn {
-  school_type?: SchoolTypeInterface;
   name: string;
-  markings: Array<string>;
   price: number;
+  criteria_markings: MarkingInterface[];
 }
 
 export interface SchoolTypeInterface extends CommonColumn {
   name: string;
   alias: string;
+}
+
+export interface MarkingInterface extends CommonColumn {
+  division_id: number;
+  name: string;
+  division?: DivisionInterface;
 }
 
 export const SCHOOL_TYPE = [

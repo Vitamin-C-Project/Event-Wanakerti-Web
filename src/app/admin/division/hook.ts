@@ -3,7 +3,7 @@ import {
   DivisionInterface,
   SCHOOL_TYPE,
 } from "@/interfaces/division_interface";
-import { alertSuccess, toastRender } from "@/lib/alert";
+import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -13,7 +13,6 @@ import { z } from "zod";
 
 const schemaForm = z.object({
   name: z.string().min(3).max(100),
-  school_type: z.string(),
   markings: z.array(z.string()),
   price: z.string().min(3).max(11),
 });
@@ -32,7 +31,6 @@ export default function Hook() {
     resolver: zodResolver(schemaForm),
     defaultValues: {
       name: "",
-      school_type: "",
       markings: [],
       price: "",
     },
@@ -69,7 +67,6 @@ export default function Hook() {
     try {
       const response = await postData(API_PATH_CONSTANT.DIVISION.CREATE, {
         ...data,
-        school_type_id: data.school_type,
       });
 
       toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
@@ -86,8 +83,7 @@ export default function Hook() {
     setDivision(data);
     form.reset({
       name: data.name,
-      school_type: data.school_type?.id?.toString(),
-      markings: data.markings,
+      markings: data.criteria_markings.map((marking) => marking.name),
       price: data.price.toString(),
     });
     setVisible({ show: true, title: `Edit ${data.name}`, type: 2 });
@@ -99,7 +95,6 @@ export default function Hook() {
       const response = await postData(API_PATH_CONSTANT.DIVISION.UPDATE, {
         ...data,
         uid: division?.id,
-        school_type_id: data.school_type,
       });
       toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
       resetState();
@@ -132,7 +127,11 @@ export default function Hook() {
   };
 
   const resetState = () => {
-    form.reset();
+    form.reset({
+      name: "",
+      markings: [],
+      price: "",
+    });
     setVisible({ show: false, title: "", type: 1 });
     setShowFilter(false);
   };

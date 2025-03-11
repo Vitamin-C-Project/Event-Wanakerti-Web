@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { DivisionInterface } from "@/interfaces/division_interface";
 import { UserInterface } from "@/interfaces/user_interface";
 import { Flex } from "@radix-ui/themes";
 import { ColumnDef } from "@tanstack/react-table";
@@ -7,6 +8,7 @@ type childProps = {
   edit: (data: UserInterface) => void;
   delete: (data: UserInterface) => void;
   editPassword: (data: UserInterface) => void;
+  divisions: DivisionInterface[];
 };
 
 export const columns = (props: childProps): ColumnDef<UserInterface>[] => {
@@ -24,8 +26,17 @@ export const columns = (props: childProps): ColumnDef<UserInterface>[] => {
       header: "Email",
     },
     {
-      accessorKey: "user_type",
+      id: "user_type",
       header: "Bidang Penilaian",
+      cell: ({ row }) => {
+        const original = row.original;
+
+        return (
+          <strong>
+            {original.marking?.division?.name}: {original.marking?.name}
+          </strong>
+        );
+      },
     },
     {
       id: "actions",
