@@ -111,6 +111,7 @@ export default function Hook() {
       email: data.email,
       name: data.name,
       password: "",
+      role_id: data.role_id?.toString(),
     });
     setUser(data);
     setVisible({ show: true, title: `Ubah Password ${data.name}`, type: 3 });
@@ -135,6 +136,8 @@ export default function Hook() {
 
   const handleUpdatePassword = async (data: z.infer<typeof schemaForm>) => {
     setIsLoadingForm(true);
+    console.log(data);
+
     try {
       const response = await postData(API_PATH_CONSTANT.USER.UPDATE_PASSWORD, {
         ...data,
