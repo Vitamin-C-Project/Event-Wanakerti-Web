@@ -15,7 +15,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { UserInterface } from "@/interfaces/user_interface";
 import { useAppSelector } from "@/lib/hooks";
 
@@ -40,6 +40,8 @@ export function NavMain({
   }[];
 }) {
   const pathname = "dashboard";
+
+  const location = useLocation();
 
   const userAuthenticted = useAppSelector(
     (state) => state.user.userAuthenticated
@@ -66,7 +68,14 @@ export function NavMain({
                 hidden={!item.role.includes(userAuthenticted.role?.id!)}
               >
                 <SidebarMenuButton asChild isActive={pathname == item.url}>
-                  <Link to={item.url}>
+                  <Link
+                    to={item.url}
+                    className={
+                      location.pathname == item.url
+                        ? "bg-accent-foreground text-white"
+                        : ""
+                    }
+                  >
                     <item.icon />
                     <span>{item.title}</span>
                   </Link>
@@ -77,7 +86,7 @@ export function NavMain({
                 key={item.title}
                 asChild
                 defaultOpen={item.children.some(
-                  (child) => pathname == child.url
+                  (child) => location.pathname == child.url
                 )}
                 className="group/collapsible"
                 hidden={!item.role.includes(userAuthenticted.role?.id!)}
@@ -103,7 +112,14 @@ export function NavMain({
                             asChild
                             isActive={pathname == child.url}
                           >
-                            <Link to={child.url}>
+                            <Link
+                              to={child.url}
+                              className={
+                                location.pathname == child.url
+                                  ? "bg-accent-foreground text-white"
+                                  : ""
+                              }
+                            >
                               <span>{child.title}</span>
                             </Link>
                           </SidebarMenuSubButton>

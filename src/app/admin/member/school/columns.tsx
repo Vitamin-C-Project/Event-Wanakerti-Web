@@ -21,8 +21,9 @@ export const columns = (
         return (
           <Flex gap={"2"} direction="column">
             <div>
-              <Heading className="mb-2">{original.name}</Heading>
-              <br />
+              <Heading className="mb-2" size={"3"}>
+                {original.name}
+              </Heading>
             </div>
             <Flex direction={"column"} gap={"2"}>
               <div className="w-full overflow-hidden mb-2">
@@ -44,8 +45,9 @@ export const columns = (
         return (
           <Flex align="start" gap={"2"} direction="column">
             <div>
-              <Heading className="mb-2">{original.person_responsible}</Heading>
-              <br />
+              <Heading className="mb-2" size={"3"}>
+                {original.person_responsible}
+              </Heading>
             </div>
             <Flex direction={"column"} gap={"2"}>
               <div className="overflow-hidden mb-2">
