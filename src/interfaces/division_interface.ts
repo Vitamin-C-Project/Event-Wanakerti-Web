@@ -15,6 +15,12 @@ export interface MarkingInterface extends CommonColumn {
   division_id: number;
   name: string;
   division?: DivisionInterface;
+  children?: MarkingChildrenInterface[];
+}
+
+export interface MarkingChildrenInterface extends CommonColumn {
+  name: string;
+  mark?: string;
 }
 
 export const SCHOOL_TYPE = [

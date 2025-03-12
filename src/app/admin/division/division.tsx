@@ -144,7 +144,148 @@ export default function DivisionPage() {
           <DialogHeader>
             <DialogTitle>{state.visible.title}</DialogTitle>
           </DialogHeader>
-          <Form {...state.form}>
+          <form
+            onSubmit={
+              state.visible.type == 1
+                ? handler.handleSubmit
+                : handler.handleUpdate
+            }
+            className="space-y-4"
+          >
+            <div className="form-group">
+              <label htmlFor="name" className="block mb-1">
+                Nama
+              </label>
+              <Input
+                name="name"
+                value={state.formData.name}
+                onChange={handler.handleInputChange}
+              />
+              {state.errors.name && (
+                <p className="text-red-600 text-sm mt-1">{state.errors.name}</p>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="price" className="block mb-1">
+                Harga
+              </label>
+              <Input
+                name="price"
+                value={state.formData.price}
+                onChange={handler.handleInputChange}
+              />
+              {state.errors.price && (
+                <p className="text-red-600 text-sm mt-1">
+                  {state.errors.price}
+                </p>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label className="block mb-1">Penilaian</label>
+              <div className="mb-2 space-y-3">
+                {state.formData.markings.map((marking, index) => (
+                  <div key={marking.id} className="border p-3 rounded-lg">
+                    <Flex gap={"2"} align={"center"}>
+                      <Input
+                        type="text"
+                        value={marking.name}
+                        onChange={(e) =>
+                          handler.handleMarkingChange(index, e.target.value)
+                        }
+                        placeholder={`Penilaian ${index + 1}`}
+                      />
+
+                      <X
+                        className=" text-red-600 cursor-pointer ms-3"
+                        display={state.isLoadingForm ? "none" : "block"}
+                        onClick={() => handler.removeMarking(index)}
+                      />
+                    </Flex>
+
+                    {state.errors.markings[index]?.name && (
+                      <p className="text-red-600 text-sm mt-1">
+                        {state.errors.markings[index].name}
+                      </p>
+                    )}
+
+                    {/* Sub Penilaian */}
+                    <div className="ml-4 mt-2 space-y-2">
+                      {marking.children.map((child, childIndex) => (
+                        <Flex
+                          gap={"2"}
+                          align={"center"}
+                          key={`${marking.id}-child-${childIndex}`}
+                        >
+                          <Input
+                            type="text"
+                            value={child}
+                            onChange={(e) =>
+                              handler.handleChildChange(
+                                index,
+                                childIndex,
+                                e.target.value
+                              )
+                            }
+                            placeholder={`Sub Penilaian ${childIndex + 1}`}
+                          />
+                          <X
+                            className=" text-red-600 cursor-pointer ms-3"
+                            display={state.isLoadingForm ? "none" : "block"}
+                            onClick={() =>
+                              handler.removeChild(index, childIndex)
+                            }
+                          />
+                        </Flex>
+                      ))}
+
+                      <Button
+                        type="button"
+                        disabled={state.isLoadingForm}
+                        onClick={() => handler.addChild(index)}
+                      >
+                        Tambah Sub Penilaian
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+
+                <Button
+                  type="button"
+                  onClick={handler.addMarking}
+                  disabled={state.isLoadingForm}
+                >
+                  Tambah Penilaian
+                </Button>
+              </div>
+            </div>
+
+            <DialogFooter className="justify-content-between">
+              {state.isLoadingForm ? (
+                <Button disabled>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </Button>
+              ) : (
+                <>
+                  <DialogClose asChild>
+                    <Button
+                      variant="secondary"
+                      onClick={() => handler.resetState()}
+                      size="sm"
+                    >
+                      Batal
+                    </Button>
+                  </DialogClose>
+                  <Button color="primary" size="sm" type="submit">
+                    Simpan
+                  </Button>
+                </>
+              )}
+            </DialogFooter>
+          </form>
+          {/* <Form {...state.form}>
             <form
               onSubmit={
                 state.visible.type == 1
@@ -267,7 +408,7 @@ export default function DivisionPage() {
                 )}
               </DialogFooter>
             </form>
-          </Form>
+          </Form> */}
         </DialogContent>
       </Dialog>
     </DashboardLayout>

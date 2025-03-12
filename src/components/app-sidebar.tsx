@@ -49,7 +49,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {}
       );
 
-      jsCookie.set("USER", JSON.stringify(response.data.data));
+      jsCookie.set(
+        "USER",
+        JSON.stringify({
+          id: response.data.data.id,
+          name: response.data.data.name,
+          email: response.data.data.email,
+        })
+      );
       dispatch(setUserAuthenticated(response.data.data));
       setUser(response.data.data);
     } catch (error) {

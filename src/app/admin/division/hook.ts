@@ -5,17 +5,8 @@ import {
 } from "@/interfaces/division_interface";
 import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import { z } from "zod";
-
-const schemaForm = z.object({
-  name: z.string().min(3).max(100),
-  markings: z.array(z.string()),
-  price: z.string().min(3).max(11),
-});
 
 export default function Hook() {
   const [visible, setVisible] = useState({
@@ -27,20 +18,6 @@ export default function Hook() {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [openCombobox, setOpenCombobox] = useState(false);
 
-  const form = useForm<z.infer<typeof schemaForm>>({
-    resolver: zodResolver(schemaForm),
-    defaultValues: {
-      name: "",
-      markings: [],
-      price: "",
-    },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "markings",
-  });
-
   const [divisions, setDivisions] = useState<DivisionInterface[]>([]);
   const [division, setDivision] = useState<DivisionInterface>();
   const [showFilter, setShowFilter] = useState(false);
@@ -49,6 +26,156 @@ export default function Hook() {
     type: 0,
   });
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+  const [formData, setFormData] = useState({
+    name: "",
+    markings: [
+      {
+        id: "penilaian-1",
+        name: "",
+        children: [] as string[],
+      },
+    ],
+    price: "",
+  });
+
+  const [errors, setErrors] = useState<{
+    name: string;
+    price: string;
+    markings: { name?: string; children?: string[] }[];
+  }>({
+    name: "",
+    price: "",
+    markings: [],
+  });
+
+  const validateForm = () => {
+    const newErrors: {
+      name: string;
+      price: string;
+      markings: { name?: string; children?: string[] }[];
+    } = {
+      name: "",
+      price: "",
+      markings: [],
+    };
+
+    if (formData.name.length < 3 || formData.name.length > 100) {
+      newErrors.name = "Nama harus memiliki 3-100 karakter";
+    }
+
+    if (formData.price.length < 3 || formData.price.length > 11) {
+      newErrors.price = "Harga harus memiliki 3-11 karakter";
+    }
+
+    formData.markings.forEach((marking, index) => {
+      const markingError: { name?: string; children?: string[] } = {};
+
+      if (marking.name.length < 3 || marking.name.length > 100) {
+        markingError.name = "Nama penilaian harus memiliki 3-100 karakter";
+      }
+
+      const childrenErrors: string | any[] | undefined = [];
+      marking.children.forEach((child: string, childIndex: number) => {
+        if (child.length < 3 || child.length > 100) {
+          childrenErrors[childIndex] =
+            "Sub penilaian harus memiliki 3-100 karakter";
+        }
+      });
+
+      if (childrenErrors.length > 0) {
+        markingError.children = childrenErrors;
+      }
+
+      if (Object.keys(markingError).length > 0) {
+        newErrors.markings[index] = markingError;
+      }
+    });
+
+    setErrors(newErrors);
+
+    return (
+      !newErrors.name &&
+      !newErrors.price &&
+      newErrors.markings.every((error) => !error)
+    );
+  };
+
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleMarkingChange = (index: number, value: string) => {
+    const newMarkings = [...formData.markings];
+    newMarkings[index].name = value;
+
+    setFormData({
+      ...formData,
+      markings: newMarkings,
+    });
+  };
+
+  const handleChildChange = (
+    markingIndex: number,
+    childIndex: number,
+    value: any
+  ) => {
+    const newMarkings = [...formData.markings];
+    newMarkings[markingIndex].children[childIndex] = value;
+
+    setFormData({
+      ...formData,
+      markings: newMarkings,
+    });
+  };
+
+  const addMarking = () => {
+    setFormData({
+      ...formData,
+      markings: [
+        ...formData.markings,
+        {
+          id: `penilaian-${formData.markings.length + 1}`,
+          name: "",
+          children: [],
+        },
+      ],
+    });
+  };
+
+  const removeMarking = (index: number) => {
+    const newMarkings = [...formData.markings];
+    newMarkings.splice(index, 1);
+
+    setFormData({
+      ...formData,
+      markings: newMarkings,
+    });
+  };
+
+  const addChild = (markingIndex: number) => {
+    const newMarkings = [...formData.markings];
+    newMarkings[markingIndex].children.push("");
+
+    setFormData({
+      ...formData,
+      markings: newMarkings,
+    });
+  };
+
+  const removeChild = (markingIndex: number, childIndex: number) => {
+    const newMarkings = [...formData.markings];
+    newMarkings[markingIndex].children.splice(childIndex, 1);
+
+    setFormData({
+      ...formData,
+      markings: newMarkings,
+    });
+  };
 
   const getDivisions = async () => {
     setIsLoadingData(true);
@@ -61,48 +188,60 @@ export default function Hook() {
     }
   };
 
-  const handleSubmit = async (data: z.infer<typeof schemaForm>) => {
-    setIsLoadingForm(true);
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
 
-    try {
-      const response = await postData(API_PATH_CONSTANT.DIVISION.CREATE, {
-        ...data,
-      });
-
-      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
-      resetState();
-      getDivisions();
-    } catch (error: any) {
-      toastRender(error.status, error.response.data.messages);
-    } finally {
-      setIsLoadingForm(false);
+    if (validateForm()) {
+      setIsLoadingForm(true);
+      try {
+        const response = await postData(
+          API_PATH_CONSTANT.DIVISION.CREATE,
+          formData
+        );
+        toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+        resetState();
+        getDivisions();
+      } catch (error: any) {
+        toastRender(error.status, error.response.data.messages);
+      } finally {
+        setIsLoadingForm(false);
+      }
     }
   };
 
   const handleEdit = (data: DivisionInterface) => {
     setDivision(data);
-    form.reset({
+    setFormData({
       name: data.name,
-      markings: data.criteria_markings.map((marking) => marking.name),
+      markings: data.criteria_markings?.map((marking, index) => ({
+        id: `penilaian-${index + 1}`,
+        name: marking.name,
+        children: marking.children?.map((child) => child.name) || [],
+      })),
       price: data.price.toString(),
     });
+
     setVisible({ show: true, title: `Edit ${data.name}`, type: 2 });
   };
 
-  const handleUpdate = async (data: z.infer<typeof schemaForm>) => {
-    setIsLoadingForm(true);
-    try {
-      const response = await postData(API_PATH_CONSTANT.DIVISION.UPDATE, {
-        ...data,
-        uid: division?.id,
-      });
-      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
-      resetState();
-      getDivisions();
-    } catch (error: any) {
-      toastRender(error.status, error.response.data.messages);
-    } finally {
-      setIsLoadingForm(false);
+  const handleUpdate = async (e: any) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      setIsLoadingForm(true);
+      try {
+        const response = await postData(API_PATH_CONSTANT.DIVISION.UPDATE, {
+          ...formData,
+          uid: division?.id,
+        });
+        toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+        resetState();
+        getDivisions();
+      } catch (error: any) {
+        toastRender(error.status, error.response.data.messages);
+      } finally {
+        setIsLoadingForm(false);
+      }
     }
   };
 
@@ -127,12 +266,18 @@ export default function Hook() {
   };
 
   const resetState = () => {
-    form.reset({
+    setVisible({ show: false, title: "", type: 1 });
+    setFormData({
       name: "",
-      markings: [],
+      markings: [
+        {
+          id: "penilaian-1",
+          name: "",
+          children: [] as string[],
+        },
+      ],
       price: "",
     });
-    setVisible({ show: false, title: "", type: 1 });
     setShowFilter(false);
   };
 
@@ -145,13 +290,13 @@ export default function Hook() {
       divisions,
       visible,
       isLoadingForm,
-      form,
       schoolTypes: SCHOOL_TYPE,
-      formMarking: { fields, append, remove },
       openCombobox,
       isLoadingData,
       showFilter,
       pagination,
+      formData,
+      errors,
     },
     handler: {
       setVisible,
@@ -163,6 +308,14 @@ export default function Hook() {
       handleUpdate,
       setShowFilter,
       setPagination,
+      validateForm,
+      handleInputChange,
+      handleMarkingChange,
+      handleChildChange,
+      addMarking,
+      removeMarking,
+      addChild,
+      removeChild,
     },
   };
 }
