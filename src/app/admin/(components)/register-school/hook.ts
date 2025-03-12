@@ -10,6 +10,7 @@ import { z } from "zod";
 import { postData } from "@/lib/utils";
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { useAppSelector } from "@/lib/hooks";
+import { useNavigate } from "react-router-dom";
 
 const schemaForm = z.object({
   name: z.string().min(3).max(100),
@@ -21,6 +22,7 @@ const schemaForm = z.object({
 });
 
 export default function Hook() {
+  const navigate = useNavigate();
   const [openCombobox, setOpenCombobox] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const user = useAppSelector((state) => state.user.userAuthenticated);
@@ -54,7 +56,7 @@ export default function Hook() {
       );
       toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
       form.reset();
-      window.location.reload();
+      navigate("/dashboard/member/edit-school");
     } catch (error: any) {
       toastRender(error.status, error.response.data.messages);
     } finally {

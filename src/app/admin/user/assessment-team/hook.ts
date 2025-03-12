@@ -67,7 +67,9 @@ export default function Hook() {
 
   const getDivisions = async () => {
     try {
-      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {});
+      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {
+        with: ["criteriaMarkings"],
+      });
       setDivisions(response.data.data);
     } catch (error) {}
   };

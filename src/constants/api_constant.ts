@@ -94,6 +94,10 @@ export const API_PATH_CONSTANT = {
   ROLE: {
     LIST: "role/list",
   },
+  MARKING: {
+    SAVE: "marking/save",
+    LIST: "marking/list",
+  },
 };
 
 export const API_CODE_CONSTANT = {

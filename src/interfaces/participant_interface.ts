@@ -1,5 +1,9 @@
 import { CommonColumn } from "./common";
-import { DivisionInterface, SchoolTypeInterface } from "./division_interface";
+import {
+  DivisionInterface,
+  MarkingChildrenInterface,
+  SchoolTypeInterface,
+} from "./division_interface";
 import { UserInterface } from "./user_interface";
 
 export interface ParticipantSchoolInterface extends CommonColumn {
@@ -24,6 +28,11 @@ export interface ParticipantTeamInterface extends CommonColumn {
   payment_status: number;
   re_registration_status: number;
   members?: ParticipantTeamMemberInterface[];
+}
+export interface ParticipantTeamMarkingInterface extends CommonColumn {
+  name: string;
+  code: string;
+  marking?: MarkingChildrenInterface[];
 }
 
 export interface ParticipantTeamMemberInterface extends CommonColumn {

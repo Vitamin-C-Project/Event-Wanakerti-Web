@@ -204,6 +204,10 @@ export default function Hook() {
     setSchool(undefined);
     setDivision(undefined);
     setShowFilter(false);
+    if ([USER_TYPE_CONSTANT.PARTICIPANT].includes(user?.role?.id!)) {
+      form.setValue("school", user?.school?.id?.toString() || "");
+      getDivisions(user?.school!);
+    }
   };
 
   useEffect(() => {
