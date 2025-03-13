@@ -21,6 +21,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import jsCookie from "js-cookie";
 import { UserInterface } from "@/interfaces/user_interface";
+import { postData } from "@/lib/utils";
+import { API_PATH_CONSTANT } from "@/constants/api_constant";
 
 function Hook() {
   const navigate = useNavigate();
@@ -28,8 +30,16 @@ function Hook() {
   const { isMobile } = useSidebar();
 
   const handleLogout = async () => {
-    jsCookie.remove("LJJKPW");
-    navigate("/auth/login");
+    try {
+      await postData(API_PATH_CONSTANT.AUTH.LOGOUT, {});
+      jsCookie.remove("LJJKPW");
+      jsCookie.remove("USER");
+      navigate("/auth/login");
+    } catch (error) {
+      jsCookie.remove("LJJKPW");
+      jsCookie.remove("USER");
+      navigate("/auth/login");
+    }
   };
 
   const redirect = (path: string) => navigate(path);

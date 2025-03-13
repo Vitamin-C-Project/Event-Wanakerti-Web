@@ -23,6 +23,7 @@ export default function LoginPage() {
               form={state.form}
               onSubmit={state.form.handleSubmit(handler.handleSubmit)}
               state={state}
+              handler={undefined}
             />
           </div>
         </div>

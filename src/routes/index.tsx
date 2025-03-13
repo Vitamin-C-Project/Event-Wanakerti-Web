@@ -21,6 +21,8 @@ import ProtectedRoute from "./protected-route";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import ProfilePage from "@/app/admin/profile/profile";
 import AssessmentTeamPage from "@/app/admin/user/assessment-team/assessment-team";
+import ForgotPasswordPage from "@/app/auth/forgot-password/forgot-password";
+import ResetPasswordPage from "@/app/auth/reset-password/reset-password";
 
 export default function Routes() {
   return (
@@ -32,6 +34,8 @@ export default function Routes() {
           <Route index element={<LoginPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
+          <Route path="forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="reset-password" element={<ResetPasswordPage />} />
         </Route>
 
         <Route path="/dashboard" element={<AppLayout />}>
