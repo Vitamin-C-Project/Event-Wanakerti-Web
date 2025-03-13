@@ -54,12 +54,12 @@ export function LoginForm({ className, form, state, ...props }: FormInterface) {
                 <FormItem>
                   <Flex align={"center"}>
                     <FormLabel htmlFor="password">Kata Sandi</FormLabel>
-                    <a
-                      href="#"
+                    <Link
+                      to="/auth/forgot-password"
                       className="ml-auto text-sm underline-offset-4 hover:underline"
                     >
                       Lupa kata sandi Anda?
-                    </a>
+                    </Link>
                   </Flex>
                   <FormControl>
                     <Input

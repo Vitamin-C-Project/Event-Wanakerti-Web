@@ -4,6 +4,9 @@ export const API_PATH_CONSTANT = {
     LOGIN: "auth/login",
     REGISTER: "auth/register",
     CHECK_AUTHENTICATED: "auth/check-authenticated",
+    LOGOUT: "auth/logout",
+    FORGOT_PASSWORD: "auth/forgot-password",
+    RESET_PASSWORD: "auth/reset-password",
   },
   PARTICIPANT: {
     SCHOOL: {
