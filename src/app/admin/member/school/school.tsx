@@ -109,50 +109,64 @@ export default function SchoolPage() {
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
-          <DrawerHeader>
-            <DrawerTitle>Semua Jenis Filter dan Pencarian</DrawerTitle>
-          </DrawerHeader>
-          <Flex direction={"column"} className="px-4">
-            <Flex direction={"column"} className="w-full mb-5">
-              <Label htmlFor="search" className="mb-2">
-                Pencarian
-              </Label>
-              <Input
-                id="search"
-                type="text"
-                placeholder="Pencarian berdasarkan nama pangkalan dan kontak"
-                disabled={state.isLoadingForm}
-              />
+          <form onSubmit={handler.appliedFilters}>
+            <DrawerHeader>
+              <DrawerTitle>Semua Jenis Filter dan Pencarian</DrawerTitle>
+            </DrawerHeader>
+            <Flex direction={"column"} className="px-4">
+              <Flex direction={"column"} className="w-full mb-5">
+                <Label htmlFor="search" className="mb-2">
+                  Pencarian
+                </Label>
+                <Input
+                  id="search"
+                  type="text"
+                  placeholder="Pencarian berdasarkan nama pangkalan dan kontak"
+                  onChange={(e) =>
+                    handler.setFilters({
+                      ...state.filters,
+                      search: e.target.value,
+                    })
+                  }
+                  value={state.filters.search}
+                  disabled={state.isLoadingForm}
+                />
+              </Flex>
+              <Flex direction={"column"} className="w-full">
+                <Label htmlFor="type" className="mb-2">
+                  Jenis Pangkalan
+                </Label>
+                <Select
+                  onValueChange={(e) =>
+                    handler.setFilters({ ...state.filters, type: Number(e) })
+                  }
+                  value={state.filters.type!.toString()}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="0">Semua Jenis</SelectItem>
+                      {state.schoolTypes.map((type) => (
+                        <SelectItem value={type.KEY.toString()} key={type.KEY}>
+                          {type.VALUE}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Flex>
             </Flex>
-            <Flex direction={"column"} className="w-full">
-              <Label htmlFor="type" className="mb-2">
-                Jenis Pangkalan
-              </Label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="0">Semua Jenis</SelectItem>
-                    {state.schoolTypes.map((type) => (
-                      <SelectItem value={type.VALUE} key={type.KEY}>
-                        {type.VALUE}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Flex>
-          </Flex>
-          <DrawerFooter>
-            <Button>Terapkan Filter</Button>
-            <DrawerClose>
-              <Button variant="outline" className="w-full">
-                Batal
-              </Button>
-            </DrawerClose>
-          </DrawerFooter>
+            <DrawerFooter>
+              <Button type="submit">Terapkan Filter</Button>
+              <DrawerClose>
+                <Button type="button" variant="outline" className="w-full">
+                  Batal
+                </Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </form>
         </DrawerContent>
       </Drawer>
 

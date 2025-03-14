@@ -8,6 +8,7 @@ import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { z } from "zod";
 
@@ -22,6 +23,9 @@ const schemaForm = z.object({
 });
 
 export default function Hook() {
+  const { "0": params } = useSearchParams();
+  const navigate = useNavigate();
+
   const [openComboboxUser, setOpenComboboxUser] = useState(false);
   const [openComboboxSchool, setOpenComboboxSchool] = useState(false);
   const [visible, setVisible] = useState({
@@ -36,9 +40,12 @@ export default function Hook() {
   const [school, setSchool] = useState<ParticipantSchoolInterface>();
   const [users, setUsers] = useState<UserInterface[]>([]);
   const [user, setUser] = useState<UserInterface>();
-  const [filters, setFilters] = useState({
-    search: "",
-    type: 0,
+  const [filters, setFilters] = useState<{
+    search: string;
+    type?: number;
+  }>({
+    search: params.get("search") || "",
+    type: params.get("type") ? Number(params.get("type")) : 0,
   });
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
 
@@ -149,9 +156,21 @@ export default function Hook() {
   const getSchools = async () => {
     setIsLoadingData(true);
     try {
+      let filterCustom: { [key: string]: any } = {
+        ...filters,
+        school_type_id: Number(filters.type),
+      };
+
+      if (filterCustom.school_type_id! < 1) {
+        delete filterCustom.school_type_id;
+      }
+
       const response = await postData(
         API_PATH_CONSTANT.PARTICIPANT.SCHOOL.LIST,
-        {}
+        {
+          ...pagination,
+          ...filterCustom,
+        }
       );
 
       setSchools(response.data.data);
@@ -186,13 +205,22 @@ export default function Hook() {
     setShowFilter(false);
   };
 
+  const appliedFilters = (e: any) => {
+    e.preventDefault();
+
+    let params = [`search=${filters.search}`, `type=${filters.type}`].join("&");
+
+    setShowFilter(false);
+    navigate(`?${params}`);
+  };
+
   useEffect(() => {
     getUser();
   }, []);
 
   useEffect(() => {
     getSchools();
-  }, [pagination]);
+  }, [pagination, params]);
 
   return {
     state: {
@@ -208,6 +236,7 @@ export default function Hook() {
       isLoadingData,
       showFilter,
       pagination,
+      filters,
     },
     handler: {
       setVisible,
@@ -220,7 +249,9 @@ export default function Hook() {
       resetState,
       setUser,
       setShowFilter,
+      setFilters,
       setPagination,
+      appliedFilters,
     },
   };
 }
