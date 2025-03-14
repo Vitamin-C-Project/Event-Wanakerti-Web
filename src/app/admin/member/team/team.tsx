@@ -109,25 +109,48 @@ export default function TeamPage() {
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
-          <DrawerHeader>
-            <DrawerTitle>Semua Jenis Filter dan Pencarian</DrawerTitle>
-          </DrawerHeader>
-          <Flex direction={"column"} className="px-4">
-            <Flex direction={"column"} className="w-full mb-5">
-              <Label htmlFor="search" className="mb-2">
-                Pencarian
-              </Label>
-              <Input
-                id="search"
-                type="text"
-                placeholder="Pencarian berdasarkan nama tim"
-                disabled={state.isLoadingForm}
-              />
-            </Flex>
-            {state.user.role?.id != state.userType.PARTICIPANT && (
+          <form onSubmit={handler.appliedFilters}>
+            <DrawerHeader>
+              <DrawerTitle>Semua Jenis Filter dan Pencarian</DrawerTitle>
+            </DrawerHeader>
+            <Flex direction={"column"} className="px-4">
+              <Flex direction={"column"} className="w-full mb-5">
+                <Label htmlFor="search" className="mb-2">
+                  Pencarian
+                </Label>
+                <Input
+                  id="search"
+                  type="text"
+                  placeholder="Pencarian berdasarkan nama tim"
+                  value={state.filters.search}
+                  onChange={(e: any) =>
+                    handler.setFilters({
+                      ...state.filters,
+                      search: e.target.value,
+                    })
+                  }
+                />
+              </Flex>
+              {state.user.role?.id != state.userType.PARTICIPANT && (
+                <Flex direction={"column"} className="w-full mb-5">
+                  <Label htmlFor="type" className="mb-2">
+                    Asal Pangkalan
+                  </Label>
+                  <Select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="0">Semua Pangkalan</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Flex>
+              )}
               <Flex direction={"column"} className="w-full mb-5">
                 <Label htmlFor="type" className="mb-2">
-                  Asal Pangkalan
+                  Jenis Bidang Lomba
                 </Label>
                 <Select>
                   <SelectTrigger className="w-full">
@@ -135,53 +158,38 @@ export default function TeamPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem value="0">Semua Pangkalan</SelectItem>
+                      <SelectItem value="0">Semua Bidang Lomba</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </Flex>
-            )}
-            <Flex direction={"column"} className="w-full mb-5">
-              <Label htmlFor="type" className="mb-2">
-                Jenis Bidang Lomba
-              </Label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="0">Semua Bidang Lomba</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              {state.user.role?.id != state.userType.PARTICIPANT && (
+                <Flex direction={"column"} className="w-full mb-5">
+                  <Label htmlFor="type" className="mb-2">
+                    Status
+                  </Label>
+                  <Select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="0">Semua Status</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Flex>
+              )}
             </Flex>
-            {state.user.role?.id != state.userType.PARTICIPANT && (
-              <Flex direction={"column"} className="w-full mb-5">
-                <Label htmlFor="type" className="mb-2">
-                  Status
-                </Label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="0">Semua Status</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Flex>
-            )}
-          </Flex>
-          <DrawerFooter>
-            <Button>Terapkan Filter</Button>
-            <DrawerClose>
-              <Button variant="outline" className="w-full">
-                Batal
-              </Button>
-            </DrawerClose>
-          </DrawerFooter>
+            <DrawerFooter>
+              <Button type="submit">Terapkan Filter</Button>
+              <DrawerClose>
+                <Button variant="outline" className="w-full" type="button">
+                  Batal
+                </Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </form>
         </DrawerContent>
       </Drawer>
 
@@ -238,7 +246,13 @@ export default function TeamPage() {
                           </PopoverTrigger>
                           <PopoverContent className="p-0">
                             <Command>
-                              <CommandInput placeholder="Cari pangkalan..." />
+                              <CommandInput
+                                placeholder="Cari pangkalan..."
+                                value={state.filterSchool.search}
+                                onValueChange={(value) =>
+                                  handler.setFilterSchool({ search: value })
+                                }
+                              />
                               <CommandList>
                                 <CommandEmpty>
                                   pangkalan tidak ditemukan.
@@ -247,10 +261,9 @@ export default function TeamPage() {
                                   {state.schools.map((school) => (
                                     <CommandItem
                                       key={school.id}
-                                      value={school.id?.toString()}
-                                      onSelect={(currentValue) => {
+                                      onSelect={() => {
                                         handler.setOpenComboboxSchool(false);
-                                        field.onChange(currentValue);
+                                        field.onChange(school.id?.toString());
                                         handler.setSchool(school);
                                         handler.getDivisions(school);
                                       }}
@@ -323,10 +336,9 @@ export default function TeamPage() {
                                   {state.divisions.map((division) => (
                                     <CommandItem
                                       key={division.id}
-                                      value={division.id?.toString()}
-                                      onSelect={(currentValue) => {
+                                      onSelect={() => {
                                         handler.setOpenComboboxDivision(false);
-                                        field.onChange(currentValue);
+                                        field.onChange(division.id?.toString());
                                         handler.setDivision(division);
                                       }}
                                     >

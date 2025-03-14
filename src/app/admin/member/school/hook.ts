@@ -203,6 +203,7 @@ export default function Hook() {
     });
     setUser(undefined);
     setShowFilter(false);
+    setFilters({ search: "", type: 0 });
   };
 
   const appliedFilters = (e: any) => {

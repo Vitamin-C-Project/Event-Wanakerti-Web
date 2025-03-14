@@ -5,13 +5,13 @@ import {
   ParticipantSchoolInterface,
   ParticipantTeamInterface,
 } from "@/interfaces/participant_interface";
-import { alertSuccess, toastRender } from "@/lib/alert";
+import { toastRender } from "@/lib/alert";
 import { useAppSelector } from "@/lib/hooks";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { z } from "zod";
 
@@ -26,6 +26,7 @@ const schemaForm = z.object({
 export default function Hook() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { "0": params } = useSearchParams();
   const user = useAppSelector((state) => state.user.userAuthenticated);
 
   const [openComboboxSchool, setOpenComboboxSchool] = useState(false);
@@ -44,9 +45,21 @@ export default function Hook() {
   const [teams, setTeams] = useState<ParticipantTeamInterface[]>([]);
   const [team, setTeam] = useState<ParticipantTeamInterface>();
   const [showFilter, setShowFilter] = useState(false);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<{
+    search: string;
+    status?: number;
+    division_id?: number;
+    participant_school_id?: number;
+  }>({
+    search: params.get("search") || "",
+    status: params.get("status") ? Number(params.get("status")) : 0,
+    division_id: params.get("division") ? Number(params.get("division")) : 0,
+    participant_school_id: params.get("participantSchool")
+      ? Number(params.get("participantSchool"))
+      : 0,
+  });
+  const [filterSchool, setFilterSchool] = useState({
     search: "",
-    type: 0,
   });
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
 
@@ -169,7 +182,7 @@ export default function Hook() {
     try {
       const response = await postData(
         API_PATH_CONSTANT.PARTICIPANT.SCHOOL.LIST,
-        {}
+        { ...filterSchool }
       );
 
       setSchools(response.data.data);
@@ -187,10 +200,22 @@ export default function Hook() {
   const getTeams = async () => {
     setIsLoadingData(true);
     try {
-      const response = await postData(
-        API_PATH_CONSTANT.PARTICIPANT.TEAM.LIST,
-        {}
-      );
+      if (filters.status! < 1) {
+        delete filters.status;
+      }
+
+      if (filters.division_id! < 1) {
+        delete filters.division_id;
+      }
+
+      if (filters.participant_school_id! < 1) {
+        delete filters.participant_school_id;
+      }
+
+      const response = await postData(API_PATH_CONSTANT.PARTICIPANT.TEAM.LIST, {
+        ...filters,
+        ...pagination,
+      });
       setTeams(response.data.data);
     } catch (error) {
     } finally {
@@ -208,12 +233,30 @@ export default function Hook() {
       form.setValue("school", user?.school?.id?.toString() || "");
       getDivisions(user?.school!);
     }
+    setFilters({
+      search: "",
+      status: 0,
+      division_id: 0,
+      participant_school_id: 0,
+    });
+    setFilterSchool({ search: "" });
+  };
+
+  const appliedFilters = (e: any) => {
+    e.preventDefault();
+
+    let params = [
+      `search=${filters.search}`,
+      `division=${filters.division_id}`,
+      `participantSchool=${filters.participant_school_id}`,
+      `status=${filters.status}`,
+    ].join("&");
+
+    setShowFilter(false);
+    navigate(`?${params}`);
   };
 
   useEffect(() => {
-    getSchools();
-    getTeams();
-
     if (
       [USER_TYPE_CONSTANT.PARTICIPANT].includes(user?.role?.id!) &&
       !user.school
@@ -226,6 +269,14 @@ export default function Hook() {
       getDivisions(user?.school!);
     }
   }, []);
+
+  useEffect(() => {
+    getTeams();
+  }, [params, pagination]);
+
+  useEffect(() => {
+    getSchools();
+  }, [filterSchool]);
 
   return {
     state: {
@@ -245,6 +296,8 @@ export default function Hook() {
       showFilter,
       pagination,
       userType: USER_TYPE_CONSTANT,
+      filterSchool,
+      filters,
     },
     handler: {
       setVisible,
@@ -262,6 +315,9 @@ export default function Hook() {
       setDivision,
       setShowFilter,
       setPagination,
+      appliedFilters,
+      setFilterSchool,
+      setFilters,
     },
   };
 }
