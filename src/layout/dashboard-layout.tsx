@@ -6,9 +6,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import { BreadcrumbInterface } from "@/interfaces/common";
-import { useAppSelector } from "@/lib/hooks";
 
 export default function DashboardLayout({
   children,
@@ -17,8 +15,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
   breadcrumbs?: BreadcrumbInterface[];
 }) {
-  const user = useAppSelector((state) => state.user.userAuthenticated);
-
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -34,7 +30,7 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

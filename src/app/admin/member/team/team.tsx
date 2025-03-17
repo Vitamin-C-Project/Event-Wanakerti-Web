@@ -1,9 +1,16 @@
 import DashboardLayout from "@/layout/dashboard-layout";
 import { columns } from "./columns";
 import Hook from "./hook";
-import { Flex, Heading } from "@radix-ui/themes";
+import { DataList, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Filter, Loader2, Plus } from "lucide-react";
+import {
+  Check,
+  ChevronsUpDown,
+  Filter,
+  Info,
+  Loader2,
+  Plus,
+} from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import {
   Dialog,
@@ -54,6 +61,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TeamPage() {
   const { state, handler } = Hook();
@@ -66,7 +82,7 @@ export default function TeamPage() {
         { title: "Data Tim", href: "/dashboard/member/teams" },
       ]}
     >
-      <Flex align={"center"} justify={"between"}>
+      <Flex align={"center"} justify={"between"} gap={"4"} className="mb-4">
         <Heading>Data Tim</Heading>
         <Flex>
           <Button
@@ -74,7 +90,7 @@ export default function TeamPage() {
             className="me-3"
             onClick={() => handler.setShowFilter(true)}
           >
-            <Filter /> Filter
+            <Filter /> <Text className="md:block hidden">Filter</Text>
           </Button>
           <Button
             onClick={() =>
@@ -85,20 +101,23 @@ export default function TeamPage() {
               })
             }
           >
-            <Plus /> Tambah Baru
+            <Plus /> <Text className="md:block hidden">Tambah Baru</Text>
           </Button>
         </Flex>
       </Flex>
 
-      <DataTable
-        columns={columns({
-          edit: handler.handleEdit,
-          delete: handler.handleDelete,
-          updateReRegistration: handler.handleUpdateReRegistration,
-        })}
-        data={state.teams}
-        isLoadingData={state.isLoadingData}
-      />
+      <Grid columns={"1"}>
+        <DataTable
+          columns={columns({
+            edit: handler.handleEdit,
+            delete: handler.handleDelete,
+            updateReRegistration: handler.handleUpdateReRegistration,
+            detail: handler.handleDetail,
+          })}
+          data={state.teams}
+          isLoadingData={state.isLoadingData}
+        />
+      </Grid>
 
       <Drawer
         direction="right"
@@ -452,6 +471,107 @@ export default function TeamPage() {
               </DialogFooter>
             </form>
           </Form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={state.isDetailModal}
+        onOpenChange={() => {
+          handler.setIsDetailModal(false);
+          handler.setTeam(undefined);
+        }}
+      >
+        <DialogContent
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          className="min-w-[40%]"
+        >
+          {state.isDetailModal && state.team ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="uppercase">
+                  Detail {state.team?.name}
+                </DialogTitle>
+              </DialogHeader>
+              <Flex direction={"column"} className="gap-3">
+                <Flex className="gap-3" align={"center"}>
+                  <Text as="p">Asal Pangkalan :</Text>
+                  <Heading>{state.team?.school.name}</Heading>
+                </Flex>
+                <Flex className="gap-3" align={"center"}>
+                  <Text as="p">Bidang Lomba :</Text>
+                  <Heading>{state.team?.division?.name}</Heading>
+                </Flex>
+              </Flex>
+              {Object.entries(state.team?.markings!).length > 0 ? (
+                <Grid
+                  className="gap-3"
+                  columns={{ initial: "1", sm: "2", xs: "1" }}
+                >
+                  {Object.entries(state.team?.markings!).map(
+                    ([key, marking]) => {
+                      return (
+                        <Card key={key} className="shadow-none">
+                          <CardHeader>
+                            <CardTitle>{marking.name}</CardTitle>
+                            <CardDescription>
+                              Total Nilai{" "}
+                              <strong className="text-black">
+                                {marking.total}
+                              </strong>
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <DataList.Root>
+                              {marking.children?.map((child, keyChild) => (
+                                <DataList.Item key={keyChild} className="mb-3">
+                                  <DataList.Label>{child.name}</DataList.Label>
+                                  <DataList.Value>
+                                    :{" "}
+                                    <Text className="font-bold">
+                                      {child.mark}
+                                    </Text>
+                                  </DataList.Value>
+                                </DataList.Item>
+                              ))}
+                            </DataList.Root>
+                          </CardContent>
+                        </Card>
+                      );
+                    }
+                  )}
+                </Grid>
+              ) : (
+                <Alert variant="default" className="bg-warning">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-black">
+                    Belum ada nilai yang masuk.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      handler.setIsDetailModal(false);
+                      handler.setTeam(undefined);
+                    }}
+                    size="sm"
+                  >
+                    Tutup
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </>
+          ) : (
+            <Flex direction={"column"} className="space-y-3 mt-5">
+              <Skeleton className="h-9 w-full" />
+              <Skeleton className="h-9 w-full" />
+              <Skeleton className="h-9 w-full" />
+            </Flex>
+          )}
         </DialogContent>
       </Dialog>
     </DashboardLayout>

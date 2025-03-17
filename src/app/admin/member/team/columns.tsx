@@ -6,18 +6,17 @@ import { useAppSelector } from "@/lib/hooks";
 import { Flex, Text } from "@radix-ui/themes";
 import { ColumnDef } from "@tanstack/react-table";
 import { CheckCircle, CircleX } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
 
 type childProps = {
   edit: (data: ParticipantTeamInterface) => void;
   delete: (data: ParticipantTeamInterface) => void;
+  detail: (data: ParticipantTeamInterface) => void;
   updateReRegistration: (data: ParticipantTeamInterface) => void;
 };
 
 export const columns = (
   props: childProps
 ): ColumnDef<ParticipantTeamInterface>[] => {
-  const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.userAuthenticated);
 
   return [
@@ -28,11 +27,9 @@ export const columns = (
         const original = row.original;
 
         return (
-          <Link to={`/member/teams/${original.name}`}>
-            <Text className="font-bold">
-              ({original.code}) - {original.name}
-            </Text>
-          </Link>
+          <Text className="font-bold" onClick={() => props.detail(original)}>
+            ({original.code}) - {original.name}
+          </Text>
         );
       },
     },
@@ -89,7 +86,7 @@ export const columns = (
               variant="default"
               size="sm"
               className="me-2"
-              onClick={() => navigate(`/member/teams/${original.name}`)}
+              onClick={() => props.detail(original)}
             >
               Nilai Hasil
             </Button>

@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/data-table";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { Flex, Heading } from "@radix-ui/themes";
+import { Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
@@ -34,37 +34,41 @@ export default function BrandPage() {
         { title: "Brand & Sponsor", href: "/dashboard/cms/brand-sponsorship" },
       ]}
     >
-      <Flex align={"center"} justify={"between"}>
+      <Flex align={"center"} justify={"between"} gap={"4"} className="mb-4">
         <Heading>Brand & Sponsor</Heading>
 
-        <Flex>
+        <Button
+          onClick={() =>
+            handler.setVisible({
+              show: true,
+              type: 1,
+              title: "Tambah Brand / Sponsor Baru",
+            })
+          }
+        >
+          <Plus /> <Text className="md:block hidden">Tambah Baru</Text>
+        </Button>
+      </Flex>
+
+      <Grid columns={"12"} gap={"5"}>
+        <div className="md:col-span-6 lg:col-span-3 col-span-12">
           <Input
             className="w-full me-3"
             type="search"
             placeholder="Cari berdasarkan nama"
           />
-          <Button
-            onClick={() =>
-              handler.setVisible({
-                show: true,
-                type: 1,
-                title: "Tambah Brand / Sponsor Baru",
-              })
-            }
-          >
-            <Plus /> Tambah Baru
-          </Button>
-        </Flex>
-      </Flex>
-
-      <DataTable
-        columns={columns({
-          delete: handler.handleDelete,
-          edit: () => {},
-        })}
-        data={state.brands}
-        isLoadingData={state.isLoadingData}
-      />
+        </div>
+        <div className="col-span-12">
+          <DataTable
+            columns={columns({
+              delete: handler.handleDelete,
+              edit: () => {},
+            })}
+            data={state.brands}
+            isLoadingData={state.isLoadingData}
+          />
+        </div>
+      </Grid>
 
       <Dialog
         open={state.visible.show}

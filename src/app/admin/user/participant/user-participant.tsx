@@ -1,7 +1,7 @@
 import DashboardLayout from "@/layout/dashboard-layout";
 import { columns } from "./columns";
 import Hook from "./hook";
-import { Flex, Heading } from "@radix-ui/themes";
+import { Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
@@ -36,39 +36,42 @@ export default function UserAdminPage() {
         { title: "Peserta", href: "/dashboard/users/participant" },
       ]}
     >
-      <Flex align={"center"} justify={"between"}>
+      <Flex align={"center"} justify={"between"} gap={"4"} className="mb-4">
         <Heading>Data Akun Peserta</Heading>
 
-        <Flex>
+        <Button
+          onClick={() =>
+            handler.setVisible({
+              show: true,
+              type: 1,
+              title: "Tambah Peserta Baru",
+            })
+          }
+        >
+          <Plus /> <Text className="md:block hidden">Tambah Baru</Text>
+        </Button>
+      </Flex>
+
+      <Grid columns={"12"} gap={"5"}>
+        <div className="md:col-span-6 lg:col-span-3 col-span-12">
           <Input
-            className="w-64 me-3"
+            className="me-3"
             type="search"
             placeholder="Cari berdasarkan nama dan akun"
           />
-
-          <Button
-            onClick={() =>
-              handler.setVisible({
-                show: true,
-                type: 1,
-                title: "Tambah Peserta Baru",
-              })
-            }
-          >
-            <Plus /> Tambah Baru
-          </Button>
-        </Flex>
-      </Flex>
-
-      <DataTable
-        columns={columns({
-          edit: handler.handleEdit,
-          delete: handler.handleDelete,
-          editPassword: handler.handleEditPassword,
-        })}
-        data={state.users}
-        isLoadingData={state.isLoadingData}
-      />
+        </div>
+        <div className="col-span-12">
+          <DataTable
+            columns={columns({
+              edit: handler.handleEdit,
+              delete: handler.handleDelete,
+              editPassword: handler.handleEditPassword,
+            })}
+            data={state.users}
+            isLoadingData={state.isLoadingData}
+          />
+        </div>
+      </Grid>
       <DataTablePagination
         metadata={state.metadata!}
         onPageChange={(e) =>

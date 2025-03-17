@@ -1,6 +1,6 @@
 import { columns } from "./columns";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { Flex, Heading } from "@radix-ui/themes";
+import { Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown, Filter, Loader2, Plus } from "lucide-react";
 import Hook from "./hook";
@@ -66,7 +66,7 @@ export default function ParticipantPage() {
         { title: "Data Peserta", href: "/dashboard/member/participants" },
       ]}
     >
-      <Flex align={"center"} justify={"between"}>
+      <Flex align={"center"} justify={"between"} gap={"4"} className="mb-4">
         <Heading>Data Peserta</Heading>
 
         <Flex>
@@ -75,7 +75,7 @@ export default function ParticipantPage() {
             className="me-3"
             onClick={() => handler.setShowFilter(true)}
           >
-            <Filter /> Filter
+            <Filter /> <Text className="md:block hidden">Filter</Text>
           </Button>
           <Button
             onClick={() =>
@@ -86,18 +86,20 @@ export default function ParticipantPage() {
               })
             }
           >
-            <Plus /> Tambah Baru
+            <Plus /> <Text className="md:block hidden">Tambah Baru</Text>
           </Button>
         </Flex>
       </Flex>
 
-      <DataTable
-        columns={columns({
-          delete: handler.handleDelete,
-        })}
-        data={state.members}
-        isLoadingData={state.isLoadingData}
-      />
+      <Grid columns={"1"}>
+        <DataTable
+          columns={columns({
+            delete: handler.handleDelete,
+          })}
+          data={state.members}
+          isLoadingData={state.isLoadingData}
+        />
+      </Grid>
 
       <Drawer
         direction="right"

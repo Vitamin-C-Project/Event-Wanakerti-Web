@@ -36,8 +36,10 @@ export default function Hook() {
     title: "",
     type: 1,
   });
+  const [isDetailModal, setIsDetailModal] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [schools, setSchools] = useState<ParticipantSchoolInterface[]>([]);
   const [school, setSchool] = useState<ParticipantSchoolInterface>();
   const [divisions, setDivisions] = useState<DivisionInterface[]>([]);
@@ -111,6 +113,24 @@ export default function Hook() {
     setVisible({ show: true, title: `Edit Team ${data.name}`, type: 2 });
     setTeam(data);
     getDivisions(data.school);
+  };
+
+  const handleDetail = async (data: ParticipantTeamInterface) => {
+    setIsDetailModal(true);
+    setIsLoadingDetail(true);
+
+    try {
+      let response = await postData(API_PATH_CONSTANT.PARTICIPANT.TEAM.SHOW, {
+        uid: data?.id,
+      });
+
+      setTeam(response.data.data);
+    } catch (error: any) {
+      setIsDetailModal(false);
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingDetail(false);
+    }
   };
 
   const handleUpdate = async (data: z.infer<typeof schemaForm>) => {
@@ -281,6 +301,7 @@ export default function Hook() {
   return {
     state: {
       user,
+      team,
       teams,
       form,
       isLoadingForm,
@@ -298,6 +319,8 @@ export default function Hook() {
       userType: USER_TYPE_CONSTANT,
       filterSchool,
       filters,
+      isDetailModal,
+      isLoadingDetail,
     },
     handler: {
       setVisible,
@@ -318,6 +341,9 @@ export default function Hook() {
       appliedFilters,
       setFilterSchool,
       setFilters,
+      handleDetail,
+      setIsDetailModal,
+      setTeam,
     },
   };
 }

@@ -9,7 +9,7 @@ import {
 import { columns } from "./columns";
 import Hook from "./hook";
 import { Input } from "@/components/ui/input";
-import { Flex, Heading } from "@radix-ui/themes";
+import { Flex, Grid, Heading } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown, Filter, Loader2, Plus, X } from "lucide-react";
 import DashboardLayout from "@/layout/dashboard-layout";
@@ -76,14 +76,16 @@ export default function DivisionPage() {
         </Flex>
       </Flex>
 
-      <DataTable
-        columns={columns({
-          edit: handler.handleEdit,
-          delete: handler.handleDelete,
-        })}
-        data={state.divisions}
-        isLoadingData={state.isLoadingData}
-      />
+      <Grid columns={"1"}>
+        <DataTable
+          columns={columns({
+            edit: handler.handleEdit,
+            delete: handler.handleDelete,
+          })}
+          data={state.divisions}
+          isLoadingData={state.isLoadingData}
+        />
+      </Grid>
 
       <Drawer
         direction="right"

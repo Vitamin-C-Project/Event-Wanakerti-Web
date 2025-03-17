@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/data-table";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { Flex, Heading } from "@radix-ui/themes";
+import { Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
 import { Filter, Loader2, Plus } from "lucide-react";
@@ -43,7 +43,7 @@ export default function CategoriesPage() {
         { title: "Kategori Lomba", href: "/dashboard/cms/categories" },
       ]}
     >
-      <Flex align={"center"} justify={"between"}>
+      <Flex align={"center"} justify={"between"} gap={"4"} className="mb-4">
         <Heading>Kategori Lomba</Heading>
 
         <Flex>
@@ -53,7 +53,7 @@ export default function CategoriesPage() {
                 placeholder={
                   <>
                     <Filter />
-                    Semua Divisi
+                    <Text className="md:block hidden">Semua Divisi</Text>
                   </>
                 }
               />
@@ -73,19 +73,21 @@ export default function CategoriesPage() {
               })
             }
           >
-            <Plus /> Tambah Baru
+            <Plus /> <Text className="md:block hidden">Tambah Baru</Text>
           </Button>
         </Flex>
       </Flex>
 
-      <DataTable
-        columns={columns({
-          edit: handler.handleEdit,
-          delete: handler.handleDelete,
-        })}
-        data={state.categories}
-        isLoadingData={state.isLoadingData}
-      />
+      <Grid columns={"1"}>
+        <DataTable
+          columns={columns({
+            edit: handler.handleEdit,
+            delete: handler.handleDelete,
+          })}
+          data={state.categories}
+          isLoadingData={state.isLoadingData}
+        />
+      </Grid>
 
       <Dialog
         open={state.visible.show}

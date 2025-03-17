@@ -67,7 +67,7 @@ export const columns = (
     },
     {
       id: "count_team",
-      header: "Jumlah Team",
+      header: "Jumlah Tim",
       cell: ({ row }) => {
         const original = row.original;
 
@@ -101,7 +101,7 @@ export const columns = (
       cell: ({ row }) => {
         const original = row.original;
 
-        return <div className="w-36">{original.address}</div>;
+        return <div>{original.address}</div>;
       },
     },
     {

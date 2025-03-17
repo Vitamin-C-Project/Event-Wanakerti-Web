@@ -1,7 +1,7 @@
 import { columns } from "./columns";
 import Hook from "./hook";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { Flex, Heading } from "@radix-ui/themes";
+import { Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown, Filter, Loader2, Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
@@ -67,7 +67,7 @@ export default function SchoolPage() {
         { title: "Data Pangkalan", href: "/dashboard/member/schools" },
       ]}
     >
-      <Flex align={"center"} justify={"between"}>
+      <Flex align={"center"} justify={"between"} gap={"4"} className="mb-4">
         <Heading>Data Pangkalan</Heading>
         <Flex>
           <Button
@@ -75,7 +75,7 @@ export default function SchoolPage() {
             className="me-3"
             onClick={() => handler.setShowFilter(true)}
           >
-            <Filter /> Filter
+            <Filter /> <Text className="md:block hidden">Filter</Text>
           </Button>
           <Button
             onClick={() =>
@@ -86,19 +86,21 @@ export default function SchoolPage() {
               })
             }
           >
-            <Plus /> Tambah Baru
+            <Plus /> <Text className="md:block hidden">Tambah Baru</Text>
           </Button>
         </Flex>
       </Flex>
 
-      <DataTable
-        columns={columns({
-          edit: handler.handleEdit,
-          delete: handler.handleDelete,
-        })}
-        data={state.schools}
-        isLoadingData={state.isLoadingData}
-      />
+      <Grid columns={"1"}>
+        <DataTable
+          columns={columns({
+            edit: handler.handleEdit,
+            delete: handler.handleDelete,
+          })}
+          data={state.schools}
+          isLoadingData={state.isLoadingData}
+        />
+      </Grid>
 
       <Drawer
         direction="right"

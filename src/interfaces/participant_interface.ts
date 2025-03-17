@@ -19,6 +19,19 @@ export interface ParticipantSchoolInterface extends CommonColumn {
   school_type_id: number;
 }
 
+type Marking = {
+  id?: number;
+  name?: string;
+  total?: number;
+  children?: MarkingChild[];
+};
+
+type MarkingChild = {
+  id?: number;
+  mark?: number;
+  name?: string;
+};
+
 export interface ParticipantTeamInterface extends CommonColumn {
   school: ParticipantSchoolInterface;
   division: DivisionInterface;
@@ -28,6 +41,7 @@ export interface ParticipantTeamInterface extends CommonColumn {
   payment_status: number;
   re_registration_status: number;
   members?: ParticipantTeamMemberInterface[];
+  markings?: Marking[];
 }
 export interface ParticipantTeamMarkingInterface extends CommonColumn {
   name: string;
