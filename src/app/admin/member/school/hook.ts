@@ -47,6 +47,9 @@ export default function Hook() {
     search: params.get("search") || "",
     type: params.get("type") ? Number(params.get("type")) : 0,
   });
+  const [filterUser, setFilterUser] = useState({
+    search: "",
+  });
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
 
   const form = useForm<z.infer<typeof schemaForm>>({
@@ -184,8 +187,9 @@ export default function Hook() {
   const getUser = async () => {
     try {
       const response = await postData(API_PATH_CONSTANT.USER.LIST, {
+        ...filterUser,
         role_id: USER_TYPE_CONSTANT.PARTICIPANT,
-        search: "",
+        not_school: "true",
       });
       setUsers(response.data.data);
     } catch (error) {}
@@ -218,7 +222,7 @@ export default function Hook() {
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [filterUser]);
 
   useEffect(() => {
     getSchools();
@@ -239,6 +243,7 @@ export default function Hook() {
       showFilter,
       pagination,
       filters,
+      filterUser,
     },
     handler: {
       setVisible,
@@ -254,6 +259,7 @@ export default function Hook() {
       setFilters,
       setPagination,
       appliedFilters,
+      setFilterUser,
     },
   };
 }

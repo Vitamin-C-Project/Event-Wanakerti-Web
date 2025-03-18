@@ -221,6 +221,9 @@ export default function SchoolPage() {
                               <CommandInput
                                 placeholder="Cari akun..."
                                 className="text-primary"
+                                onValueChange={(e) =>
+                                  handler.setFilterUser({ search: e })
+                                }
                               />
                               <CommandList>
                                 <CommandEmpty>
@@ -230,9 +233,8 @@ export default function SchoolPage() {
                                   {state.users.map((user) => (
                                     <CommandItem
                                       key={user.id}
-                                      value={user.id?.toString()}
-                                      onSelect={(currentValue) => {
-                                        field.onChange(currentValue);
+                                      onSelect={() => {
+                                        field.onChange(user.id?.toString());
                                         handler.setOpenComboboxUser(false);
                                         handler.setUser(user);
                                       }}

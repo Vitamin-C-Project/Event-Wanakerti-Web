@@ -88,7 +88,10 @@ export default function TeamPage() {
           <Button
             variant={"secondary"}
             className="me-3"
-            onClick={() => handler.setShowFilter(true)}
+            onClick={() => {
+              handler.setShowFilter(true);
+              handler.getDivisions();
+            }}
           >
             <Filter /> <Text className="md:block hidden">Filter</Text>
           </Button>
@@ -155,34 +158,105 @@ export default function TeamPage() {
                   <Label htmlFor="type" className="mb-2">
                     Asal Pangkalan
                   </Label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="0">Semua Pangkalan</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <Popover
+                    open={state.openComboboxSchool}
+                    onOpenChange={() => handler.setOpenComboboxSchool(true)}
+                  >
+                    <PopoverTrigger asChild disabled={state.isLoadingForm}>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={state.openComboboxSchool}
+                        className="justify-between"
+                      >
+                        {state.filters.participant_school_id
+                          ? state.schools.find(
+                              (school) =>
+                                school.id == state.filters.participant_school_id
+                            )?.name
+                          : "Cari pangkalan..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Cari pangkalan..."
+                          value={state.filterSchool.search}
+                          onValueChange={(value) => {
+                            handler.setFilterSchool({ search: value });
+                          }}
+                        />
+                        <CommandList>
+                          <CommandEmpty>
+                            pangkalan tidak ditemukan.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {state.schools.map((school) => (
+                              <CommandItem
+                                key={school.id}
+                                onSelect={() => {
+                                  handler.setFilterSchool({ search: "" });
+                                  handler.setFilters({
+                                    ...state.filters,
+                                    participant_school_id: school.id,
+                                  });
+                                  handler.setOpenComboboxSchool(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn("mr-2 h-4 w-4", "opacity-0")}
+                                />
+                                {school.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </Flex>
               )}
               <Flex direction={"column"} className="w-full mb-5">
                 <Label htmlFor="type" className="mb-2">
                   Jenis Bidang Lomba
                 </Label>
-                <Select>
+                <Select
+                  onValueChange={(value) =>
+                    handler.setFilters({
+                      ...state.filters,
+                      division_id: Number(value),
+                    })
+                  }
+                >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="" />
+                    <SelectValue
+                      placeholder={
+                        state.filters.division_id
+                          ? state.divisions.find(
+                              (division) =>
+                                division.id == state.filters.division_id
+                            )?.name
+                          : "Semua Bidang Lomba"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       <SelectItem value="0">Semua Bidang Lomba</SelectItem>
+                      {state.divisions.map((division) => (
+                        <SelectItem
+                          key={division.id}
+                          value={division.id?.toString() || ""}
+                        >
+                          {division.name}
+                        </SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </Flex>
-              {state.user.role?.id != state.userType.PARTICIPANT && (
+              {/* {state.user.role?.id != state.userType.PARTICIPANT && (
                 <Flex direction={"column"} className="w-full mb-5">
                   <Label htmlFor="type" className="mb-2">
                     Status
@@ -198,7 +272,7 @@ export default function TeamPage() {
                     </SelectContent>
                   </Select>
                 </Flex>
-              )}
+              )} */}
             </Flex>
             <DrawerFooter>
               <Button type="submit">Terapkan Filter</Button>
@@ -281,6 +355,7 @@ export default function TeamPage() {
                                     <CommandItem
                                       key={school.id}
                                       onSelect={() => {
+                                        handler.setFilterSchool({ search: "" });
                                         handler.setOpenComboboxSchool(false);
                                         field.onChange(school.id?.toString());
                                         handler.setSchool(school);
