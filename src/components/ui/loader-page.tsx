@@ -7,7 +7,7 @@ interface LoaderProps {
 
 export function LoaderPage({ className }: LoaderProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-secondary backdrop-blur-sm">
       <div className={cn("animate-pulse space-y-4 text-center", className)}>
         <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
         <h3 className="font-semibold tracking-tight text-primary text-xl">
