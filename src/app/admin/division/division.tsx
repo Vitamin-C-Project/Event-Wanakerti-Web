@@ -9,7 +9,7 @@ import {
 import { columns } from "./columns";
 import Hook from "./hook";
 import { Input } from "@/components/ui/input";
-import { Flex, Grid, Heading } from "@radix-ui/themes";
+import { Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown, Filter, Loader2, Plus, X } from "lucide-react";
 import DashboardLayout from "@/layout/dashboard-layout";
@@ -60,7 +60,7 @@ export default function DivisionPage() {
             className="me-3"
             onClick={() => handler.setShowFilter(true)}
           >
-            <Filter /> Filter
+            <Filter /> <Text className="md:block hidden">Filter</Text>
           </Button>
           <Button
             onClick={() =>
@@ -71,7 +71,7 @@ export default function DivisionPage() {
               })
             }
           >
-            <Plus /> Tambah Baru
+            <Plus /> <Text className="md:block hidden">Tambah Baru</Text>
           </Button>
         </Flex>
       </Flex>
