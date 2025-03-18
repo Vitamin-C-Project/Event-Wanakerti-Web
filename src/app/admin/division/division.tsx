@@ -39,6 +39,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DataTablePagination } from "@/components/pagination-datatable";
 
 export default function DivisionPage() {
   const { state, handler } = Hook();
@@ -86,6 +87,12 @@ export default function DivisionPage() {
           isLoadingData={state.isLoadingData}
         />
       </Grid>
+      <DataTablePagination
+        metadata={state.metadata!}
+        onPageChange={(e) =>
+          handler.setPagination({ ...state.pagination, page: e })
+        }
+      />
 
       <Drawer
         direction="right"

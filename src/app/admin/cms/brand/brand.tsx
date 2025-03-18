@@ -22,6 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { DataTablePagination } from "@/components/pagination-datatable";
 
 export default function BrandPage() {
   const { state, handler } = Hook();
@@ -56,6 +57,10 @@ export default function BrandPage() {
             className="w-full me-3"
             type="search"
             placeholder="Cari berdasarkan nama"
+            value={state.filters.search}
+            onChange={(e) =>
+              handler.setFilters({ ...state.filters, search: e.target.value })
+            }
           />
         </div>
         <div className="col-span-12">
@@ -69,6 +74,12 @@ export default function BrandPage() {
           />
         </div>
       </Grid>
+      <DataTablePagination
+        metadata={state.metadata!}
+        onPageChange={(e) =>
+          handler.setPagination({ ...state.pagination, page: e })
+        }
+      />
 
       <Dialog
         open={state.visible.show}

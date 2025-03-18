@@ -31,6 +31,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { DataTablePagination } from "@/components/pagination-datatable";
 
 export default function CategoriesPage() {
   const { state, handler } = Hook();
@@ -47,7 +48,14 @@ export default function CategoriesPage() {
         <Heading>Kategori Lomba</Heading>
 
         <Flex>
-          <Select>
+          <Select
+            onValueChange={(value) =>
+              handler.setFilters({
+                ...state.filters,
+                school_type_id: value,
+              })
+            }
+          >
             <SelectTrigger className="w-full me-3">
               <SelectValue
                 placeholder={
@@ -61,6 +69,11 @@ export default function CategoriesPage() {
             <SelectContent>
               <SelectGroup>
                 <SelectItem value="0">Semua Divisi</SelectItem>
+                {state.schoolTypes.map((type) => (
+                  <SelectItem value={type.id?.toString() || ""}>
+                    {type.name} - ({type.alias})
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -88,6 +101,12 @@ export default function CategoriesPage() {
           isLoadingData={state.isLoadingData}
         />
       </Grid>
+      <DataTablePagination
+        metadata={state.metadata!}
+        onPageChange={(e) =>
+          handler.setPagination({ ...state.pagination, page: e })
+        }
+      />
 
       <Dialog
         open={state.visible.show}
@@ -130,7 +149,7 @@ export default function CategoriesPage() {
                         <SelectContent>
                           <SelectGroup>
                             {state.schoolTypes.map((type) => (
-                              <SelectItem value={type.id?.toString()}>
+                              <SelectItem value={type.id?.toString() || ""}>
                                 {type.name} - ({type.alias})
                               </SelectItem>
                             ))}

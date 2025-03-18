@@ -31,6 +31,9 @@ export default function Hook() {
     page: 1,
     per_page: 10,
   });
+  const [filters, setFilters] = useState({
+    search: "",
+  });
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
@@ -47,6 +50,7 @@ export default function Hook() {
     try {
       const response = await postData(API_PATH_CONSTANT.USER.LIST, {
         ...pagination,
+        ...filters,
         role_id: USER_TYPE_CONSTANT.ADMIN,
       });
 
@@ -157,7 +161,7 @@ export default function Hook() {
 
   useEffect(() => {
     getUsers();
-  }, [pagination]);
+  }, [pagination, filters]);
 
   return {
     state: {
@@ -168,6 +172,7 @@ export default function Hook() {
       pagination,
       metadata,
       isLoadingData,
+      filters,
     },
     handler: {
       setVisible,
@@ -179,6 +184,7 @@ export default function Hook() {
       handleUpdatePassword,
       setPagination,
       resetState,
+      setFilters,
     },
   };
 }

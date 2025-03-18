@@ -1,5 +1,6 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { BrandInterface } from "@/interfaces/cms_interface";
+import { IMeta } from "@/interfaces/common";
 import { toastRender } from "@/lib/alert";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,6 +32,14 @@ export default function Hook() {
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [brands, setBrands] = useState<BrandInterface[]>([]);
+  const [filters, setFilters] = useState({
+    search: "",
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    per_page: 10,
+  });
+  const [metadata, setMetadata] = useState<IMeta>();
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
@@ -44,9 +53,13 @@ export default function Hook() {
     setIsLoadingData(true);
 
     try {
-      const response = await postData(API_PATH_CONSTANT.CMS.BRAND.LIST, {});
+      const response = await postData(API_PATH_CONSTANT.CMS.BRAND.LIST, {
+        ...filters,
+        ...pagination,
+      });
 
       setBrands(response.data.data);
+      setMetadata(response.data.pagination);
     } catch (error) {
     } finally {
       setIsLoadingData(false);
@@ -103,10 +116,25 @@ export default function Hook() {
 
   useEffect(() => {
     getBrands();
-  }, []);
+  }, [filters, pagination]);
 
   return {
-    state: { brands, visible, form, isLoadingData, isLoadingForm },
-    handler: { setVisible, handleSubmit, handleDelete },
+    state: {
+      brands,
+      visible,
+      form,
+      isLoadingData,
+      isLoadingForm,
+      metadata,
+      filters,
+      pagination,
+    },
+    handler: {
+      setVisible,
+      handleSubmit,
+      handleDelete,
+      setFilters,
+      setPagination,
+    },
   };
 }

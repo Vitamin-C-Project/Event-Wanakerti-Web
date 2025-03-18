@@ -4,6 +4,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* PRIMARY: #FFEAC5, SECONDARY: #FFDBB5, TERTIARY: #6C4E31, ACCENT: #603F26 */
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

@@ -57,6 +57,8 @@ export default function UserAdminPage() {
             className="me-3"
             type="search"
             placeholder="Cari berdasarkan nama dan akun"
+            value={state.filters.search}
+            onChange={(e) => handler.setFilters({ search: e.target.value })}
           />
         </div>
         <div className="col-span-12">

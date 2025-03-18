@@ -1,5 +1,6 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { CategoryInterface } from "@/interfaces/cms_interface";
+import { IMeta } from "@/interfaces/common";
 import { SchoolTypeInterface } from "@/interfaces/division_interface";
 import { toastRender } from "@/lib/alert";
 import { formatCurrency, postData } from "@/lib/utils";
@@ -48,14 +49,24 @@ export default function Hook() {
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+  const [filters, setFilters] = useState({
+    school_type_id: "",
+  });
+  const [metadata, setMetadata] = useState<IMeta>();
 
   const getCategories = async () => {
     setIsLoadingData(true);
     try {
+      if (Number(filters.divison_id) < 1) {
+        delete filters.school_type_id;
+      }
+
       const response = await postData(API_PATH_CONSTANT.CMS.CATEGORY.LIST, {
         ...pagination,
+        ...filters,
       });
       setCategories(response.data.data);
+      setMetadata(response.data.pagination);
     } catch (error: any) {
     } finally {
       setIsLoadingData(false);
@@ -169,7 +180,7 @@ export default function Hook() {
 
   useEffect(() => {
     getCategories();
-  }, [pagination]);
+  }, [pagination, filters]);
 
   useEffect(() => {
     getSchoolTypes();
@@ -185,6 +196,8 @@ export default function Hook() {
       schoolTypes,
       form,
       category,
+      metadata,
+      filters,
     },
     handler: {
       setVisible,
@@ -195,6 +208,7 @@ export default function Hook() {
       handleEdit,
       handleUpdate,
       handleDelete,
+      setFilters,
     },
   };
 }

@@ -36,6 +36,9 @@ export default function Hook() {
     page: 1,
     per_page: 10,
   });
+  const [filters, setFilters] = useState({
+    search: "",
+  });
   const [divisions, setDivisions] = useState<DivisionInterface[]>([]);
   const [markings, setMarkings] = useState<MarkingInterface[]>([]);
 
@@ -54,6 +57,7 @@ export default function Hook() {
     try {
       const response = await postData(API_PATH_CONSTANT.USER.LIST, {
         ...pagination,
+        ...filters,
         role_id: USER_TYPE_CONSTANT.JUDGE,
       });
 
@@ -190,7 +194,7 @@ export default function Hook() {
 
   useEffect(() => {
     getUsers();
-  }, [pagination]);
+  }, [pagination, filters]);
 
   useEffect(() => {
     getDivisions();
@@ -208,6 +212,7 @@ export default function Hook() {
       divisions,
       markings,
       user,
+      filters,
     },
     handler: {
       setVisible,
@@ -220,6 +225,7 @@ export default function Hook() {
       setPagination,
       resetState,
       setMarkings,
+      setFilters,
     },
   };
 }

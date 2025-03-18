@@ -1,4 +1,5 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
+import { IMeta } from "@/interfaces/common";
 import {
   DivisionInterface,
   SCHOOL_TYPE,
@@ -25,6 +26,7 @@ export default function Hook() {
     search: "",
     type: 0,
   });
+  const [metadata, setMetadata] = useState<IMeta>();
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
   const [formData, setFormData] = useState({
     name: "",
@@ -180,8 +182,12 @@ export default function Hook() {
   const getDivisions = async () => {
     setIsLoadingData(true);
     try {
-      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {});
+      const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {
+        ...filters,
+        ...pagination,
+      });
       setDivisions(response.data.data);
+      setMetadata(response.data.pagination);
     } catch (error) {
     } finally {
       setIsLoadingData(false);
@@ -297,6 +303,7 @@ export default function Hook() {
       pagination,
       formData,
       errors,
+      metadata,
     },
     handler: {
       setVisible,

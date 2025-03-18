@@ -90,7 +90,8 @@ export function DataTablePagination<TData>({
       )}
       <Flex className="space-x-6 lg:space-x-8" align={"center"}>
         <Flex className="flex-1 text-sm text-muted-foreground">
-          {metadata?.from} - {metadata?.to} of {metadata?.total} Data
+          {metadata?.from ?? 0} - {metadata?.to ?? 0} dari {metadata?.total}{" "}
+          Total Data
         </Flex>
         <Flex align={"center"} className="space-x-2">
           <Button

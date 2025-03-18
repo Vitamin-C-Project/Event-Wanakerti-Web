@@ -66,6 +66,10 @@ export default function AssessmentTeamPage() {
             className="me-3"
             type="search"
             placeholder="Cari berdasarkan nama dan akun"
+            value={state.filters.search}
+            onChange={(e) =>
+              handler.setFilters({ ...state.filters, search: e.target.value })
+            }
           />
         </div>
         <div className="col-span-12">
