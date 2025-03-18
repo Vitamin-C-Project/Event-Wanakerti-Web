@@ -23,7 +23,7 @@ export function RegisterForm({
     <Form {...form}>
       <form className={cn("flex flex-col gap-6", className)} {...props}>
         <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-2xl font-bold text-primary">
             Registrasi untuk bikin akun baru
           </h1>
           <p className="text-muted-foreground text-sm text-balance">
@@ -101,7 +101,7 @@ export function RegisterForm({
             </Button>
           )}
         </div>
-        <div className="text-center text-sm">
+        <div className="text-center text-sm text-primary">
           Sudah punya akun?{" "}
           <Link to={"/auth/login"} className="underline underline-offset-4">
             Masuk

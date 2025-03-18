@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ParticipantSchoolInterface } from "@/interfaces/participant_interface";
 import { Flex, Heading, Text } from "@radix-ui/themes";
 import { ColumnDef } from "@tanstack/react-table";
+import { Edit, Trash } from "lucide-react";
 
 type childProps = {
   edit: (data: ParticipantSchoolInterface) => void;
@@ -101,7 +102,7 @@ export const columns = (
       cell: ({ row }) => {
         const original = row.original;
 
-        return <div>{original.address}</div>;
+        return <Text>{original.address}</Text>;
       },
     },
     {
@@ -117,14 +118,15 @@ export const columns = (
               className="mr-3"
               onClick={() => props.edit(original)}
             >
-              Edit
+              <Edit /> <Text className="md:block hidden">Edit</Text>
             </Button>
             <Button
               variant="destructive"
               size="sm"
               onClick={() => props.delete(original)}
             >
-              Delete
+              <Trash />{" "}
+              <Text className="md:block hidden text-white">Hapus</Text>
             </Button>
           </Flex>
         );

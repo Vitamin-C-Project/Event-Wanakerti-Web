@@ -218,7 +218,10 @@ export default function SchoolPage() {
                           </PopoverTrigger>
                           <PopoverContent className="p-0">
                             <Command>
-                              <CommandInput placeholder="Cari akun..." />
+                              <CommandInput
+                                placeholder="Cari akun..."
+                                className="text-primary"
+                              />
                               <CommandList>
                                 <CommandEmpty>
                                   Akun tidak ditemukan.
