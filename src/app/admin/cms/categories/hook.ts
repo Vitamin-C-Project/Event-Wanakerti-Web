@@ -57,7 +57,7 @@ export default function Hook() {
   const getCategories = async () => {
     setIsLoadingData(true);
     try {
-      if (Number(filters.divison_id) < 1) {
+      if (Number(filters.school_type_id) < 1) {
         delete filters.school_type_id;
       }
 
