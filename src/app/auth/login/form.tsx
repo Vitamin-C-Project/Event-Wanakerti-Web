@@ -12,15 +12,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { FormInterface } from "@/interfaces/common";
-import { Flex } from "@radix-ui/themes";
+import { Flex, Heading } from "@radix-ui/themes";
 
 export function LoginForm({ className, form, state, ...props }: FormInterface) {
   return (
     <Form {...form}>
       <form className={cn("flex flex-col gap-6", className)} {...props}>
         <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="text-2xl font-bold">Login untuk masuk Dasbor</h1>
-          <p className="text-muted-foreground text-sm text-balance">
+          <Heading className="text-2xl font-bold">
+            Login untuk masuk Dasbor
+          </Heading>
+          <p className="text-primary text-sm text-balance">
             Masukan email anda sebelum masuk ke Dasbor
           </p>
         </div>
@@ -56,7 +58,7 @@ export function LoginForm({ className, form, state, ...props }: FormInterface) {
                     <FormLabel htmlFor="password">Kata Sandi</FormLabel>
                     <Link
                       to="/auth/forgot-password"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
+                      className="ml-auto text-sm underline-offset-4 hover:underline text-primary"
                     >
                       Lupa kata sandi Anda?
                     </Link>
@@ -82,7 +84,7 @@ export function LoginForm({ className, form, state, ...props }: FormInterface) {
             </Button>
           )}
         </div>
-        <div className="text-center text-sm">
+        <div className="text-center text-sm text-primary">
           Belum punya akun?{" "}
           <Link to={"/auth/register"} className="underline underline-offset-4">
             Registrasi

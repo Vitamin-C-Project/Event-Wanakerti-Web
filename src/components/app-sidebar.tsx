@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   CalendarDays,
   ChartBar,
-  Command,
   Contact,
   Edit,
   Group,
@@ -35,6 +34,7 @@ import { useNavigate } from "react-router-dom";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import { useAppDispatch } from "@/lib/hooks";
 import { setUserAuthenticated } from "@/lib/slices/user_slice";
+import LogoPng from "@/assets/img/logo-wanakerti.png";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();
@@ -246,12 +246,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
-                </div>
+                <img src={LogoPng} className="size-9" alt="Logo" />
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-medium">Pramuka</span>
+                  <span className="truncate text-xs">Wanakerti</span>
                 </div>
               </a>
             </SidebarMenuButton>

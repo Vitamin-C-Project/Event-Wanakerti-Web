@@ -179,9 +179,10 @@ export default function Hook() {
       text: "Anda tidak akan dapat mengembalikannya!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#603F26",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, dihapus!",
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal",
     }).then(async (result) => {
       if (result.isConfirmed) {
         setIsLoadingData(true);
