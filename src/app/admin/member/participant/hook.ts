@@ -1,6 +1,7 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
 import {
+  ParticipantSchoolInterface,
   ParticipantTeamInterface,
   ParticipantTeamMemberInterface,
 } from "@/interfaces/participant_interface";
@@ -10,7 +11,7 @@ import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { z } from "zod";
 
@@ -54,17 +55,35 @@ export default function Hook() {
     title: "",
     type: 1,
   });
+  const { "0": params } = useSearchParams();
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [openCombobox, setOpenCombobox] = useState(false);
+  const [openComboboxSchool, setOpenComboboxSchool] = useState(false);
   const [teams, setTeams] = useState<ParticipantTeamInterface[]>([]);
+  const [team, setTeam] = useState<ParticipantTeamInterface>();
   const [members, setMembers] = useState<ParticipantTeamMemberInterface[]>([]);
   const [showFilter, setShowFilter] = useState(false);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<{
+    search?: string;
+    participant_school_id?: number;
+    team_id?: number;
+  }>({
+    search: params.get("search") || "",
+    participant_school_id: params.get("participantSchool")
+      ? Number(params.get("participantSchool"))
+      : 0,
+    team_id: params.get("team") ? Number(params.get("team")) : 0,
+  });
+  const [filterSchool, setFilterSchool] = useState({
     search: "",
-    type: 0,
+  });
+  const [filterTeam, setFilterTeam] = useState({
+    search: "",
   });
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+  const [schools, setSchools] = useState<ParticipantSchoolInterface[]>([]);
+  const [school, setSchool] = useState<ParticipantSchoolInterface>();
   const user = useAppSelector((state) => state.user.userAuthenticated);
 
   const form = useForm<z.infer<typeof schemaForm>>({
@@ -132,10 +151,9 @@ export default function Hook() {
 
   const getTeams = async () => {
     try {
-      const response = await postData(
-        API_PATH_CONSTANT.PARTICIPANT.TEAM.LIST,
-        {}
-      );
+      const response = await postData(API_PATH_CONSTANT.PARTICIPANT.TEAM.LIST, {
+        ...filterTeam,
+      });
 
       setTeams(response.data.data);
     } catch (error) {}
@@ -144,9 +162,17 @@ export default function Hook() {
   const getMembers = async () => {
     setIsLoadingData(true);
     try {
+      if (filters.participant_school_id! < 1) {
+        delete filters.participant_school_id;
+      }
+
+      if (filters.team_id! < 1) {
+        delete filters.team_id;
+      }
+
       const response = await postData(
         API_PATH_CONSTANT.PARTICIPANT.MEMBER.LIST,
-        {}
+        { ...filters, ...pagination }
       );
 
       setMembers(
@@ -161,16 +187,37 @@ export default function Hook() {
     }
   };
 
+  const getSchools = async () => {
+    try {
+      const response = await postData(
+        API_PATH_CONSTANT.PARTICIPANT.SCHOOL.LIST,
+        { ...filterSchool }
+      );
+
+      setSchools(response.data.data);
+    } catch (error) {}
+  };
+
   const resetState = () => {
     setVisible({ show: false, title: "", type: 1 });
     form.reset();
     setShowFilter(false);
   };
 
-  useEffect(() => {
-    getTeams();
-    getMembers();
+  const appliedFilters = (e: any) => {
+    e.preventDefault();
 
+    let params = [
+      `search=${filters.search}`,
+      `participantSchool=${filters.participant_school_id}`,
+      `team=${filters.team_id}`,
+    ].join("&");
+
+    setShowFilter(false);
+    navigate(`?${params}`);
+  };
+
+  useEffect(() => {
     if (
       [USER_TYPE_CONSTANT.PARTICIPANT].includes(user?.role?.id!) &&
       !user.school
@@ -178,6 +225,18 @@ export default function Hook() {
       navigate("/dashboard");
     }
   }, []);
+
+  useEffect(() => {
+    getMembers();
+  }, [pagination, params]);
+
+  useEffect(() => {
+    getTeams();
+  }, [filterTeam]);
+
+  useEffect(() => {
+    getSchools();
+  }, [filterSchool]);
 
   return {
     state: {
@@ -192,6 +251,12 @@ export default function Hook() {
       isLoadingData,
       showFilter,
       pagination,
+      filters,
+      school,
+      schools,
+      filterSchool,
+      team,
+      openComboboxSchool,
     },
     handler: {
       setVisible,
@@ -202,6 +267,13 @@ export default function Hook() {
       resetState,
       setShowFilter,
       setPagination,
+      setFilters,
+      setFilterSchool,
+      setSchool,
+      appliedFilters,
+      setTeam,
+      setFilterTeam,
+      setOpenComboboxSchool,
     },
   };
 }

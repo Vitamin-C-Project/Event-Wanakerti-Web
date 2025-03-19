@@ -270,7 +270,6 @@ export default function Hook() {
       `search=${filters.search}`,
       `division=${filters.division_id}`,
       `participantSchool=${filters.participant_school_id}`,
-      `status=${filters.status}`,
     ].join("&");
 
     setShowFilter(false);
