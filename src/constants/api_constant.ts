@@ -99,6 +99,7 @@ export const API_PATH_CONSTANT = {
   },
   MARKING: {
     SAVE: "marking/save",
+    UPDATE: "marking/update",
     LIST: "marking/list",
   },
 };

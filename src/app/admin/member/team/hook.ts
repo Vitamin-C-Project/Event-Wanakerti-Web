@@ -10,7 +10,7 @@ import { toastRender } from "@/lib/alert";
 import { useAppSelector } from "@/lib/hooks";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -23,6 +23,19 @@ const schemaForm = z.object({
   status: z.boolean(),
   payment_status: z.boolean(),
 });
+
+type Marking = {
+  id?: number;
+  name?: string;
+  total?: number;
+  children?: MarkingChild[];
+};
+
+type MarkingChild = {
+  id?: number;
+  mark?: number;
+  name?: string;
+};
 
 export default function Hook() {
   const location = useLocation();
@@ -66,6 +79,9 @@ export default function Hook() {
   });
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
   const [metadata, setMetadata] = useState<IMeta>();
+  const [marking, setMarking] = useState(null);
+
+  const formMarking = useRef<HTMLFormElement>(null);
 
   const { register } = useForm();
 
@@ -326,6 +342,8 @@ export default function Hook() {
       isDetailModal,
       isLoadingDetail,
       metadata,
+      marking,
+      formMarking,
     },
     handler: {
       setVisible,
@@ -349,6 +367,7 @@ export default function Hook() {
       handleDetail,
       setIsDetailModal,
       setTeam,
+      setMarking,
     },
   };
 }

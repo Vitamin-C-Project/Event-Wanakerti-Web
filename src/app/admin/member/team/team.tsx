@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Check,
   ChevronsUpDown,
+  Edit,
   Filter,
   Info,
   Loader2,
@@ -33,7 +34,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn, postData } from "@/lib/utils";
 import {
   Form,
   FormControl,
@@ -65,12 +66,31 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTablePagination } from "@/components/pagination-datatable";
+import { useState } from "react";
+import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
+import { toastRender } from "@/lib/alert";
+import { ParticipantTeamInterface } from "@/interfaces/participant_interface";
+
+type Marking = {
+  id?: number;
+  name?: string;
+  total?: number;
+  children?: MarkingChild[];
+};
+
+type MarkingChild = {
+  id?: number;
+  mark?: number;
+  name?: string;
+  criteria_child_id?: number;
+};
 
 export default function TeamPage() {
   const { state, handler } = Hook();
@@ -591,36 +611,9 @@ export default function TeamPage() {
                   columns={{ initial: "1", sm: "2", xs: "1" }}
                 >
                   {Object.entries(state.team?.markings!).map(
-                    ([key, marking]) => {
-                      return (
-                        <Card key={key} className="shadow-none">
-                          <CardHeader>
-                            <CardTitle>{marking.name}</CardTitle>
-                            <CardDescription>
-                              Total Nilai{" "}
-                              <strong className="text-black">
-                                {marking.total}
-                              </strong>
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <DataList.Root>
-                              {marking.children?.map((child, keyChild) => (
-                                <DataList.Item key={keyChild} className="mb-3">
-                                  <DataList.Label>{child.name}</DataList.Label>
-                                  <DataList.Value>
-                                    :{" "}
-                                    <Text className="font-bold">
-                                      {child.mark}
-                                    </Text>
-                                  </DataList.Value>
-                                </DataList.Item>
-                              ))}
-                            </DataList.Root>
-                          </CardContent>
-                        </Card>
-                      );
-                    }
+                    ([key, marking]) => (
+                      <Render marking={marking} team={state.team} key={key} />
+                    )
                   )}
                 </Grid>
               ) : (
@@ -635,7 +628,6 @@ export default function TeamPage() {
               <DialogFooter>
                 <DialogClose asChild>
                   <Button
-                    variant="secondary"
                     onClick={() => {
                       handler.setIsDetailModal(false);
                       handler.setTeam(undefined);
@@ -657,5 +649,175 @@ export default function TeamPage() {
         </DialogContent>
       </Dialog>
     </DashboardLayout>
+  );
+}
+
+function Render({
+  marking,
+  team,
+}: {
+  marking: Marking;
+  team: ParticipantTeamInterface;
+}) {
+  const [isEdit, setIsEdit] = useState(false);
+  const [data, setData] = useState<Marking>(marking);
+
+  const onSave = (newData: Marking) => {
+    setData(newData);
+  };
+
+  return isEdit ? (
+    <div>
+      <EditMode
+        marking={data}
+        onCancel={() => setIsEdit(false)}
+        team={team}
+        onSave={onSave}
+      />
+    </div>
+  ) : (
+    <div>
+      <ViewMode
+        marking={data}
+        onEdit={() => {
+          setIsEdit(true);
+        }}
+      />
+    </div>
+  );
+}
+
+function EditMode({
+  marking,
+  onCancel,
+  team,
+  onSave,
+}: {
+  marking: Marking;
+  onCancel?: () => void;
+  team: ParticipantTeamInterface;
+  onSave: (newData: Marking) => void;
+}) {
+  const [markingForm, setMarkingForm] = useState<Marking>(marking);
+  const [isLoadingForm, setIsLoadingForm] = useState<boolean>(false);
+
+  const handleInputChange = (id: any, value: any) => {
+    let oldValue = {
+      ...markingForm,
+      children: markingForm.children?.map((child) =>
+        child.id === id ? { ...child, mark: value } : child
+      ),
+    };
+
+    oldValue.total = oldValue.children?.reduce(
+      (total, child) => total + Number(child.mark),
+      0
+    );
+
+    setMarkingForm(oldValue);
+  };
+
+  const handleUpdateMarking = async (e: any) => {
+    e.preventDefault();
+
+    setIsLoadingForm(true);
+
+    try {
+      const response = await postData(API_PATH_CONSTANT.MARKING.UPDATE, {
+        participant_team_id: team.id,
+        criteria_marking_id: marking.id,
+        markings: markingForm.children?.map((child) => ({
+          id: child.criteria_child_id,
+          mark: child.mark,
+        })),
+      });
+      toastRender(API_CODE_CONSTANT.HTTP_OK, response.data.messages);
+      onCancel?.();
+
+      onSave(markingForm);
+    } catch (error: any) {
+      toastRender(error.status, error.response.data.messages);
+    } finally {
+      setIsLoadingForm(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleUpdateMarking}>
+      <Card className="shadow-none">
+        <CardHeader className="flex-row justify-between items-center">
+          <CardTitle>{marking.name}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          {markingForm.children?.map((child: any, keyChild: number) => (
+            <div key={keyChild} className="mb-3">
+              <Label>{child.name}</Label>
+              <Input
+                type="number"
+                placeholder="Masukkan nilai"
+                value={child.mark}
+                onChange={(e) => handleInputChange(child.id, e.target.value)}
+                required
+                disabled={isLoadingForm}
+              />
+            </div>
+          ))}
+        </CardContent>
+        <CardFooter className="justify-between">
+          {isLoadingForm ? (
+            <Button type="submit" disabled className="w-100">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Silahkan tunggu
+            </Button>
+          ) : (
+            <>
+              <Button
+                size={"sm"}
+                variant="destructive"
+                onClick={onCancel}
+                type="button"
+              >
+                Batal
+              </Button>
+              <Button size={"sm"} type="submit">
+                Simpan
+              </Button>
+            </>
+          )}
+        </CardFooter>
+      </Card>
+    </form>
+  );
+}
+
+function ViewMode({ marking, onEdit }: { marking: any; onEdit?: () => void }) {
+  return (
+    <Card className="shadow-none">
+      <CardHeader className="flex-row justify-between items-center">
+        <div>
+          <CardTitle>{marking.name}</CardTitle>
+          <CardDescription>
+            Total Nilai <strong className="font-bold">{marking.total}</strong>
+          </CardDescription>
+        </div>
+        <div>
+          <Button size={"sm"} onClick={onEdit}>
+            <Edit />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <DataList.Root>
+          {marking.children?.map((child: any, keyChild: number) => (
+            <DataList.Item key={keyChild} className="mb-3">
+              <DataList.Label>{child.name}</DataList.Label>
+              <DataList.Value>
+                : <Text className="font-bold">{child.mark}</Text>
+              </DataList.Value>
+            </DataList.Item>
+          ))}
+        </DataList.Root>
+      </CardContent>
+    </Card>
   );
 }
