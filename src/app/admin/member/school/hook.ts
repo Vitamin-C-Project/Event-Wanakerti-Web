@@ -1,5 +1,6 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
+import { IMeta } from "@/interfaces/common";
 import { SCHOOL_TYPE } from "@/interfaces/division_interface";
 import { ParticipantSchoolInterface } from "@/interfaces/participant_interface";
 import { UserInterface } from "@/interfaces/user_interface";
@@ -51,7 +52,7 @@ export default function Hook() {
     search: "",
   });
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
-
+  const [metadata, setMetadata] = useState<IMeta>();
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
     defaultValues: {
@@ -178,6 +179,7 @@ export default function Hook() {
       );
 
       setSchools(response.data.data);
+      setMetadata(response.data.pagination);
     } catch (error) {
     } finally {
       setIsLoadingData(false);
@@ -244,6 +246,7 @@ export default function Hook() {
       pagination,
       filters,
       filterUser,
+      metadata,
     },
     handler: {
       setVisible,

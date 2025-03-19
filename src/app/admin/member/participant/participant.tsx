@@ -54,6 +54,7 @@ import { Label } from "@/components/ui/label";
 
 import { cn } from "@/lib/utils";
 import { DataTable } from "./data-table";
+import { DataTablePagination } from "@/components/pagination-datatable";
 
 export default function ParticipantPage() {
   const { state, handler } = Hook();
@@ -100,6 +101,12 @@ export default function ParticipantPage() {
           isLoadingData={state.isLoadingData}
         />
       </Grid>
+      <DataTablePagination
+        metadata={state.metadata!}
+        onPageChange={(e) =>
+          handler.setPagination({ ...state.pagination, page: e })
+        }
+      />
 
       <Drawer
         direction="right"

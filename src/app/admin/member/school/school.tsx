@@ -55,6 +55,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { DataTablePagination } from "@/components/pagination-datatable";
 
 export default function SchoolPage() {
   const { state, handler } = Hook();
@@ -101,6 +102,12 @@ export default function SchoolPage() {
           isLoadingData={state.isLoadingData}
         />
       </Grid>
+      <DataTablePagination
+        metadata={state.metadata!}
+        onPageChange={(e) =>
+          handler.setPagination({ ...state.pagination, page: e })
+        }
+      />
 
       <Drawer
         direction="right"

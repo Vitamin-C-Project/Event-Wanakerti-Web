@@ -70,6 +70,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DataTablePagination } from "@/components/pagination-datatable";
 
 export default function TeamPage() {
   const { state, handler } = Hook();
@@ -121,6 +122,12 @@ export default function TeamPage() {
           isLoadingData={state.isLoadingData}
         />
       </Grid>
+      <DataTablePagination
+        metadata={state.metadata!}
+        onPageChange={(e) =>
+          handler.setPagination({ ...state.pagination, page: e })
+        }
+      />
 
       <Drawer
         direction="right"

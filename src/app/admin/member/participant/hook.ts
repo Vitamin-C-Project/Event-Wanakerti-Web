@@ -1,5 +1,6 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
+import { IMeta } from "@/interfaces/common";
 import {
   ParticipantSchoolInterface,
   ParticipantTeamInterface,
@@ -85,6 +86,7 @@ export default function Hook() {
   const [schools, setSchools] = useState<ParticipantSchoolInterface[]>([]);
   const [school, setSchool] = useState<ParticipantSchoolInterface>();
   const user = useAppSelector((state) => state.user.userAuthenticated);
+  const [metadata, setMetadata] = useState<IMeta>();
 
   const form = useForm<z.infer<typeof schemaForm>>({
     resolver: zodResolver(schemaForm),
@@ -181,6 +183,7 @@ export default function Hook() {
           ...team.members!.map((member) => ({ ...member, type: "member" })),
         ])
       );
+      setMetadata(response.data.pagination);
     } catch (error) {
     } finally {
       setIsLoadingData(false);
@@ -257,6 +260,7 @@ export default function Hook() {
       filterSchool,
       team,
       openComboboxSchool,
+      metadata,
     },
     handler: {
       setVisible,

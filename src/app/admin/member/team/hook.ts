@@ -1,5 +1,6 @@
 import { API_CODE_CONSTANT, API_PATH_CONSTANT } from "@/constants/api_constant";
 import { USER_TYPE_CONSTANT } from "@/constants/global_constant";
+import { IMeta } from "@/interfaces/common";
 import { DivisionInterface } from "@/interfaces/division_interface";
 import {
   ParticipantSchoolInterface,
@@ -64,6 +65,7 @@ export default function Hook() {
     search: "",
   });
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
+  const [metadata, setMetadata] = useState<IMeta>();
 
   const { register } = useForm();
 
@@ -237,6 +239,8 @@ export default function Hook() {
         ...filters,
         ...pagination,
       });
+
+      setMetadata(response.data.pagination);
       setTeams(response.data.data);
     } catch (error) {
     } finally {
@@ -321,6 +325,7 @@ export default function Hook() {
       filters,
       isDetailModal,
       isLoadingDetail,
+      metadata,
     },
     handler: {
       setVisible,
