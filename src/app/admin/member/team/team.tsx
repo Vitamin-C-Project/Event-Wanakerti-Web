@@ -7,6 +7,7 @@ import {
   Check,
   ChevronsUpDown,
   Edit,
+  FileSpreadsheetIcon,
   Filter,
   Info,
   Loader2,
@@ -70,7 +71,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTablePagination } from "@/components/pagination-datatable";
 import { useState } from "react";
@@ -114,7 +115,17 @@ export default function TeamPage() {
               handler.getDivisions();
             }}
           >
-            <Filter /> <Text className="md:block hidden">Filter</Text>
+            <Filter /> <Text className="hidden md:block">Filter</Text>
+          </Button>
+          <Button
+            variant={"outline"}
+            className="me-3"
+            onClick={() => {
+              handler.handleExport();
+            }}
+          >
+            <FileSpreadsheetIcon />{" "}
+            <Text className="hidden md:block">Ekspor</Text>
           </Button>
           <Button
             onClick={() =>
@@ -125,7 +136,7 @@ export default function TeamPage() {
               })
             }
           >
-            <Plus /> <Text className="md:block hidden">Tambah Baru</Text>
+            <Plus /> <Text className="hidden md:block">Tambah Baru</Text>
           </Button>
         </Flex>
       </Flex>
@@ -202,7 +213,7 @@ export default function TeamPage() {
                                 school.id == state.filters.participant_school_id
                             )?.name
                           : "Cari pangkalan..."}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        <ChevronsUpDown className="h-4 w-4 ml-2 opacity-50 shrink-0" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="p-0">
@@ -361,7 +372,7 @@ export default function TeamPage() {
                               {state.school
                                 ? state.school.name
                                 : "Cari pangkalan..."}
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              <ChevronsUpDown className="h-4 w-4 ml-2 opacity-50 shrink-0" />
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="p-0">
@@ -443,7 +454,7 @@ export default function TeamPage() {
                               {state.division
                                 ? state.division.name
                                 : "Cari bidang..."}
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              <ChevronsUpDown className="h-4 w-4 ml-2 opacity-50 shrink-0" />
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="p-0">
@@ -551,7 +562,7 @@ export default function TeamPage() {
               <DialogFooter>
                 {state.isLoadingForm ? (
                   <Button disabled>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
                     Silahkan tunggu
                   </Button>
                 ) : (
@@ -640,7 +651,7 @@ export default function TeamPage() {
               </DialogFooter>
             </>
           ) : (
-            <Flex direction={"column"} className="space-y-3 mt-5">
+            <Flex direction={"column"} className="mt-5 space-y-3">
               <Skeleton className="h-9 w-full" />
               <Skeleton className="h-9 w-full" />
               <Skeleton className="h-9 w-full" />
@@ -766,7 +777,7 @@ function EditMode({
         <CardFooter className="justify-between">
           {isLoadingForm ? (
             <Button type="submit" disabled className="w-100">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
               Silahkan tunggu
             </Button>
           ) : (

@@ -35,16 +35,16 @@ export function DataTablePagination<TData>({
 }: DataTablePaginationProps<TData>) {
   const pageSizes = [10, 20, 30, 40, 50];
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(metadata?.current_page || 1);
   const [selectedPageSize, setSelectedPageSize] = useState("10");
   const handlePageChange = (actions: string) => {
     let newPage: number = page;
-    if (actions === "prev") {
+    if (actions == "prev") {
       if (page > 1) {
         newPage = page - 1;
       }
     }
-    if (actions === "next") {
+    if (actions == "next") {
       if (metadata?.last_page !== undefined && newPage < metadata?.last_page) {
         newPage = page + 1;
       }
@@ -98,7 +98,7 @@ export function DataTablePagination<TData>({
             variant="outline"
             className="h-8 w-8 p-0"
             onClick={() => handlePageChange("prev")}
-            disabled={page === 1}
+            disabled={page == 1}
           >
             <span className="sr-only">Go to previous page</span>
             <ChevronLeft />
@@ -107,7 +107,7 @@ export function DataTablePagination<TData>({
             variant="outline"
             className="h-8 w-8 p-0"
             onClick={() => handlePageChange("next")}
-            disabled={page === metadata?.last_page}
+            disabled={page == metadata?.last_page}
           >
             <span className="sr-only">Go to next page</span>
             <ChevronRight />

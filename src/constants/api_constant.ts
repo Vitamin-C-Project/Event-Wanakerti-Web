@@ -22,6 +22,7 @@ export const API_PATH_CONSTANT = {
       SHOW: "participant/team/show",
       UPDATE: "participant/team/update",
       DELETE: "participant/team/delete",
+      EXPORT: "participant/team/export-excel",
       UPDATE_STATUS_RE_REGISTRATION:
         "participant/team/update-status-re-registration",
     },
@@ -101,6 +102,10 @@ export const API_PATH_CONSTANT = {
     SAVE: "marking/save",
     UPDATE: "marking/update",
     LIST: "marking/list",
+  },
+  DASHBOARD: {
+    LEADERBOARD: "dashboard/leaderboard",
+    COUNTING: "dashboard/counting",
   },
 };
 

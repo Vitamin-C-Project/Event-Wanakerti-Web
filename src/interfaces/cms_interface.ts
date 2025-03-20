@@ -27,3 +27,17 @@ export interface AgendaInterface extends CommonColumn {
   name: string;
   date: string;
 }
+
+export interface LeaderboardInterface extends CommonColumn {
+  name: string;
+  code: string;
+  school_name: string;
+  mark: number;
+}
+
+export interface CountingInterface extends CommonColumn {
+  total_school?: number;
+  total_lkbbt?: number;
+  total_hiking?: number;
+  total_member?: number;
+}

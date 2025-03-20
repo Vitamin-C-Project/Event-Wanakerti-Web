@@ -10,6 +10,7 @@ import { toastRender } from "@/lib/alert";
 import { useAppSelector } from "@/lib/hooks";
 import { postData } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -217,6 +218,19 @@ export default function Hook() {
     });
   };
 
+  const handleExport = async () => {
+    try {
+      let response = await postData(API_PATH_CONSTANT.PARTICIPANT.TEAM.EXPORT, {
+        ...filters,
+      });
+
+      const link = document.createElement("a");
+      link.href = response.data.data.url;
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {}
+  };
+
   const getSchools = async () => {
     try {
       const response = await postData(
@@ -368,6 +382,7 @@ export default function Hook() {
       setIsDetailModal,
       setTeam,
       setMarking,
+      handleExport,
     },
   };
 }
