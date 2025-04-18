@@ -72,7 +72,7 @@ export function NavMain({
                     to={item.url}
                     className={
                       location.pathname == item.url
-                        ? "bg-accent-foreground text-primary font-medium"
+                        ? "bg-accent-foreground text-white font-medium"
                         : ""
                     }
                   >
@@ -116,7 +116,7 @@ export function NavMain({
                               to={child.url}
                               className={
                                 location.pathname == child.url
-                                  ? "bg-accent-foreground text-primary font-medium"
+                                  ? "bg-accent-foreground text-white font-medium"
                                   : ""
                               }
                             >
