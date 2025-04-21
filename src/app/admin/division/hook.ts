@@ -185,6 +185,7 @@ export default function Hook() {
       const response = await postData(API_PATH_CONSTANT.DIVISION.LIST, {
         ...filters,
         ...pagination,
+        with: ["criteriaMarkings.children"],
       });
       setDivisions(response.data.data);
       setMetadata(response.data.pagination);
